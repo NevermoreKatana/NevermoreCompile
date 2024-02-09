@@ -11,6 +11,7 @@ compile:
 full:
 	make compile
 	make to_llvm
-
-start:
 	./output_files/output
+
+install:
+	pip install -r requirements.txt

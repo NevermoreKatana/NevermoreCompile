@@ -1,20 +1,49 @@
 [
  {
-  "stat": {
-   "printStatement": {
-    "expr": {
-     "type": "ADD",
-     "left": {
-      "type": "INT",
-      "value": 3
-     },
-     "right": {
-      "type": "INT",
-      "value": 4
+  "forStatement": {
+   "init": {
+    "stat": {
+     "assignmentStatement": {
+      "type": "int",
+      "ID": "x",
+      "expr": [
+       {
+        "type": "INT",
+        "value": 0
+       }
+      ],
+      "END_STATE": ";"
      }
+    }
+   },
+   "condition": {
+    "left": {
+     "type": "INT",
+     "value": 0
     },
-    "END_STATE": ";"
-   }
+    "op": "<",
+    "right": {
+     "type": "INT",
+     "value": 25
+    }
+   },
+   "modify": {
+    "ID": "x",
+    "op": "++"
+   },
+   "body": [
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "INT",
+        "value": 15
+       },
+       "END_STATE": ";"
+      }
+     }
+    }
+   ]
   }
  }
 ]
