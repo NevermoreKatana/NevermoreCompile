@@ -1,0 +1,20 @@
+[
+ {
+  "stat": {
+   "printStatement": {
+    "expr": {
+     "type": "ADD",
+     "left": {
+      "type": "INT",
+      "value": 3
+     },
+     "right": {
+      "type": "INT",
+      "value": 4
+     }
+    },
+    "END_STATE": ";"
+   }
+  }
+ }
+]

@@ -1,0 +1,303 @@
+from antlr4 import *
+from antlr4_gen.grammar.nevermorecompilerLexer import nevermorecompilerLexer
+from antlr4_gen.grammar.nevermorecompilerParser import nevermorecompilerParser
+from antlr4_gen.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
+from antlr4_gen.grammar.nevermorecompilerListener import nevermorecompilerListener
+from llvmlite import ir, binding
+
+import json
+
+with open('input.txt', 'r') as file:
+    input_text = file.read()
+
+input_stream = InputStream(input_text)
+lexer = nevermorecompilerLexer(input_stream)
+stream = CommonTokenStream(lexer)
+parser = nevermorecompilerParser(stream)
+tree = parser.prog()
+
+# listener = nevermorecompilerListener()
+# walker = ParseTreeWalker()
+visitor = nevermorecompilerVisitor()
+visitor.visit(tree)
+# walker.walk(listener, tree)
+
+
+class ASTNode:
+    def __init__(self, node_type, **kwargs):
+        self.node_type = node_type
+        self.children = []
+        self.properties = kwargs
+
+    def add_child(self, node):
+        self.children.append(node)
+
+    def __repr__(self):
+        return f"{self.node_type}:{self.properties}"
+
+
+class EvalVisitor(nevermorecompilerVisitor):
+    def __init__(self):
+        self.variables = {}
+        self.ast = []
+    def visitStat(self, ctx: nevermorecompilerParser.StatContext):
+        if ctx.ifStatement():
+            return self.visitIfStatement(ctx.ifStatement())
+        elif ctx.printState():
+            return self.visitPrintState(ctx.printState())
+        elif ctx.assignmentStatement():
+            return self.visitAssignmentStatement(ctx.assignmentStatement())
+        elif ctx.ifElseStatement():
+            return self.visitIfElseStatement(ctx.ifElseStatement())
+        elif ctx.forStatement():
+            return self.visitForStatement(ctx.forStatement())
+        elif ctx.whileStatement():
+            return  self.visitWhileStatement(ctx.whileStatement())
+
+
+    def visitProg(self, ctx: nevermorecompilerParser.ProgContext):
+        for child in ctx.stat():
+            ast_node = self.visit(child)
+            if ast_node not in self.ast:
+                self.ast.append(ast_node)
+        return json.dumps(self.ast)
+
+    def visitExpr(self, ctx: nevermorecompilerParser.ExprContext):
+        # print(self.variables)
+
+        if ctx.INT():
+            return {"type": "INT", "value": int(ctx.INT().getText())}
+        elif ctx.DOUBLE():
+            return {"type": "DOUBLE", "value": float(ctx.DOUBLE().getText())}
+        elif ctx.STROKE():
+            return {"type": "STROKE", "value": ctx.STROKE().getText()}
+        elif ctx.ID():
+            variable_name = ctx.ID().getText()
+            if variable_name in self.variables:
+                return self.variables[variable_name]["value"]
+            else:
+                raise ValueError(f"Variable '{variable_name}' is not defined.")
+        elif ctx.DIV():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "DIV", "left": left_expr, "right":right_expr}
+        elif ctx.MUL():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "MUL", "left": left_expr, "right":right_expr}
+        elif ctx.ADD():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "ADD", "left": left_expr, "right": right_expr}
+        elif ctx.SUB():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "SUB", "left": left_expr, "right":right_expr}
+        elif ctx.GT():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "GT", "left": left_expr, "right": right_expr}
+        elif ctx.LT():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "LT", "left": left_expr, "right": right_expr}
+        elif ctx.EQ_EQ():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "EQ_EQ", "left": left_expr, "right": right_expr}
+        elif ctx.NOT_EQ():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "NOT_EQ", "left": left_expr, "right": right_expr}
+
+        return self.visitChildren(ctx)
+
+    def visitPrintState(self, ctx: nevermorecompilerParser.PrintStateContext):
+        expr_result = self.visit(ctx.expr())
+        print_node = {
+            "stat": {
+                "printStatement": {
+                    "expr": expr_result,
+                    "END_STATE": ";"
+                }
+            }
+        }
+        self.ast.append(print_node)
+        return print_node
+
+    def visitIfElseStatement(self, ctx: nevermorecompilerParser.IfElseStatementContext):
+        condition = self.visit(ctx.equation())
+        if_body = []
+        else_body = []
+
+        for stat_ctx in ctx.ifBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                if_body.append(body_node)
+
+        for stat_ctx in ctx.elseBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                else_body.append(body_node)
+
+        if_else_node = {
+            "ifElseStatement": {
+                "condition": condition,
+                "ifBody": if_body,
+                "elseBody": else_body
+            }
+        }
+
+        return if_else_node
+
+    def visitIfStatement(self, ctx: nevermorecompilerParser.IfStatementContext):
+        condition = self.visit(ctx.equation())
+        body = []
+
+        for stat_ctx in ctx.ifBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                body.append(body_node)
+        if_node = {
+            "ifStatement": {
+                "condition": condition,
+                "body": body
+            }
+        }
+
+        return if_node
+
+    def visitForStatement(self, ctx:nevermorecompilerParser.ForStatementContext):
+        init = self.visit(ctx.forInit())
+        condition = self.visit(ctx.equation())
+        modify = self.visit(ctx.forModify())
+        body = []
+        for stat_ctx in ctx.forBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                body.append(body_node)
+
+        for_node = {
+            "forStatement": {
+                "init": init,
+                "condition": condition,
+                "modify": modify,
+                "body": body
+            }
+        }
+        self.ast.append(for_node)
+        return for_node
+
+    def visitWhileStatement(self, ctx:nevermorecompilerParser.WhileStatementContext):
+        condition = self.visit(ctx.equation())
+        body = []
+
+        for stat_ctx in ctx.whileBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                body.append(body_node)
+
+        while_node = {
+            "whileStatement": {
+                # "ID":
+                "condition": condition,
+                "body": body
+            }
+        }
+        self.ast.append(while_node)
+        return while_node
+
+    def visitForModify(self, ctx:nevermorecompilerParser.ForModifyContext):
+        id_name = ctx.ID().getText()
+        op = ctx.INCREMENT().getText()
+        return {"ID": id_name, "op": op}
+
+    def visitEquation(self, ctx: nevermorecompilerParser.EquationContext):
+        left_expr = self.visit(ctx.expr(0))
+        right_expr = self.visit(ctx.expr(1))
+        op = ctx.relop().getText()
+        try:
+            left_ID = ctx.expr(0).ID().getText()
+            right_ID = ctx.expr(1).ID().getText()
+            return {"left": left_expr, "left_ID": left_ID, 'right_ID':right_ID, "op": op, "right": right_expr}
+        except:
+            return {"left": left_expr, "op": op, "right": right_expr}
+
+    def visitForInit(self, ctx:nevermorecompilerParser.ForInitContext):
+
+        type_ = ctx.type_().getText()
+        variable_name = ctx.ID().getText()
+        value = self.visit(ctx.expr())
+        child_count = ctx.expr().getChildCount()
+        self.variables[variable_name] = {"type": type_, "value": value, "child": child_count}
+
+        assignment_node = {
+            "stat": {
+                "assignmentStatement": {
+                    "type": type_,
+                    "ID": variable_name,
+                    "expr": [value] if child_count == 1 else self.flatten_expr(value),
+                    "END_STATE": ";"
+                }
+            }
+        }
+
+        return assignment_node
+
+
+
+    def visitAssignmentStatement(self, ctx: nevermorecompilerParser.AssignmentStatementContext):
+        type_ = ctx.type_().getText()
+        variable_name = ctx.ID().getText()
+        value = self.visit(ctx.expr())
+        child_count = ctx.expr().getChildCount()
+        self.variables[variable_name] = {"type": type_, "value": value, "child": child_count}
+
+        assignment_node = {
+            "stat": {
+                "assignmentStatement": {
+                    "type": type_,
+                    "ID": variable_name,
+                    "expr": [value] if child_count == 1 else self.flatten_expr(value),
+                    "END_STATE": ";"
+                }
+            }
+        }
+
+        self.ast.append(assignment_node)
+        return assignment_node
+
+    def flatten_expr(self, expr):
+        flattened_expr = []
+        if isinstance(expr, dict):
+            flattened_expr.append(expr)
+        elif isinstance(expr, list):
+            for sub_expr in expr:
+                flattened_expr.extend(self.flatten_expr(sub_expr))
+        return flattened_expr
+
+
+# print(ast)
+# print(json.dumps(json.loads(ast), indent=2))
+
+
+
+if __name__ == '__main__':
+
+    ast_visitor = EvalVisitor()
+    ast = ast_visitor.visit(tree)
+    # print(ast)
+    with open('output_files/ast.json', 'w') as f:
+        f.write(json.dumps(json.loads(ast), indent=1))
+    print('AST построено')
+
