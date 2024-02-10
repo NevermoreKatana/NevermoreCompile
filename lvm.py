@@ -217,19 +217,17 @@ class ToLlvmCode:
         right_value = self.evaluate_expression(condition['right'])
         left_id = condition['left_ID']
         right_id = condition['right_ID']
-        # print(condition)
         op = condition['op']
 
         while_block = self.main_func.append_basic_block(name="while")
         end_block = self.main_func.append_basic_block(name="end")
-        # print(self.variables[left_id])
 
         cond = self.builder.icmp_unsigned(op, self.builder.load(self.variables[left_id]),
                                         ir.Constant(ir.IntType(32), right_value))
         self.builder.cbranch(cond, while_block, end_block)
 
         self.builder.position_at_end(while_block)
-        # Выполняем тело цикла
+
         for stat_item in while_body:
             if 'stat' in stat_item:
                 stat = stat_item['stat']
@@ -238,17 +236,56 @@ class ToLlvmCode:
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
 
-        # Увеличиваем счетчик цикла
         inc_i = self.builder.add(self.builder.load(self.variables[left_id]), ir.Constant(ir.IntType(32), 1))
         self.builder.store(inc_i, self.variables[left_id])
         cond = self.builder.icmp_unsigned(op, self.builder.load(self.variables[left_id]),
                                         ir.Constant(ir.IntType(32), right_value))
 
-        # Добавляем ветвящийся переход в начало цикла
         self.builder.cbranch(cond, while_block, end_block)
 
-        # Устанавливаем позицию в конечном блоке
         self.builder.position_at_end(end_block)
+
+    def do_while_statement(self, statement):
+        do_while_statement = statement['doWhileStatement']
+        while_body = do_while_statement['body']
+        do_body = do_while_statement['do']
+
+        left_value = self.evaluate_expression(do_body['left'])
+        right_value = self.evaluate_expression(do_body['right'])
+        left_id = do_body['left_ID']
+        right_id = do_body['right_ID']
+        op = do_body['op']
+
+        loop_start_block = self.main_func.append_basic_block(name="loop_start")
+        loop_body_block = self.main_func.append_basic_block(name="loop_body")
+        loop_end_block = self.main_func.append_basic_block(name="loop_end")
+
+        self.builder.branch(loop_start_block)
+        self.builder.position_at_end(loop_start_block)
+
+        for stat_item in while_body:
+            if 'stat' in stat_item:
+                stat = stat_item['stat']
+                if 'printStatement' in stat:
+                    self.print_statement(stat)
+                elif 'assignmentStatement' in stat:
+                    self.assign_statement(stat)
+
+        loop_condition = self.builder.load(self.variables[left_id])
+        cond = self.builder.icmp_unsigned(op, loop_condition, ir.Constant(ir.IntType(32), right_value))
+        self.builder.cbranch(cond, loop_body_block, loop_end_block)
+
+        self.builder.position_at_end(loop_body_block)
+
+        # Здесь можно добавить инструкции, которые должны выполняться после тела цикла
+
+        inc_i = self.builder.add(self.builder.load(self.variables[left_id]), ir.Constant(ir.IntType(32), 1))
+        self.builder.store(inc_i, self.variables[left_id])
+
+        exit_condition = self.builder.icmp_unsigned(op, inc_i, ir.Constant(ir.IntType(32), right_value))
+        self.builder.branch(loop_start_block)
+
+        self.builder.position_at_end(loop_end_block)
 
     def tree_bypass(self):
         for item in self.ast:
@@ -266,6 +303,8 @@ class ToLlvmCode:
                 self.for_statement(item)
             elif 'whileStatement' in item:
                 self.while_statement(item)
+            elif 'doWhileStatement' in item:
+                self.do_while_statement(item)
 
 
         self.builder.ret_void()

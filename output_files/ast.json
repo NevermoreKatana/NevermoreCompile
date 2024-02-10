@@ -1,36 +1,36 @@
 [
  {
-  "forStatement": {
-   "init": {
-    "stat": {
-     "assignmentStatement": {
-      "type": "int",
-      "ID": "x",
-      "expr": [
-       {
-        "type": "INT",
-        "value": 0
-       }
-      ],
-      "END_STATE": ";"
-     }
-    }
-   },
-   "condition": {
-    "left": {
-     "type": "INT",
-     "value": 0
-    },
-    "op": "<",
-    "right": {
-     "type": "INT",
-     "value": 25
-    }
-   },
-   "modify": {
+  "stat": {
+   "assignmentStatement": {
+    "type": "int",
     "ID": "x",
-    "op": "++"
-   },
+    "expr": [
+     {
+      "type": "INT",
+      "value": 0
+     }
+    ],
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "stat": {
+   "assignmentStatement": {
+    "type": "int",
+    "ID": "y",
+    "expr": [
+     {
+      "type": "INT",
+      "value": 5
+     }
+    ],
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "doWhileStatement": {
    "body": [
     {
      "stat": {
@@ -43,7 +43,31 @@
       }
      }
     }
-   ]
+   ],
+   "do": {
+    "left": {
+     "type": "INT",
+     "value": 0
+    },
+    "left_ID": "x",
+    "right_ID": "y",
+    "op": "<",
+    "right": {
+     "type": "INT",
+     "value": 5
+    }
+   }
+  }
+ },
+ {
+  "stat": {
+   "printStatement": {
+    "expr": {
+     "type": "INT",
+     "value": 123123
+    },
+    "END_STATE": ";"
+   }
   }
  }
 ]

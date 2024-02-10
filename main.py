@@ -53,6 +53,8 @@ class EvalVisitor(nevermorecompilerVisitor):
             return self.visitForStatement(ctx.forStatement())
         elif ctx.whileStatement():
             return  self.visitWhileStatement(ctx.whileStatement())
+        elif ctx.doWhileStatement():
+            return self.visitDoWhileStatement(ctx.doWhileStatement())
 
 
     def visitProg(self, ctx: nevermorecompilerParser.ProgContext):
@@ -212,6 +214,27 @@ class EvalVisitor(nevermorecompilerVisitor):
                 # "ID":
                 "condition": condition,
                 "body": body
+            }
+        }
+        self.ast.append(while_node)
+        return while_node
+
+    def visitDoWhileStatement(self, ctx:nevermorecompilerParser.WhileStatementContext):
+        condition = self.visit(ctx.equation())
+        body = []
+
+
+        for stat_ctx in ctx.whileBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                body.append(body_node)
+
+        while_node = {
+            "doWhileStatement": {
+                "body": body,
+                "do": condition
             }
         }
         self.ast.append(while_node)

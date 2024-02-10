@@ -1,3 +1,4 @@
+source ./env/bin/activate
 python compiler.py
 clang output_files/output.ll -o output_files/output
 clear

@@ -1,3 +1,7 @@
-for (int x = 0; x<25; x++){
+int x =0;
+int y = 5;
+do {
 print(15);
-};
+}
+while (x<y);
+print(123123);

@@ -9,6 +9,7 @@ stat
     |ifElseStatement
     |forStatement
     |whileStatement
+    |doWhileStatement
     |NEWLINE
     ;
 
@@ -20,7 +21,7 @@ ifBody:  (stat)* ;
 
 elseBody: (stat)* ;
 
-forStatement: 'for' LPAREN forInit equation END_STATE forModify RPAREN RCORNER forBody LCORNER END_STATE;
+forStatement: 'for' LPAREN forInit equation END_STATE forModify RPAREN RCORNER forBody LCORNER;
 
 forModify: ID INCREMENT;
 forInit: type ID EQ expr END_STATE;
@@ -28,7 +29,12 @@ forBody: (stat)*;
 
 whileStatement: 'while' LPAREN equation RPAREN RCORNER  whileBody LCORNER END_STATE;
 
+doWhileStatement: 'do' RCORNER whileBody LCORNER 'while' LPAREN equation RPAREN END_STATE;
+
 whileBody: (stat)*;
+
+
+
 
 
 expr

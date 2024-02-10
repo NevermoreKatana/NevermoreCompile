@@ -9,18 +9,22 @@ entry:
   %".3" = bitcast [3 x i8]* @"format_str" to i8*
   %"x" = alloca i32
   store i32 0, i32* %"x"
-  %".5" = load i32, i32* %"x"
-  %".6" = icmp ult i32 %".5", 25
-  br i1 %".6", label %"loop_body", label %"exit"
+  %"y" = alloca i32
+  store i32 5, i32* %"y"
+  br label %"loop_start"
+loop_start:
+  %".7" = call i32 (i8*, ...) @"printf"(i8* %".3", i32 15)
+  %".8" = load i32, i32* %"x"
+  %".9" = icmp ult i32 %".8", 5
+  br i1 %".9", label %"loop_body", label %"loop_end"
 loop_body:
-  %".8" = call i32 (i8*, ...) @"printf"(i8* %".3", i32 15)
-  %".9" = load i32, i32* %"x"
-  %".10" = add i32 %".9", 1
-  store i32 %".10", i32* %"x"
-  %".12" = load i32, i32* %"x"
-  %".13" = icmp ult i32 %".12", 25
-  br i1 %".13", label %"loop_body", label %"exit"
-exit:
+  %".11" = load i32, i32* %"x"
+  %".12" = add i32 %".11", 1
+  store i32 %".12", i32* %"x"
+  %".14" = icmp ult i32 %".12", 5
+  br label %"loop_start"
+loop_end:
+  %".16" = call i32 (i8*, ...) @"printf"(i8* %".3", i32 123123)
   ret void
 }
 
