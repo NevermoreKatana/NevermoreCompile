@@ -98,7 +98,6 @@ class ToLlvmCode:
         self.builder.store(ir.Constant(ir.IntType(32), value), var)
 
     def print_statement(self, statement, builder=None):
-        print(statement)
         print_statement = statement['printStatement']
         expr = print_statement['expr']
 
@@ -131,6 +130,17 @@ class ToLlvmCode:
                     self.print_statement(stat)
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
+            elif 'ifStatement' in stat_item:
+                self.if_statement(stat_item)
+            elif 'ifElseStatement' in stat_item:
+                self.if_else_statement(stat_item)
+            elif 'forStatement' in stat_item:
+                self.for_statement(stat_item)
+            elif 'whileStatement' in stat_item:
+                self.while_statement(stat_item)
+            elif 'doWhileStatement' in stat_item:
+                self.do_while_statement(stat_item)
+
 
         self.builder.branch(merge_block)
 
@@ -160,6 +170,16 @@ class ToLlvmCode:
                     self.print_statement(stat)
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
+            elif 'ifStatement' in stat_item:
+                self.if_statement(stat_item)
+            elif 'ifElseStatement' in stat_item:
+                self.if_else_statement(stat_item)
+            elif 'forStatement' in stat_item:
+                self.for_statement(stat_item)
+            elif 'whileStatement' in stat_item:
+                self.while_statement(stat_item)
+            elif 'doWhileStatement' in stat_item:
+                self.do_while_statement(stat_item)
 
         self.builder.branch(merge_block)
 
@@ -171,9 +191,21 @@ class ToLlvmCode:
                     self.print_statement(stat)
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
+            elif 'ifStatement' in stat_item:
+                self.if_statement(stat_item)
+            elif 'ifElseStatement' in stat_item:
+                self.if_else_statement(stat_item)
+            elif 'forStatement' in stat_item:
+                self.for_statement(stat_item)
+            elif 'whileStatement' in stat_item:
+                self.while_statement(stat_item)
+            elif 'doWhileStatement' in stat_item:
+                self.do_while_statement(stat_item)
         self.builder.branch(merge_block)
 
         self.builder.position_at_start(merge_block)
+
+
 
     def for_statement(self, statement):
         for_statement = statement['forStatement']
@@ -207,6 +239,16 @@ class ToLlvmCode:
                     self.print_statement(stat)
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
+            elif 'ifStatement' in stat_item:
+                self.if_statement(stat_item)
+            elif 'ifElseStatement' in stat_item:
+                self.if_else_statement(stat_item)
+            elif 'forStatement' in stat_item:
+                self.for_statement(stat_item)
+            elif 'whileStatement' in stat_item:
+                self.while_statement(stat_item)
+            elif 'doWhileStatement' in stat_item:
+                self.do_while_statement(stat_item)
 
         new_i_value = self.builder.add(self.builder.load(self.variables[for_var_name]), ir.Constant(ir.IntType(32), 1))
         self.builder.store(new_i_value, self.variables[for_var_name])
@@ -244,6 +286,16 @@ class ToLlvmCode:
                     self.print_statement(stat)
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
+            elif 'ifStatement' in stat_item:
+                self.if_statement(stat_item)
+            elif 'ifElseStatement' in stat_item:
+                self.if_else_statement(stat_item)
+            elif 'forStatement' in stat_item:
+                self.for_statement(stat_item)
+            elif 'whileStatement' in stat_item:
+                self.while_statement(stat_item)
+            elif 'doWhileStatement' in stat_item:
+                self.do_while_statement(stat_item)
 
         inc_i = self.builder.add(self.builder.load(self.variables[left_id]), ir.Constant(ir.IntType(32), 1))
         self.builder.store(inc_i, self.variables[left_id])
@@ -279,6 +331,16 @@ class ToLlvmCode:
                     self.print_statement(stat)
                 elif 'assignmentStatement' in stat:
                     self.assign_statement(stat)
+            elif 'ifStatement' in stat_item:
+                self.if_statement(stat_item)
+            elif 'ifElseStatement' in stat_item:
+                self.if_else_statement(stat_item)
+            elif 'forStatement' in stat_item:
+                self.for_statement(stat_item)
+            elif 'whileStatement' in stat_item:
+                self.while_statement(stat_item)
+            elif 'doWhileStatement' in stat_item:
+                self.do_while_statement(stat_item)
 
         loop_condition = self.builder.load(self.variables[left_id])
         cond = self.builder.icmp_unsigned(op, loop_condition, ir.Constant(ir.IntType(32), right_value))
@@ -296,6 +358,7 @@ class ToLlvmCode:
 
         self.builder.position_at_end(loop_end_block)
 
+
     def function_statement(self, statement):
         func_statement = statement["functionStatement"]
         func_name  = func_statement['name']
@@ -311,7 +374,6 @@ class ToLlvmCode:
         for item in func_statement['body']:
             if 'stat' in item:
                 stat = item['stat']
-                print(stat)
                 if 'printStatement' in stat:
                     self.print_statement(stat, builder)
         return
