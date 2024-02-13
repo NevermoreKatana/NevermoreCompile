@@ -23,19 +23,6 @@ visitor.visit(tree)
 # walker.walk(listener, tree)
 
 
-class ASTNode:
-    def __init__(self, node_type, **kwargs):
-        self.node_type = node_type
-        self.children = []
-        self.properties = kwargs
-
-    def add_child(self, node):
-        self.children.append(node)
-
-    def __repr__(self):
-        return f"{self.node_type}:{self.properties}"
-
-
 class EvalVisitor(nevermorecompilerVisitor):
     def __init__(self):
         self.variables = {}
@@ -55,6 +42,8 @@ class EvalVisitor(nevermorecompilerVisitor):
             return  self.visitWhileStatement(ctx.whileStatement())
         elif ctx.doWhileStatement():
             return self.visitDoWhileStatement(ctx.doWhileStatement())
+        # elif ctx.functionStatement():
+        #     return self.visitFunctionStatement(ctx.functionStatement())
 
 
     def visitProg(self, ctx: nevermorecompilerParser.ProgContext):
@@ -71,8 +60,6 @@ class EvalVisitor(nevermorecompilerVisitor):
             return {"type": "INT", "value": int(ctx.INT().getText())}
         elif ctx.DOUBLE():
             return {"type": "DOUBLE", "value": float(ctx.DOUBLE().getText())}
-        elif ctx.STROKE():
-            return {"type": "STROKE", "value": ctx.STROKE().getText()}
         elif ctx.ID():
             variable_name = ctx.ID().getText()
             if variable_name in self.variables:
@@ -113,6 +100,30 @@ class EvalVisitor(nevermorecompilerVisitor):
             return {"type": "NOT_EQ", "left": left_expr, "right": right_expr}
 
         return self.visitChildren(ctx)
+
+    # def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
+    #     fucn_name = ctx.functionName().getText()
+    #     func_type = ctx.funcType().getText()
+    #     function_body = []
+    #
+    #     for stat_ctx in ctx.functionBody().stat():
+    #         body_node = self.visit(stat_ctx)
+    #         if body_node in self.ast:
+    #             self.ast.remove(body_node)
+    #         if body_node:
+    #             function_body.append(body_node)
+    #
+    #     function_body = {
+    #             "functionStatement": {
+    #                 "name": fucn_name,
+    #                 "type": func_type,
+    #                 "body": function_body,
+    #                 "END_STATE": ";"
+    #             }
+    #     }
+    #
+    #     return function_body
+
 
     def visitPrintState(self, ctx: nevermorecompilerParser.PrintStateContext):
         expr_result = self.visit(ctx.expr())
@@ -308,11 +319,6 @@ class EvalVisitor(nevermorecompilerVisitor):
             for sub_expr in expr:
                 flattened_expr.extend(self.flatten_expr(sub_expr))
         return flattened_expr
-
-
-# print(ast)
-# print(json.dumps(json.loads(ast), indent=2))
-
 
 
 if __name__ == '__main__':

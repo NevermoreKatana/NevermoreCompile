@@ -3,59 +3,112 @@
   "stat": {
    "assignmentStatement": {
     "type": "int",
-    "ID": "x",
+    "ID": "result",
     "expr": [
      {
-      "type": "INT",
-      "value": 0
-     }
-    ],
-    "END_STATE": ";"
-   }
-  }
- },
- {
-  "stat": {
-   "assignmentStatement": {
-    "type": "int",
-    "ID": "y",
-    "expr": [
-     {
-      "type": "INT",
-      "value": 5
-     }
-    ],
-    "END_STATE": ";"
-   }
-  }
- },
- {
-  "doWhileStatement": {
-   "body": [
-    {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "INT",
-        "value": 15
+      "type": "ADD",
+      "left": {
+       "type": "SUB",
+       "left": {
+        "type": "ADD",
+        "left": {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "DIV",
+           "left": {
+            "type": "MUL",
+            "left": {
+             "type": "INT",
+             "value": 60
+            },
+            "right": {
+             "type": "INT",
+             "value": 24
+            }
+           },
+           "right": {
+            "type": "INT",
+            "value": 24
+           }
+          },
+          "right": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 24
+           },
+           "right": {
+            "type": "INT",
+            "value": 5
+           }
+          }
+         },
+         "right": {
+          "type": "DIV",
+          "left": {
+           "type": "INT",
+           "value": 6
+          },
+          "right": {
+           "type": "INT",
+           "value": 3
+          }
+         }
+        },
+        "right": {
+         "type": "MUL",
+         "left": {
+          "type": "DIV",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 2
+           },
+           "right": {
+            "type": "INT",
+            "value": 15
+           }
+          },
+          "right": {
+           "type": "INT",
+           "value": 24
+          }
+         },
+         "right": {
+          "type": "INT",
+          "value": 3
+         }
+        }
        },
-       "END_STATE": ";"
+       "right": {
+        "type": "INT",
+        "value": 25
+       }
+      },
+      "right": {
+       "type": "DIV",
+       "left": {
+        "type": "MUL",
+        "left": {
+         "type": "INT",
+         "value": 1250
+        },
+        "right": {
+         "type": "INT",
+         "value": 3
+        }
+       },
+       "right": {
+        "type": "INT",
+        "value": 4
+       }
       }
      }
-    }
-   ],
-   "do": {
-    "left": {
-     "type": "INT",
-     "value": 0
-    },
-    "left_ID": "x",
-    "right_ID": "y",
-    "op": "<",
-    "right": {
-     "type": "INT",
-     "value": 5
-    }
+    ],
+    "END_STATE": ";"
    }
   }
  },
@@ -63,8 +116,106 @@
   "stat": {
    "printStatement": {
     "expr": {
-     "type": "INT",
-     "value": 123123
+     "type": "ADD",
+     "left": {
+      "type": "SUB",
+      "left": {
+       "type": "ADD",
+       "left": {
+        "type": "ADD",
+        "left": {
+         "type": "ADD",
+         "left": {
+          "type": "DIV",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 60
+           },
+           "right": {
+            "type": "INT",
+            "value": 24
+           }
+          },
+          "right": {
+           "type": "INT",
+           "value": 24
+          }
+         },
+         "right": {
+          "type": "MUL",
+          "left": {
+           "type": "INT",
+           "value": 24
+          },
+          "right": {
+           "type": "INT",
+           "value": 5
+          }
+         }
+        },
+        "right": {
+         "type": "DIV",
+         "left": {
+          "type": "INT",
+          "value": 6
+         },
+         "right": {
+          "type": "INT",
+          "value": 3
+         }
+        }
+       },
+       "right": {
+        "type": "MUL",
+        "left": {
+         "type": "DIV",
+         "left": {
+          "type": "MUL",
+          "left": {
+           "type": "INT",
+           "value": 2
+          },
+          "right": {
+           "type": "INT",
+           "value": 15
+          }
+         },
+         "right": {
+          "type": "INT",
+          "value": 24
+         }
+        },
+        "right": {
+         "type": "INT",
+         "value": 3
+        }
+       }
+      },
+      "right": {
+       "type": "INT",
+       "value": 25
+      }
+     },
+     "right": {
+      "type": "DIV",
+      "left": {
+       "type": "MUL",
+       "left": {
+        "type": "INT",
+        "value": 1250
+       },
+       "right": {
+        "type": "INT",
+        "value": 3
+       }
+      },
+      "right": {
+       "type": "INT",
+       "value": 4
+      }
+     }
     },
     "END_STATE": ";"
    }

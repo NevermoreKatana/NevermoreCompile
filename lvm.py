@@ -2,6 +2,12 @@ import llvmlite.ir as ir
 import json
 
 
+choose_type_entry = {
+    "void": ir.VoidType(),
+    "int": ir.IntType(32)
+}
+
+
 class ToLlvmCode:
     def __init__(self):
         self.module = ir.Module("nevermoreCompile")
@@ -11,11 +17,9 @@ class ToLlvmCode:
         self.format_str_loaded_int = None
         self.format_str_loaded_str = None
         self.variables = {}
+        self.functions = {}
         self.main_func = None
-        #Init func
-        self.builder_init()
-        self.g_const_print_int_format()
-        # self.g_const_print_stroke_format()
+
     def json_reader(self, input_file="output_files/ast.json"):
         with open(input_file, "r") as f:
             self.ast = json.load(f)
@@ -58,7 +62,6 @@ class ToLlvmCode:
                                                  bytearray(stroke_str.encode()))
         self.format_str_loaded_str = stroke_str_ptr
 
-
     def evaluate_expression(self, expr):
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return expr['value']
@@ -86,19 +89,25 @@ class ToLlvmCode:
         expr = assignment['expr'][0]
 
         value = self.evaluate_expression(expr)
-        var = self.builder.alloca(ir.IntType(32), name=var_name)
-        self.builder.store(ir.Constant(ir.IntType(32), value), var)
-        self.variables[var_name] = var
 
-    def print_statement(self, statement):
+        if var_name in self.variables:
+            var = self.variables[var_name]
+        else:
+            var = self.builder.alloca(ir.IntType(32), name=var_name)
+            self.variables[var_name] = var
+        self.builder.store(ir.Constant(ir.IntType(32), value), var)
+
+    def print_statement(self, statement, builder=None):
+        print(statement)
         print_statement = statement['printStatement']
         expr = print_statement['expr']
 
         value = self.evaluate_expression(expr)
-        self.choose_print_type(value, expr['type'])
+        self.choose_print_type(value, builder if builder else None)
 
-    def choose_print_type(self, value, data_type):
-        self.builder.call(self.print_func, [self.format_str_loaded_int, ir.Constant(ir.IntType(32), value)])
+    def choose_print_type(self, value, builder = None):
+        builder = builder if builder else self.builder
+        builder.call(self.print_func, [self.format_str_loaded_int, ir.Constant(ir.IntType(32), value)])
 
     def if_statement(self, item):
         if_statement = item['ifStatement']
@@ -287,10 +296,32 @@ class ToLlvmCode:
 
         self.builder.position_at_end(loop_end_block)
 
-    def tree_bypass(self):
-        for item in self.ast:
+    def function_statement(self, statement):
+        func_statement = statement["functionStatement"]
+        func_name  = func_statement['name']
+        type_entry = choose_type_entry[func_statement["type"]]
+
+        func_type = ir.FunctionType(type_entry, [])
+        func = ir.Function(self.module, func_type, name=func_name)
+        block = func.append_basic_block(name='entry')
+        builder = ir.IRBuilder(block)
+        self.functions[func_name] = builder
+        self.builder.call(func, [])
+
+        for item in func_statement['body']:
             if 'stat' in item:
                 stat = item['stat']
+                print(stat)
+                if 'printStatement' in stat:
+                    self.print_statement(stat, builder)
+        return
+
+    def AST_bypass(self):
+        for item in self.ast:
+
+            if 'stat' in item :
+                stat = item['stat']
+
                 if 'assignmentStatement' in stat:
                     self.assign_statement(stat)
                 elif 'printStatement' in stat:
@@ -305,6 +336,9 @@ class ToLlvmCode:
                 self.while_statement(item)
             elif 'doWhileStatement' in item:
                 self.do_while_statement(item)
+            elif 'functionStatement' in item:
+                if item['functionStatement']['name'] not in self.functions:
+                    self.function_statement(item)
 
 
         self.builder.ret_void()
@@ -319,6 +353,8 @@ class ToLlvmCode:
 if __name__ == '__main__':
     tolvm = ToLlvmCode()
     tolvm.json_reader()
-    tolvm.tree_bypass()
+    tolvm.builder_init()
+    tolvm.g_const_print_int_format()
+    tolvm.AST_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")

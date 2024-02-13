@@ -10,6 +10,7 @@ stat
     |forStatement
     |whileStatement
     |doWhileStatement
+//    | functionStatement
     |NEWLINE
     ;
 
@@ -33,20 +34,28 @@ doWhileStatement: 'do' RCORNER whileBody LCORNER 'while' LPAREN equation RPAREN 
 
 whileBody: (stat)*;
 
-
-
-
+//functionStatement
+//    : funcType functionName LPAREN RPAREN RCORNER functionBody LCORNER END_STATE
+//    ;
+//
+//functionBody: (stat)*;
+//
+//functionName: ID;
+//
+//funcType: type
+//    | 'void'
+//    ;
 
 expr
-    : expr op=(DIV | MUL | ADD | SUB) expr
+    : expr (MUL | DIV) expr
+    | expr (ADD | SUB) expr
     |INT
     |ID
     |DOUBLE
-    |STROKE
     ;
 
 printState
-    :'print' LPAREN (expr | DIGIT | STROKE) RPAREN END_STATE
+    :'print' LPAREN (expr | DIGIT ) RPAREN END_STATE
     ;
 
 
@@ -67,8 +76,6 @@ assignmentStatement: type ID EQ expr END_STATE;
 type
     : 'int'
     | 'double'
-    | 'string'
-    | 'bool'
     ;
 
 
@@ -77,7 +84,6 @@ fragment DIGIT: [0-9];
 fragment LETTER: [a-zA-Zа-яА-Я]+;
 INT: DIGIT+ ;
 DOUBLE: INT '.' INT;
-STROKE: '"'LETTER +'"';
 END_STATE:';';
 ADD: '+';
 SUB: '-';
@@ -91,6 +97,8 @@ EQ_EQ: '==';
 NOT_EQ: '!=';
 RCORNER: '{';
 LCORNER: '}';
+
+
 INCREMENT: ADD ADD;
 
 EQ: '=';
