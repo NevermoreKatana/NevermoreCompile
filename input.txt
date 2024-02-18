@@ -1,15 +1,7 @@
-int c = 10;
-int t = 15;
-if 1 < 2{
-    print(1);
-    if t<c {
-        print(2);
-    }
-    else{
-        if 1<2{
-            while (c<t){
-            print(3);
-            };
-        };
-    };
-};
+global: int:z;
+int x = 15+ 15;
+print(x);
+int x = 15 + 25;
+print(x);
+int x = 200*20;
+print(x);

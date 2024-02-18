@@ -143,6 +143,33 @@ class nevermorecompilerListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by nevermorecompilerParser#printBody.
+    def enterPrintBody(self, ctx:nevermorecompilerParser.PrintBodyContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#printBody.
+    def exitPrintBody(self, ctx:nevermorecompilerParser.PrintBodyContext):
+        pass
+
+
+    # Enter a parse tree produced by nevermorecompilerParser#globalStatement.
+    def enterGlobalStatement(self, ctx:nevermorecompilerParser.GlobalStatementContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#globalStatement.
+    def exitGlobalStatement(self, ctx:nevermorecompilerParser.GlobalStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by nevermorecompilerParser#globalBody.
+    def enterGlobalBody(self, ctx:nevermorecompilerParser.GlobalBodyContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#globalBody.
+    def exitGlobalBody(self, ctx:nevermorecompilerParser.GlobalBodyContext):
+        pass
+
+
     # Enter a parse tree produced by nevermorecompilerParser#equation.
     def enterEquation(self, ctx:nevermorecompilerParser.EquationContext):
         pass

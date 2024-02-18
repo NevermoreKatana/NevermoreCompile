@@ -84,6 +84,21 @@ class nevermorecompilerVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by nevermorecompilerParser#printBody.
+    def visitPrintBody(self, ctx:nevermorecompilerParser.PrintBodyContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by nevermorecompilerParser#globalStatement.
+    def visitGlobalStatement(self, ctx:nevermorecompilerParser.GlobalStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by nevermorecompilerParser#globalBody.
+    def visitGlobalBody(self, ctx:nevermorecompilerParser.GlobalBodyContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by nevermorecompilerParser#equation.
     def visitEquation(self, ctx:nevermorecompilerParser.EquationContext):
         return self.visitChildren(ctx)

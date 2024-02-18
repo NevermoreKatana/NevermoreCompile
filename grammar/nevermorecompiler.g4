@@ -10,6 +10,7 @@ stat
     |forStatement
     |whileStatement
     |doWhileStatement
+    |globalStatement
 //    | functionStatement
     |NEWLINE
     ;
@@ -55,9 +56,17 @@ expr
     ;
 
 printState
-    :'print' LPAREN (expr | DIGIT ) RPAREN END_STATE
+    :'print' LPAREN printBody RPAREN END_STATE
+    ;
+printBody: ID
+    | INT
+    | DOUBLE
     ;
 
+globalStatement
+    : 'global:' (globalBody)* END_STATE
+    ;
+globalBody: type ':' ID;
 
 equation
    : expr op=relop expr

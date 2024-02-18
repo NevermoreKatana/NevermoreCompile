@@ -65,6 +65,8 @@ class ToLlvmCode:
     def evaluate_expression(self, expr):
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return expr['value']
+        elif expr['type'] == 'ID':
+            return self.variables[expr['value']]
         elif expr['type'] == 'DIV':
             left_value = self.evaluate_expression(expr['left'])
             right_value = self.evaluate_expression(expr['right'])
@@ -106,7 +108,17 @@ class ToLlvmCode:
 
     def choose_print_type(self, value, builder = None):
         builder = builder if builder else self.builder
+        if isinstance(value, ir.AllocaInstr):
+            value = f'%"{builder.load(value).name}"'
         builder.call(self.print_func, [self.format_str_loaded_int, ir.Constant(ir.IntType(32), value)])
+
+    def globalStatement(self, statement):
+        for item, value in statement.items():
+            if value == 'int':
+                int_type = ir.IntType(32)
+                global_var = ir.GlobalVariable(self.module, int_type, item)
+                global_var.initializer = ir.Constant(int_type, 0)
+                self.variables[item] = global_var
 
     def if_statement(self, item):
         if_statement = item['ifStatement']
@@ -380,6 +392,8 @@ class ToLlvmCode:
 
     def AST_bypass(self):
         for item in self.ast:
+            if 'globalStatement' in item:
+                self.globalStatement(item['globalStatement'])
 
             if 'stat' in item :
                 stat = item['stat']

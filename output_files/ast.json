@@ -1,139 +1,106 @@
 [
  {
-  "stat": {
-   "assignmentStatement": {
-    "type": "int",
-    "ID": "c",
-    "expr": [
-     {
-      "type": "INT",
-      "value": 10
-     }
-    ],
-    "END_STATE": ";"
-   }
+  "globalStatement": {
+   "z": "int"
   }
  },
  {
   "stat": {
    "assignmentStatement": {
     "type": "int",
-    "ID": "t",
+    "ID": "x",
     "expr": [
      {
-      "type": "INT",
-      "value": 15
-     }
-    ],
-    "END_STATE": ";"
-   }
-  }
- },
- {
-  "ifStatement": {
-   "condition": {
-    "left": {
-     "type": "INT",
-     "value": 1
-    },
-    "op": "<",
-    "right": {
-     "type": "INT",
-     "value": 2
-    }
-   },
-   "body": [
-    {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "INT",
-        "value": 1
-       },
-       "END_STATE": ";"
+      "type": "ADD",
+      "left": {
+       "type": "INT",
+       "value": 15
+      },
+      "right": {
+       "type": "INT",
+       "value": 15
       }
      }
+    ],
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "stat": {
+   "printStatement": {
+    "expr": {
+     "type": "ID",
+     "value": "x"
     },
-    {
-     "ifElseStatement": {
-      "condition": {
-       "left": {
-        "type": "INT",
-        "value": 15
-       },
-       "left_ID": "t",
-       "right_ID": "c",
-       "op": "<",
-       "right": {
-        "type": "INT",
-        "value": 10
-       }
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "stat": {
+   "assignmentStatement": {
+    "type": "int",
+    "ID": "x",
+    "expr": [
+     {
+      "type": "ADD",
+      "left": {
+       "type": "INT",
+       "value": 15
       },
-      "ifBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 2
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "elseBody": [
-       {
-        "ifStatement": {
-         "condition": {
-          "left": {
-           "type": "INT",
-           "value": 1
-          },
-          "op": "<",
-          "right": {
-           "type": "INT",
-           "value": 2
-          }
-         },
-         "body": [
-          {
-           "whileStatement": {
-            "condition": {
-             "left": {
-              "type": "INT",
-              "value": 10
-             },
-             "left_ID": "c",
-             "right_ID": "t",
-             "op": "<",
-             "right": {
-              "type": "INT",
-              "value": 15
-             }
-            },
-            "body": [
-             {
-              "stat": {
-               "printStatement": {
-                "expr": {
-                 "type": "INT",
-                 "value": 3
-                },
-                "END_STATE": ";"
-               }
-              }
-             }
-            ]
-           }
-          }
-         ]
-        }
-       }
-      ]
+      "right": {
+       "type": "INT",
+       "value": 25
+      }
      }
-    }
-   ]
+    ],
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "stat": {
+   "printStatement": {
+    "expr": {
+     "type": "ID",
+     "value": "x"
+    },
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "stat": {
+   "assignmentStatement": {
+    "type": "int",
+    "ID": "x",
+    "expr": [
+     {
+      "type": "MUL",
+      "left": {
+       "type": "INT",
+       "value": 200
+      },
+      "right": {
+       "type": "INT",
+       "value": 20
+      }
+     }
+    ],
+    "END_STATE": ";"
+   }
+  }
+ },
+ {
+  "stat": {
+   "printStatement": {
+    "expr": {
+     "type": "ID",
+     "value": "x"
+    },
+    "END_STATE": ";"
+   }
   }
  }
 ]

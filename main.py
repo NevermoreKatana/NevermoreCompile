@@ -42,6 +42,8 @@ class EvalVisitor(nevermorecompilerVisitor):
             return  self.visitWhileStatement(ctx.whileStatement())
         elif ctx.doWhileStatement():
             return self.visitDoWhileStatement(ctx.doWhileStatement())
+        elif ctx.globalStatement():
+            return self.visitGlobalStatement(ctx.globalStatement())
         # elif ctx.functionStatement():
         #     return self.visitFunctionStatement(ctx.functionStatement())
 
@@ -124,9 +126,16 @@ class EvalVisitor(nevermorecompilerVisitor):
     #
     #     return function_body
 
+    def visitPrintBody(self, ctx: nevermorecompilerParser.PrintBodyContext):
+        if ctx.ID():
+            return {"type": "ID", "value": ctx.ID().getText()}
+        elif ctx.INT():
+            return {"type": "INT", "value": int(ctx.INT().getText())}
+        elif ctx.DOUBLE():
+            return {"type": "DOUBLE", "value": float(ctx.DOUBLE().getText())}
 
     def visitPrintState(self, ctx: nevermorecompilerParser.PrintStateContext):
-        expr_result = self.visit(ctx.expr())
+        expr_result = self.visit(ctx.printBody())
         print_node = {
             "stat": {
                 "printStatement": {
@@ -137,6 +146,22 @@ class EvalVisitor(nevermorecompilerVisitor):
         }
         self.ast.append(print_node)
         return print_node
+
+    def visitGlobalStatement(self, ctx: nevermorecompilerParser.GlobalStatementContext):
+        variables = {}
+        for globalBody in ctx.globalBody():
+            variable_name = globalBody.ID().getText()
+            type_ = globalBody.type_().getText()
+            variables[variable_name] = type_
+            self.variables[variable_name] = {"type": type_, "value": None}
+
+
+        global_node = {
+            "globalStatement": variables
+        }
+
+        self.ast.append(global_node)
+        return global_node
 
     def visitIfElseStatement(self, ctx: nevermorecompilerParser.IfElseStatementContext):
         condition = self.visit(ctx.equation())
