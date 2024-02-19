@@ -57,17 +57,17 @@ class EvalVisitor(nevermorecompilerVisitor):
 
     def visitExpr(self, ctx: nevermorecompilerParser.ExprContext):
         # print(self.variables)
-
-        if ctx.INT():
+        if ctx.ID():
+            variable_name = ctx.ID().getText()
+            if variable_name in self.variables:
+                self.variables[variable_name]["value"]
+                return {"type": "VAR", "value": variable_name}
+            else:
+                raise ValueError(f"Variable '{variable_name}' is not defined.")
+        elif ctx.INT():
             return {"type": "INT", "value": int(ctx.INT().getText())}
         elif ctx.DOUBLE():
             return {"type": "DOUBLE", "value": float(ctx.DOUBLE().getText())}
-        elif ctx.ID():
-            variable_name = ctx.ID().getText()
-            if variable_name in self.variables:
-                return self.variables[variable_name]["value"]
-            else:
-                raise ValueError(f"Variable '{variable_name}' is not defined.")
         elif ctx.DIV():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
@@ -270,7 +270,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         while_node = {
             "doWhileStatement": {
                 "body": body,
-                "do": condition
+                "condition": condition
             }
         }
         self.ast.append(while_node)
@@ -310,12 +310,13 @@ class EvalVisitor(nevermorecompilerVisitor):
                 }
             }
         }
-
+    
         return assignment_node
 
 
 
     def visitAssignmentStatement(self, ctx: nevermorecompilerParser.AssignmentStatementContext):
+
         type_ = ctx.type_().getText()
         variable_name = ctx.ID().getText()
         value = self.visit(ctx.expr())
