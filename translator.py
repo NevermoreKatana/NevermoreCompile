@@ -11,7 +11,7 @@ class PrintFormatMixin:
 
         format_str_int = "%d\n"
         format_str_ptr_int = ir.GlobalVariable(self.module, ir.ArrayType(ir.IntType(8), len(format_str_int)),
-                                       name="format_str")
+                                       name="format_str_int")
         format_str_ptr_int.initializer = ir.Constant(ir.ArrayType(ir.IntType(8), len(format_str_int)),
                                              bytearray(format_str_int.encode()))
 
@@ -21,7 +21,7 @@ class PrintFormatMixin:
         self.format_str_loaded_int = format_str_loaded_int
         self.print_func = printf_func
         return
-
+    
 
 
 class TranslatorToLLVM(PrintFormatMixin):
@@ -29,12 +29,14 @@ class TranslatorToLLVM(PrintFormatMixin):
         self.module = ir.Module("nevermoreCompile")
         self.ast = None
         self.print_func = None
+        self.print_func_float = None
         self.builder = None
         self.format_str_loaded_int = None
-        self.format_str_loaded_str = None
+        self.format_str_loaded_float = None
         self.variables = {}
         self.functions = {}
         self.main_func = None   
+        
         
     def item_bypass(self, items:dict):
         for item in items:
@@ -71,11 +73,11 @@ class TranslatorToLLVM(PrintFormatMixin):
         block = main_func.append_basic_block(name="entry")
         builder = ir.IRBuilder(block)
         self.builder = builder
-
         super().__init__()
+
+        
     
     def evaluate_expression(self, expr):
-
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return ir.Constant(ir.IntType(32), expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
@@ -88,21 +90,41 @@ class TranslatorToLLVM(PrintFormatMixin):
     def execute_math_operation(self, expr):
         left_value = self.evaluate_expression(expr['left'])
         right_value = self.evaluate_expression(expr['right'])
+        
         if isinstance(left_value, ir.AllocaInstr) or isinstance(left_value, ir.GlobalVariable):
             left_value = self.builder.load(left_value)
         if isinstance(right_value, ir.AllocaInstr) or isinstance(right_value, ir.GlobalVariable):
             right_value = self.builder.load(right_value)
-        if expr['type'] == 'DIV':
-            return self.builder.udiv(left_value, right_value)
-        elif expr['type'] == 'MUL':
-            return self.builder.mul(left_value, right_value)
-        elif expr['type'] == 'ADD':
-            return self.builder.add(left_value, right_value)
-        elif expr['type'] == 'SUB':
-            return self.builder.sub(left_value, right_value)
-        else:
-            raise ValueError(f"Unsupported math operation: {expr['type']}")
         
+        if isinstance(left_value.type, ir.IntType) and isinstance(right_value.type, ir.IntType):
+        
+            if expr['type'] == 'DIV':
+                return self.builder.udiv(left_value, right_value)
+            elif expr['type'] == 'MUL':
+                return self.builder.mul(left_value, right_value)
+            elif expr['type'] == 'ADD':
+                return self.builder.add(left_value, right_value)
+            elif expr['type'] == 'SUB':
+                return self.builder.sub(left_value, right_value)
+            else:
+                raise ValueError(f"Unsupported math operation: {expr['type']}")
+        
+        elif isinstance(left_value.type, ir.FloatType) or isinstance(right_value.type, ir.FloatType):
+            if isinstance(left_value.type, ir.IntType):
+                left_value = self.builder.sitofp(left_value, ir.FloatType())
+            elif isinstance(right_value.type, ir.IntType):
+                right_value = self.builder.sitofp(right_value, ir.FloatType())
+                
+            if expr['type'] == 'DIV':
+                return self.builder.fdiv(left_value, right_value)
+            elif expr['type'] == 'MUL':
+                return self.builder.fmul(left_value, right_value)
+            elif expr['type'] == 'ADD':
+                return self.builder.fadd(left_value, right_value)
+            elif expr['type'] == 'SUB':
+                return self.builder.fsub(left_value, right_value)
+            else:
+                raise ValueError(f"Unsupported math operation: {expr['type']}")
     
         
         
@@ -112,17 +134,18 @@ class TranslatorToLLVM(PrintFormatMixin):
         var_name = assigment['ID']
         expr = assigment['expr'][0]
 
-        
-        
         value = self.evaluate_expression(expr)
 
-        
-        if var_name not in self.variables:
+
+
+        if var_name not in self.variables and assigment['type'] == 'int' or assigment['type'] == 'INT':
             var = self.builder.alloca(ir.IntType(32), name=var_name)
+            self.variables[var_name] = var
+        elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+            var = self.builder.alloca(ir.FloatType(), name=var_name)
             self.variables[var_name] = var
         else:
             var = self.variables[var_name]
-        
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             self.builder.store(self.builder.load(value), var)
         else:
@@ -140,19 +163,24 @@ class TranslatorToLLVM(PrintFormatMixin):
     
     def choose_print_type(self, value, builder = None):
         builder = builder if builder else self.builder
+        
         builder.call(self.print_func, [self.format_str_loaded_int, ir.Constant(ir.IntType(32), value)])
+        
 
     
     def print_statement(self, stat:dict):
         print_statement = stat['printStatement']
         expr = print_statement['expr']
-        print(expr)
+
         
         value = self.print_expr(expr)
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             value = f'%"{self.builder.load(value).name}"'
         
         self.choose_print_type(value, self.builder)
+            
+        
+        
         
     def while_statement(self, stat: dict):
         while_statement = stat['whileStatement']
@@ -370,6 +398,21 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
