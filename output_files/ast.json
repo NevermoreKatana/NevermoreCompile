@@ -1,25 +1,13 @@
 [
  {
-  "globalStatement": {
-   "z": "int"
-  }
- },
- {
   "stat": {
    "assignmentStatement": {
     "type": "int",
     "ID": "x",
     "expr": [
      {
-      "type": "ADD",
-      "left": {
-       "type": "INT",
-       "value": 15
-      },
-      "right": {
-       "type": "INT",
-       "value": 15
-      }
+      "type": "INT",
+      "value": 15
      }
     ],
     "END_STATE": ";"
@@ -28,31 +16,13 @@
  },
  {
   "stat": {
-   "printStatement": {
-    "expr": {
-     "type": "ID",
-     "value": "x"
-    },
-    "END_STATE": ";"
-   }
-  }
- },
- {
-  "stat": {
    "assignmentStatement": {
     "type": "int",
-    "ID": "x",
+    "ID": "i",
     "expr": [
      {
-      "type": "ADD",
-      "left": {
-       "type": "INT",
-       "value": 15
-      },
-      "right": {
-       "type": "INT",
-       "value": 25
-      }
+      "type": "INT",
+      "value": 0
      }
     ],
     "END_STATE": ";"
@@ -61,31 +31,13 @@
  },
  {
   "stat": {
-   "printStatement": {
-    "expr": {
-     "type": "ID",
-     "value": "x"
-    },
-    "END_STATE": ";"
-   }
-  }
- },
- {
-  "stat": {
    "assignmentStatement": {
     "type": "int",
-    "ID": "x",
+    "ID": "z",
     "expr": [
      {
-      "type": "MUL",
-      "left": {
-       "type": "INT",
-       "value": 200
-      },
-      "right": {
-       "type": "INT",
-       "value": 20
-      }
+      "type": "INT",
+      "value": 15
      }
     ],
     "END_STATE": ";"
@@ -93,14 +45,55 @@
   }
  },
  {
-  "stat": {
-   "printStatement": {
-    "expr": {
-     "type": "ID",
-     "value": "x"
+  "whileStatement": {
+   "condition": {
+    "left": {
+     "type": "VAR",
+     "value": "i"
     },
-    "END_STATE": ";"
-   }
+    "left_ID": "i",
+    "right_ID": "z",
+    "op": "<",
+    "right": {
+     "type": "VAR",
+     "value": "z"
+    }
+   },
+   "body": [
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "VAR",
+          "value": "x"
+         },
+         "right": {
+          "type": "INT",
+          "value": 1
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "x"
+       },
+       "END_STATE": ";"
+      }
+     }
+    }
+   ]
   }
  }
 ]
