@@ -88,9 +88,9 @@ class TranslatorToLLVM(PrintFormatMixin):
     def execute_math_operation(self, expr):
         left_value = self.evaluate_expression(expr['left'])
         right_value = self.evaluate_expression(expr['right'])
-        if isinstance(left_value, ir.AllocaInstr):
+        if isinstance(left_value, ir.AllocaInstr) or isinstance(left_value, ir.GlobalVariable):
             left_value = self.builder.load(left_value)
-        if isinstance(right_value, ir.AllocaInstr):
+        if isinstance(right_value, ir.AllocaInstr) or isinstance(right_value, ir.GlobalVariable):
             right_value = self.builder.load(right_value)
         if expr['type'] == 'DIV':
             return self.builder.udiv(left_value, right_value)
@@ -123,7 +123,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         else:
             var = self.variables[var_name]
         
-        if isinstance(value, ir.AllocaInstr):
+        if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             self.builder.store(self.builder.load(value), var)
         else:
             self.builder.store(value, var)
@@ -149,7 +149,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         print(expr)
         
         value = self.print_expr(expr)
-        if isinstance(value, ir.AllocaInstr):
+        if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             value = f'%"{self.builder.load(value).name}"'
         
         self.choose_print_type(value, self.builder)
@@ -327,6 +327,17 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         self.builder.position_at_start(end_block)
         
+        
+    
+    def global_variable_statement(self, stat: dict):
+        g_vars_statement = stat['globalStatement']
+        for item, value in g_vars_statement.items():
+            if value == 'int':
+                int_type = ir.IntType(32)
+                global_var = ir.GlobalVariable(self.module, int_type, item)
+                global_var.initializer = ir.Constant(int_type, 0)
+                self.variables[item] = global_var
+    
     
     def ast_bypass(self) -> None:
         for item in self.ast:
@@ -346,6 +357,8 @@ class TranslatorToLLVM(PrintFormatMixin):
                 self.if_statement(item) 
             elif 'ifElseStatement' in item:
                 self.if_else_statement(item)   
+            elif 'globalStatement' in item:
+                self.global_variable_statement(item)
             
         self.builder.ret_void()
 
@@ -357,5 +370,9 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
 
 

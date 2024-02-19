@@ -1,7 +1,11 @@
-int x = 15;
+global: int:x
+    ;
+int x = 0;
+
 int i = 0;
-int z = 15;
+int z = 5;
 while (i < z) {
     int x = x + 1;
-    print(x);
+    print(123);
 };
+print(x);

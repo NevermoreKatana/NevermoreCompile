@@ -1,5 +1,10 @@
 [
  {
+  "globalStatement": {
+   "x": "int"
+  }
+ },
+ {
   "stat": {
    "assignmentStatement": {
     "type": "int",
@@ -7,7 +12,7 @@
     "expr": [
      {
       "type": "INT",
-      "value": 15
+      "value": 0
      }
     ],
     "END_STATE": ";"
@@ -37,7 +42,7 @@
     "expr": [
      {
       "type": "INT",
-      "value": 15
+      "value": 5
      }
     ],
     "END_STATE": ";"
@@ -86,14 +91,25 @@
      "stat": {
       "printStatement": {
        "expr": {
-        "type": "ID",
-        "value": "x"
+        "type": "INT",
+        "value": 123
        },
        "END_STATE": ";"
       }
      }
     }
    ]
+  }
+ },
+ {
+  "stat": {
+   "printStatement": {
+    "expr": {
+     "type": "ID",
+     "value": "x"
+    },
+    "END_STATE": ";"
+   }
   }
  }
 ]
