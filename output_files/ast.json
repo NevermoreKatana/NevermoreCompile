@@ -5,21 +5,6 @@
    "type": "void",
    "body": [
     {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "x",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 15
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
      "functionStatement": {
       "name": "secondary",
       "type": "void",
@@ -28,18 +13,11 @@
         "stat": {
          "assignmentStatement": {
           "type": "int",
-          "ID": "x",
+          "ID": "y",
           "expr": [
            {
-            "type": "MUL",
-            "left": {
-             "type": "INT",
-             "value": 15
-            },
-            "right": {
-             "type": "INT",
-             "value": 15
-            }
+            "type": "INT",
+            "value": 23
            }
           ],
           "END_STATE": ";"
@@ -53,8 +31,15 @@
           "ID": "y",
           "expr": [
            {
-            "type": "INT",
-            "value": 123123
+            "type": "MUL",
+            "left": {
+             "type": "VAR",
+             "value": "y"
+            },
+            "right": {
+             "type": "VAR",
+             "value": "y"
+            }
            }
           ],
           "END_STATE": ";"
@@ -65,8 +50,8 @@
         "stat": {
          "printStatement": {
           "expr": {
-           "type": "ID",
-           "value": "y"
+           "type": "INT",
+           "value": 123
           },
           "END_STATE": ";"
          }
@@ -78,10 +63,32 @@
     },
     {
      "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "y",
+       "expr": [
+        {
+         "type": "MUL",
+         "left": {
+          "type": "VAR",
+          "value": "y"
+         },
+         "right": {
+          "type": "VAR",
+          "value": "y"
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
       "printStatement": {
        "expr": {
         "type": "ID",
-        "value": "x"
+        "value": "y"
        },
        "END_STATE": ";"
       }
@@ -93,7 +100,7 @@
  },
  {
   "globalStatement": {
-   "x": "int"
+   "y": "int"
   }
  }
 ]

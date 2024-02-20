@@ -15,15 +15,14 @@ class PrintFormatMixin:
         format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))  
         builder.store(format_str_const, format_str_ptr)  
         
-        
-        value_ptr = builder.bitcast(value, self.int32_type)
+        if isinstance(value, int):
+            value_ptr = ir.Constant(ir.IntType(32), value)
+        else:
+            value_ptr = builder.bitcast(value, self.int32_type)
         
         
         builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int32_ptr_type), value_ptr])
 
-
-    
-        
         
 
 
@@ -110,7 +109,10 @@ class TranslatorToLLVM(PrintFormatMixin):
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return ir.Constant(ir.IntType(32), expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
-            return self.variables[expr['value']]
+            try:
+                return self.variables[expr['value']]['var']
+            except:
+                return self.variables[expr['value']]
         elif expr['type'] in ['DIV', 'MUL', 'ADD', 'SUB']:
             return self.execute_math_operation(expr, builder)
         else:
@@ -141,7 +143,8 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         elif isinstance(left_value.type, ir.FloatType) or isinstance(right_value.type, ir.FloatType):
             if isinstance(left_value.type, ir.IntType):
-                left_value =builder.sitofp(left_value, ir.FloatType())
+                left_value = builder.sitofp(left_value, ir.FloatType())
+            
             elif isinstance(right_value.type, ir.IntType):
                 right_value = builder.sitofp(right_value, ir.FloatType())
                 
@@ -165,16 +168,28 @@ class TranslatorToLLVM(PrintFormatMixin):
         var_name = assigment['ID']
         expr = assigment['expr'][0]
 
+        # print(self.variables)
+        
         value = self.evaluate_expression(expr, builder)
-
-
 
         if var_name not in self.variables and assigment['type'] == 'int' or assigment['type'] == 'INT':
             var = builder.alloca(ir.IntType(32), name=var_name)
-            self.variables[var_name] = var
+            self.variables[var_name] = {"var":var, "func": builder.function.name}
+            
         elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
             var = builder.alloca(ir.FloatType(), name=var_name)
-            self.variables[var_name] = var
+            self.variables[var_name] = {"var":var, "func": builder.function.name}
+            
+        if not isinstance(self.variables[var_name], ir.GlobalVariable): 
+            
+            if var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
+                var = builder.alloca(ir.IntType(32), name=var_name)
+                self.variables[var_name] = {"var":var, "func": builder.function.name}
+                
+            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+                var = builder.alloca(ir.IntType(32), name=var_name)
+                self.variables[var_name] = {"var":var, "func": builder.function.name}
+            
         else:
             var = self.variables[var_name]
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
@@ -184,11 +199,19 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         
         
-    def print_expr(self, expr: dict):
+    def print_expr(self, expr: dict, builder= None):
+        builder = builder if builder else self.builder
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return int(expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
-            return self.variables[expr['value']]
+            if not isinstance(self.variables[expr['value']], ir.GlobalVariable):
+                if expr['value'] in self.variables and builder.function.name != self.variables[expr['value']]['func']: 
+                    raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}, ")
+            else:
+                try:
+                    return self.variables[expr['value']]['var']
+                except:
+                    return self.variables[expr['value']]
         else:
             raise ValueError(f"Unsupported expression type: {expr['type']}")
     
@@ -204,7 +227,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         print_statement = stat['printStatement']
         expr = print_statement['expr']
         
-        value = self.print_expr(expr)
+        value = self.print_expr(expr, builder)
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             value = builder.load(value)
         
@@ -444,4 +467,13 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
+
+
+
+
+
 
