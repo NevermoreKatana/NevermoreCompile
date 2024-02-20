@@ -9,17 +9,16 @@ class PrintFormatMixin:
         self.printf_func = ir.Function(module, printf_type, "printf")
 
     def create_int32_print_function(self, builder, value):
-        # Форматирование строки для вывода
-        format_str = "%d\0"  # Нуль-терминированная строка для %d
+        format_str = "%d\n\0"  
         format_str_array = ir.ArrayType(ir.IntType(8), len(format_str))
-        format_str_ptr = builder.alloca(format_str_array)  # Выделяем память под строку
-        format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))  # Создаем константную строку
-        builder.store(format_str_const, format_str_ptr)  # Сохраняем строку в выделенной памяти
+        format_str_ptr = builder.alloca(format_str_array) 
+        format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))  
+        builder.store(format_str_const, format_str_ptr)  
         
-        # Преобразуем значение int32 в указатель на int8
+        
         value_ptr = builder.bitcast(value, self.int32_type)
         
-        # Передача адреса строки в качестве аргумента функции printf
+        
         builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int32_ptr_type), value_ptr])
 
 
