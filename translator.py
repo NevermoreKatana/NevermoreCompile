@@ -65,7 +65,7 @@ class TranslatorToLLVM(PrintFormatMixin):
                 self.if_else_statement(item, builder)   
             elif 'functionStatement' in item:
                 if item['functionStatement']['name'] not in self.functions:
-                    self.function_statement(item, builder)
+                    self.function_statement(item)
         
         
     def json_reader(self, input_file: str = "output_files/ast.json") -> None:
@@ -168,28 +168,27 @@ class TranslatorToLLVM(PrintFormatMixin):
         var_name = assigment['ID']
         expr = assigment['expr'][0]
 
-        # print(self.variables)
-        
         value = self.evaluate_expression(expr, builder)
-
+        
         if var_name not in self.variables and assigment['type'] == 'int' or assigment['type'] == 'INT':
             var = builder.alloca(ir.IntType(32), name=var_name)
             self.variables[var_name] = {"var":var, "func": builder.function.name}
             
+            
         elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
             var = builder.alloca(ir.FloatType(), name=var_name)
             self.variables[var_name] = {"var":var, "func": builder.function.name}
+        
+        elif not isinstance(self.variables[var_name], ir.GlobalVariable): 
             
-        if not isinstance(self.variables[var_name], ir.GlobalVariable): 
-            
-            if var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
+            if var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
                 var = builder.alloca(ir.IntType(32), name=var_name)
                 self.variables[var_name] = {"var":var, "func": builder.function.name}
                 
-            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+            elif var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
                 var = builder.alloca(ir.IntType(32), name=var_name)
                 self.variables[var_name] = {"var":var, "func": builder.function.name}
-            
+                
         else:
             var = self.variables[var_name]
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
@@ -467,6 +466,8 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
 
 
 

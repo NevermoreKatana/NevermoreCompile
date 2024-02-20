@@ -47,60 +47,31 @@
         }
        },
        {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 123
-          },
-          "END_STATE": ";"
-         }
+        "functionStatement": {
+         "name": "third",
+         "type": "void",
+         "body": [
+          {
+           "stat": {
+            "printStatement": {
+             "expr": {
+              "type": "ID",
+              "value": "y"
+             },
+             "END_STATE": ";"
+            }
+           }
+          }
+         ],
+         "END_STATE": ";"
         }
        }
       ],
       "END_STATE": ";"
      }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "y",
-       "expr": [
-        {
-         "type": "MUL",
-         "left": {
-          "type": "VAR",
-          "value": "y"
-         },
-         "right": {
-          "type": "VAR",
-          "value": "y"
-         }
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
-        "value": "y"
-       },
-       "END_STATE": ";"
-      }
-     }
     }
    ],
    "END_STATE": ";"
-  }
- },
- {
-  "globalStatement": {
-   "y": "int"
   }
  }
 ]

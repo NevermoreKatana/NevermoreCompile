@@ -1,10 +1,9 @@
-global: int:y;
 void main(){
     void secondary(){
         int y = 23;
         int y = y*y;
-        print(123);
+        void third(){
+          print(y);
+        };
     };
-    int y = y*y;
-  print(y);
 };
