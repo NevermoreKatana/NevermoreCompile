@@ -4,6 +4,8 @@ void main(){
 
     void secondary(){
         int x = 15*15;
+        int y = 123123;
+        print(y);
     };
     print(x);
 };

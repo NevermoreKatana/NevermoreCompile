@@ -2,26 +2,30 @@ import llvmlite.ir as ir
 import json
 
 class PrintFormatMixin:
-    def __init__(self) -> None:
-        self.g_const_print_int_format()
+    def __init__(self, module) -> None:
+        self.int32_type = ir.IntType(32)
+        self.int32_ptr_type = self.int32_type.as_pointer()
+        printf_type = ir.FunctionType(ir.IntType(32), [self.int32_ptr_type], var_arg=True)
+        self.printf_func = ir.Function(module, printf_type, "printf")
 
-    def g_const_print_int_format(self):
-        printf_func_type = ir.FunctionType(ir.IntType(32), [ir.IntType(8).as_pointer()], var_arg=True)
-        printf_func = ir.Function(self.module, printf_func_type, name="printf")
+    def create_int32_print_function(self, builder, value):
+        # Форматирование строки для вывода
+        format_str = "%d\0"  # Нуль-терминированная строка для %d
+        format_str_array = ir.ArrayType(ir.IntType(8), len(format_str))
+        format_str_ptr = builder.alloca(format_str_array)  # Выделяем память под строку
+        format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))  # Создаем константную строку
+        builder.store(format_str_const, format_str_ptr)  # Сохраняем строку в выделенной памяти
+        
+        # Преобразуем значение int32 в указатель на int8
+        value_ptr = builder.bitcast(value, self.int32_type)
+        
+        # Передача адреса строки в качестве аргумента функции printf
+        builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int32_ptr_type), value_ptr])
 
-        format_str_int = "%d\n"
-        format_str_ptr_int = ir.GlobalVariable(self.module, ir.ArrayType(ir.IntType(8), len(format_str_int)),
-                                       name="format_str_int")
-        format_str_ptr_int.initializer = ir.Constant(ir.ArrayType(ir.IntType(8), len(format_str_int)),
-                                             bytearray(format_str_int.encode()))
 
-        format_str_loaded_int = self.builder.gep(format_str_ptr_int, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), 0)])
-        format_str_loaded_int = self.builder.bitcast(format_str_ptr_int, ir.IntType(8).as_pointer())
-
-        self.format_str_loaded_int = format_str_loaded_int
-        self.print_func = printf_func
-        return
     
+        
+        
 
 
 class TranslatorToLLVM(PrintFormatMixin):
@@ -96,7 +100,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         builder = ir.IRBuilder(block)
         self.builder = builder
         self.functions[func_name] = builder
-        super().__init__()
+        super().__init__(self.module)
         if global_stat:
             self.global_variable_statement(global_stat)
 
@@ -192,7 +196,7 @@ class TranslatorToLLVM(PrintFormatMixin):
     def choose_print_type(self, value, builder = None):
         builder = builder if builder else self.builder
         
-        builder.call(self.print_func, [self.format_str_loaded_int, ir.Constant(ir.IntType(32), value)])
+        self.create_int32_print_function(builder, value)
         
 
     
@@ -203,7 +207,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         value = self.print_expr(expr)
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
-            value = f'%"{builder.load(value).name}"'
+            value = builder.load(value)
         
         self.choose_print_type(value, builder)
             

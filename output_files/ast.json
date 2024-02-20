@@ -45,6 +45,32 @@
           "END_STATE": ";"
          }
         }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "y",
+          "expr": [
+           {
+            "type": "INT",
+            "value": 123123
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "y"
+          },
+          "END_STATE": ";"
+         }
+        }
        }
       ],
       "END_STATE": ";"

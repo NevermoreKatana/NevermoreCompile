@@ -5,23 +5,30 @@ target datalayout = ""
 define void @"main"()
 {
 entry.main:
-  %".2" = getelementptr [3 x i8], [3 x i8]* @"format_str_int", i32 0, i32 0
-  %".3" = bitcast [3 x i8]* @"format_str_int" to i8*
   store i32 15, i32* @"x"
   call void @"secondary"()
-  %".6" = load i32, i32* @"x"
-  %".7" = call i32 (i8*, ...) @"printf"(i8* %".3", i32 %".6")
+  %".4" = load i32, i32* @"x"
+  %".5" = alloca [3 x i8]
+  store [3 x i8] c"%d\00", [3 x i8]* %".5"
+  %".7" = bitcast [3 x i8]* %".5" to i32*
+  %".8" = call i32 (i32*, ...) @"printf"(i32* %".7", i32 %".4")
   ret void
 }
 
-declare i32 @"printf"(i8* %".1", ...)
+declare i32 @"printf"(i32* %".1", ...)
 
-@"format_str_int" = global [3 x i8] c"%d\0a"
 @"x" = global i32 0
 define void @"secondary"()
 {
 entry:
   %".2" = mul i32 15, 15
   store i32 %".2", i32* @"x"
+  %"y" = alloca i32
+  store i32 123123, i32* %"y"
+  %".5" = load i32, i32* %"y"
+  %".6" = alloca [3 x i8]
+  store [3 x i8] c"%d\00", [3 x i8]* %".6"
+  %".8" = bitcast [3 x i8]* %".6" to i32*
+  %".9" = call i32 (i32*, ...) @"printf"(i32* %".8", i32 %".5")
   ret void
 }
