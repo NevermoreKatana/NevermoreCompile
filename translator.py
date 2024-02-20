@@ -181,6 +181,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         elif not isinstance(self.variables[var_name], ir.GlobalVariable): 
             
+            
             if var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
                 var = builder.alloca(ir.IntType(32), name=var_name)
                 self.variables[var_name] = {"var":var, "func": builder.function.name}
@@ -188,9 +189,15 @@ class TranslatorToLLVM(PrintFormatMixin):
             elif var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
                 var = builder.alloca(ir.IntType(32), name=var_name)
                 self.variables[var_name] = {"var":var, "func": builder.function.name}
+            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
+                raise ValueError(f"{var_name} не сущетсвует в области")
+                
+            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+                raise ValueError(f"{var_name} не сущетсвует в области")
                 
         else:
             var = self.variables[var_name]
+        
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
@@ -205,7 +212,12 @@ class TranslatorToLLVM(PrintFormatMixin):
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
             if not isinstance(self.variables[expr['value']], ir.GlobalVariable):
                 if expr['value'] in self.variables and builder.function.name != self.variables[expr['value']]['func']: 
-                    raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}, ")
+                    raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}")
+                else:
+                    try:
+                        return self.variables[expr['value']]['var']
+                    except:
+                        return self.variables[expr['value']]
             else:
                 try:
                     return self.variables[expr['value']]['var']
@@ -466,6 +478,7 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
 
 
 

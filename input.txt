@@ -2,8 +2,8 @@ void main(){
     void secondary(){
         int y = 23;
         int y = y*y;
-        void third(){
-          print(y);
-        };
+        print(y);
     };
+  int y = 0;
+  print(y);
 };
