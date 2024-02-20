@@ -102,13 +102,14 @@ class TranslatorToLLVM(PrintFormatMixin):
 
         
     
-    def evaluate_expression(self, expr):
+    def evaluate_expression(self, expr, builder = None):
+        builder = builder if builder else self.builder
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return ir.Constant(ir.IntType(32), expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
             return self.variables[expr['value']]
         elif expr['type'] in ['DIV', 'MUL', 'ADD', 'SUB']:
-            return self.execute_math_operation(expr)
+            return self.execute_math_operation(expr, builder)
         else:
             raise ValueError(f"Unsupported expression type: {expr['type']}")
 
@@ -161,7 +162,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         var_name = assigment['ID']
         expr = assigment['expr'][0]
 
-        value = self.evaluate_expression(expr)
+        value = self.evaluate_expression(expr, builder)
 
 
 

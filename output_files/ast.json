@@ -6,10 +6,56 @@
    "body": [
     {
      "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 15
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "secondary",
+      "type": "void",
+      "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "x",
+          "expr": [
+           {
+            "type": "MUL",
+            "left": {
+             "type": "INT",
+             "value": 15
+            },
+            "right": {
+             "type": "INT",
+             "value": 15
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "stat": {
       "printStatement": {
        "expr": {
         "type": "INT",
-        "value": 77777
+        "value": 15
        },
        "END_STATE": ";"
       }
@@ -17,6 +63,11 @@
     }
    ],
    "END_STATE": ";"
+  }
+ },
+ {
+  "globalStatement": {
+   "x": "int"
   }
  }
 ]

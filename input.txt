@@ -1,3 +1,9 @@
+global: int:x
 void main(){
-    print(77777);
+    int x = 15;
+
+    void secondary(){
+        int x = 15*15;
+    };
+    print(15);
 };
