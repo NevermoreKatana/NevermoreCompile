@@ -141,6 +141,7 @@ class EvalVisitor(nevermorecompilerVisitor):
 
     def visitPrintState(self, ctx: nevermorecompilerParser.PrintStateContext):
         expr_result = self.visit(ctx.printBody())
+
         print_node = {
             "stat": {
                 "printStatement": {

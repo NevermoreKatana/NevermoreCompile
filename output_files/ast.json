@@ -54,8 +54,8 @@
      "stat": {
       "printStatement": {
        "expr": {
-        "type": "INT",
-        "value": 15
+        "type": "ID",
+        "value": "x"
        },
        "END_STATE": ";"
       }

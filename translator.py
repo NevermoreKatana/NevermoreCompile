@@ -200,7 +200,6 @@ class TranslatorToLLVM(PrintFormatMixin):
         builder = builder if builder else self.builder
         print_statement = stat['printStatement']
         expr = print_statement['expr']
-
         
         value = self.print_expr(expr)
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
@@ -442,3 +441,4 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+

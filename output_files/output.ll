@@ -9,7 +9,8 @@ entry.main:
   %".3" = bitcast [3 x i8]* @"format_str_int" to i8*
   store i32 15, i32* @"x"
   call void @"secondary"()
-  %".6" = call i32 (i8*, ...) @"printf"(i8* %".3", i32 15)
+  %".6" = load i32, i32* @"x"
+  %".7" = call i32 (i8*, ...) @"printf"(i8* %".3", i32 %".6")
   ret void
 }
 
