@@ -44,19 +44,22 @@ class EvalVisitor(nevermorecompilerVisitor):
             return self.visitDoWhileStatement(ctx.doWhileStatement())
         elif ctx.globalStatement():
             return self.visitGlobalStatement(ctx.globalStatement())
-        # elif ctx.functionStatement():
-        #     return self.visitFunctionStatement(ctx.functionStatement())
+        elif ctx.functionStatement():
+            return self.visitFunctionStatement(ctx.functionStatement())
 
 
-    def visitProg(self, ctx: nevermorecompilerParser.ProgContext):
-        for child in ctx.stat():
+    def visitProg(self, ctx: nevermorecompilerParser.ProgContext):               
+        for child in ctx.functionStatement():
             ast_node = self.visit(child)
             if ast_node not in self.ast:
                 self.ast.append(ast_node)
+        if ctx.globalStatement() is not None:
+            global_ast_node = self.visit(ctx.globalStatement())
+            if global_ast_node not in self.ast:
+                self.ast.append(global_ast_node)
         return json.dumps(self.ast)
 
     def visitExpr(self, ctx: nevermorecompilerParser.ExprContext):
-        # print(self.variables)
         if ctx.ID():
             variable_name = ctx.ID().getText()
             if variable_name in self.variables:
@@ -103,28 +106,30 @@ class EvalVisitor(nevermorecompilerVisitor):
 
         return self.visitChildren(ctx)
 
-    # def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
-    #     fucn_name = ctx.functionName().getText()
-    #     func_type = ctx.funcType().getText()
-    #     function_body = []
-    #
-    #     for stat_ctx in ctx.functionBody().stat():
-    #         body_node = self.visit(stat_ctx)
-    #         if body_node in self.ast:
-    #             self.ast.remove(body_node)
-    #         if body_node:
-    #             function_body.append(body_node)
-    #
-    #     function_body = {
-    #             "functionStatement": {
-    #                 "name": fucn_name,
-    #                 "type": func_type,
-    #                 "body": function_body,
-    #                 "END_STATE": ";"
-    #             }
-    #     }
-    #
-    #     return function_body
+
+
+    def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
+        fucn_name = ctx.functionName().getText()
+        func_type = ctx.funcType().getText()
+        function_body = []
+    
+        for stat_ctx in ctx.functionBody().stat():
+            body_node = self.visit(stat_ctx)
+            if body_node in self.ast:
+                self.ast.remove(body_node)
+            if body_node:
+                function_body.append(body_node)
+    
+        function_body = {
+                "functionStatement": {
+                    "name": fucn_name,
+                    "type": func_type,
+                    "body": function_body,
+                    "END_STATE": ";"
+                }
+        }
+        
+        return function_body
 
     def visitPrintBody(self, ctx: nevermorecompilerParser.PrintBodyContext):
         if ctx.ID():
@@ -355,4 +360,4 @@ if __name__ == '__main__':
     with open('output_files/ast.json', 'w') as f:
         f.write(json.dumps(json.loads(ast), indent=1))
     print('AST построено')
-
+    

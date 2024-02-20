@@ -2,7 +2,8 @@
 grammar nevermorecompiler;
 
 //Программа состоит из 0 или более операторов (Parser Rule)
-prog: stat* ;
+prog: (globalStatement?  (functionStatement)*) EOF ;
+
 
 // Доступные операторы
 stat
@@ -14,7 +15,7 @@ stat
     |whileStatement
     |doWhileStatement
     |globalStatement
-//    | functionStatement
+    |functionStatement
     |NEWLINE
     ;
 
@@ -83,6 +84,17 @@ type
     | 'double'
     ;
 
+functionStatement
+   : funcType functionName LPAREN RPAREN RCORNER functionBody LCORNER END_STATE
+   ;
+
+functionBody: (stat)*;
+
+functionName: ID;
+
+funcType: type
+   | 'void'
+   ;
 
 // Идентификатор (начинается с буквы, может содержать буквы и цифры)(Lexer Token)
 ID: LETTER DIGIT*;
@@ -130,4 +142,3 @@ WS: [ \n\t\r] -> skip;
 
 //Новая линия(Lexer Token)
 NEWLINE:'\r'? '\n' ;
-

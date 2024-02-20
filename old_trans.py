@@ -210,7 +210,6 @@ class ToLlvmCode:
 
         self.builder.position_at_end(loop_body_block)
 
-        # Здесь можно добавить инструкции, которые должны выполняться после тела цикла
 
         inc_i = self.builder.add(self.builder.load(self.variables[left_id]), ir.Constant(ir.IntType(32), 1))
         self.builder.store(inc_i, self.variables[left_id])

@@ -119,5 +119,25 @@ class nevermorecompilerVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by nevermorecompilerParser#functionStatement.
+    def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by nevermorecompilerParser#functionBody.
+    def visitFunctionBody(self, ctx:nevermorecompilerParser.FunctionBodyContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by nevermorecompilerParser#functionName.
+    def visitFunctionName(self, ctx:nevermorecompilerParser.FunctionNameContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by nevermorecompilerParser#funcType.
+    def visitFuncType(self, ctx:nevermorecompilerParser.FuncTypeContext):
+        return self.visitChildren(ctx)
+
+
 
 del nevermorecompilerParser

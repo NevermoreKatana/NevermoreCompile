@@ -1,13 +1,22 @@
 [
  {
-  "stat": {
-   "printStatement": {
-    "expr": {
-     "type": "INT",
-     "value": 12
-    },
-    "END_STATE": ";"
-   }
+  "functionStatement": {
+   "name": "main",
+   "type": "void",
+   "body": [
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "INT",
+        "value": 77777
+       },
+       "END_STATE": ";"
+      }
+     }
+    }
+   ],
+   "END_STATE": ";"
   }
  }
 ]

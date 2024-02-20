@@ -25,6 +25,10 @@ class PrintFormatMixin:
 
 
 class TranslatorToLLVM(PrintFormatMixin):
+    choose_type_entry = {
+        "void": ir.VoidType(),
+        "int": ir.IntType(32)
+        }
     def __init__(self):
         self.module = ir.Module("nevermoreCompile")
         self.ast = None
@@ -38,24 +42,28 @@ class TranslatorToLLVM(PrintFormatMixin):
         self.main_func = None   
         
         
-    def item_bypass(self, items:dict):
+    def item_bypass(self, items:dict, builder = None):
+        builder = builder if builder else self.builder
         for item in items:
             if 'stat' in item:
                 stat = item['stat']
                 if 'assignmentStatement' in stat:
-                    self.assign_statement(stat)
+                    self.assign_statement(stat, builder)
                 elif 'printStatement' in stat:
-                    self.print_statement(stat)
+                    self.print_statement(stat, builder)
             elif 'whileStatement' in item:
-                self.while_statement(item)
+                self.while_statement(item,builder)
             elif 'doWhileStatement' in item:
-                self.do_while_statement(item)
+                self.do_while_statement(item, builder)
             elif 'forStatement' in item:
-                self.for_statement(item)
+                self.for_statement(item,builder)
             elif 'ifStatement' in item:
-                self.if_statement(item) 
+                self.if_statement(item, builder) 
             elif 'ifElseStatement' in item:
-                self.if_else_statement(item)   
+                self.if_else_statement(item, builder)   
+            elif 'functionStatement' in item:
+                if item['functionStatement']['name'] not in self.functions:
+                    self.function_statement(item, builder)
         
         
     def json_reader(self, input_file: str = "output_files/ast.json") -> None:
@@ -65,15 +73,32 @@ class TranslatorToLLVM(PrintFormatMixin):
     def ll_writer(self, output_file: str = "output_files/output.ll") -> None:
         with open(output_file, "w") as f:
             f.write(str(self.module))
-            
+    
+    
+    
     def builder_init(self) -> None:
-        main_func_type = ir.FunctionType(ir.VoidType(), [])
-        main_func = ir.Function(self.module, main_func_type, name="main")
+        try:
+            global_stat = self.ast[1]
+        except:
+            global_stat = None
+        if self.ast[0]['functionStatement']['name'] == "main":
+            func_name = self.ast[0]['functionStatement']['name']
+            func_type = self.choose_type_entry[self.ast[0]['functionStatement']["type"]]
+            self.ast = self.ast[0]['functionStatement']['body']
+        else:
+            func_name = 'main'
+            func_type = ir.VoidType()
+            
+        main_func_type = ir.FunctionType(func_type, [])
+        main_func = ir.Function(self.module, main_func_type, name=func_name)
         self.main_func = main_func
-        block = main_func.append_basic_block(name="entry")
+        block = main_func.append_basic_block(name=f"entry.{func_name}")
         builder = ir.IRBuilder(block)
         self.builder = builder
+        self.functions[func_name] = builder
         super().__init__()
+        if global_stat:
+            self.global_variable_statement(global_stat)
 
         
     
@@ -87,49 +112,51 @@ class TranslatorToLLVM(PrintFormatMixin):
         else:
             raise ValueError(f"Unsupported expression type: {expr['type']}")
 
-    def execute_math_operation(self, expr):
+    def execute_math_operation(self, expr, builder = None):
+        builder = builder if builder else self.builder
         left_value = self.evaluate_expression(expr['left'])
         right_value = self.evaluate_expression(expr['right'])
         
         if isinstance(left_value, ir.AllocaInstr) or isinstance(left_value, ir.GlobalVariable):
-            left_value = self.builder.load(left_value)
+            left_value = builder.load(left_value)
         if isinstance(right_value, ir.AllocaInstr) or isinstance(right_value, ir.GlobalVariable):
-            right_value = self.builder.load(right_value)
+            right_value = builder.load(right_value)
         
         if isinstance(left_value.type, ir.IntType) and isinstance(right_value.type, ir.IntType):
         
             if expr['type'] == 'DIV':
-                return self.builder.udiv(left_value, right_value)
+                return builder.udiv(left_value, right_value)
             elif expr['type'] == 'MUL':
-                return self.builder.mul(left_value, right_value)
+                return builder.mul(left_value, right_value)
             elif expr['type'] == 'ADD':
-                return self.builder.add(left_value, right_value)
+                return builder.add(left_value, right_value)
             elif expr['type'] == 'SUB':
-                return self.builder.sub(left_value, right_value)
+                return builder.sub(left_value, right_value)
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
         
         elif isinstance(left_value.type, ir.FloatType) or isinstance(right_value.type, ir.FloatType):
             if isinstance(left_value.type, ir.IntType):
-                left_value = self.builder.sitofp(left_value, ir.FloatType())
+                left_value =builder.sitofp(left_value, ir.FloatType())
             elif isinstance(right_value.type, ir.IntType):
-                right_value = self.builder.sitofp(right_value, ir.FloatType())
+                right_value = builder.sitofp(right_value, ir.FloatType())
                 
             if expr['type'] == 'DIV':
-                return self.builder.fdiv(left_value, right_value)
+                return builder.fdiv(left_value, right_value)
             elif expr['type'] == 'MUL':
-                return self.builder.fmul(left_value, right_value)
+                return builder.fmul(left_value, right_value)
             elif expr['type'] == 'ADD':
-                return self.builder.fadd(left_value, right_value)
+                return builder.fadd(left_value, right_value)
             elif expr['type'] == 'SUB':
-                return self.builder.fsub(left_value, right_value)
+                return builder.fsub(left_value, right_value)
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
     
         
         
     
-    def assign_statement(self, stat:dict):
+    def assign_statement(self, stat:dict, builder = None):
+        builder = builder if builder else self.builder
         assigment = stat['assignmentStatement']
         var_name = assigment['ID']
         expr = assigment['expr'][0]
@@ -139,17 +166,17 @@ class TranslatorToLLVM(PrintFormatMixin):
 
 
         if var_name not in self.variables and assigment['type'] == 'int' or assigment['type'] == 'INT':
-            var = self.builder.alloca(ir.IntType(32), name=var_name)
+            var = builder.alloca(ir.IntType(32), name=var_name)
             self.variables[var_name] = var
         elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
-            var = self.builder.alloca(ir.FloatType(), name=var_name)
+            var = builder.alloca(ir.FloatType(), name=var_name)
             self.variables[var_name] = var
         else:
             var = self.variables[var_name]
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
-            self.builder.store(self.builder.load(value), var)
+            builder.store(builder.load(value), var)
         else:
-            self.builder.store(value, var)
+            builder.store(value, var)
         
         
         
@@ -168,21 +195,23 @@ class TranslatorToLLVM(PrintFormatMixin):
         
 
     
-    def print_statement(self, stat:dict):
+    def print_statement(self, stat:dict, builder = None):
+        builder = builder if builder else self.builder
         print_statement = stat['printStatement']
         expr = print_statement['expr']
 
         
         value = self.print_expr(expr)
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
-            value = f'%"{self.builder.load(value).name}"'
+            value = f'%"{builder.load(value).name}"'
         
-        self.choose_print_type(value, self.builder)
+        self.choose_print_type(value, builder)
             
         
         
         
-    def while_statement(self, stat: dict):
+    def while_statement(self, stat: dict, builder = None):
+        builder = builder if builder else self.builder
         while_statement = stat['whileStatement']
         condition = while_statement['condition']
         while_body = while_statement['body']
@@ -194,28 +223,29 @@ class TranslatorToLLVM(PrintFormatMixin):
         while_block = self.main_func.append_basic_block(name="while")
         end_while_block = self.main_func.append_basic_block(name="end_while")
         
-        while_cond = self.builder.icmp_unsigned(op, 
-                                                self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                 self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        while_cond = builder.icmp_unsigned(op, 
+                                                builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                                 builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
         
-        self.builder.cbranch(while_cond, while_block, end_while_block)
+        builder.cbranch(while_cond, while_block, end_while_block)
         
-        self.builder.position_at_end(while_block)
+        builder.position_at_end(while_block)
         self.item_bypass(while_body)
         
-        auto_inc = self.builder.add(self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+        auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
                                     ir.Constant(ir.IntType(32), 1))
-        self.builder.store(auto_inc, left_cond)
+        builder.store(auto_inc, left_cond)
         
-        while_cond = self.builder.icmp_unsigned(op, 
-                                                self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                 self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        while_cond = builder.icmp_unsigned(op, 
+                                                builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                                builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
         
         
-        self.builder.cbranch(while_cond, while_block, end_while_block)
-        self.builder.position_at_end(end_while_block)
+        builder.cbranch(while_cond, while_block, end_while_block)
+        builder.position_at_end(end_while_block)
     
-    def do_while_statement(self, stat: dict):
+    def do_while_statement(self, stat: dict, builder = None):
+        builder = builder if builder else self.builder
         do_while_statement = stat['doWhileStatement']
         condition = do_while_statement['condition']
         do_while_body = do_while_statement['body']
@@ -228,25 +258,26 @@ class TranslatorToLLVM(PrintFormatMixin):
         do_while_body_block = self.main_func.append_basic_block(name="do_while_body")
         do_while_end_block = self.main_func.append_basic_block(name="do_while_end")
         
-        self.builder.branch(do_while_start_block)
-        self.builder.position_at_end(do_while_start_block)
+        builder.branch(do_while_start_block)
+        builder.position_at_end(do_while_start_block)
         
         self.item_bypass(do_while_body)
 
-        do_while_cond = self.builder.icmp_unsigned(op,
-                                                   self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                 self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
-        self.builder.cbranch(do_while_cond, do_while_body_block, do_while_end_block)
-        self.builder.position_at_end(do_while_body_block)
+        do_while_cond = builder.icmp_unsigned(op,
+                                                builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                                builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        builder.cbranch(do_while_cond, do_while_body_block, do_while_end_block)
+        builder.position_at_end(do_while_body_block)
         
-        auto_inc = self.builder.add(self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+        auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
                                     ir.Constant(ir.IntType(32), 1))
-        self.builder.store(auto_inc, left_cond)
+        builder.store(auto_inc, left_cond)
         
-        self.builder.branch(do_while_start_block)
-        self.builder.position_at_end(do_while_end_block)                                    
+        builder.branch(do_while_start_block)
+        builder.position_at_end(do_while_end_block)                                    
     
-    def for_statement(self, stat: dict):
+    def for_statement(self, stat: dict, buidler = None):
+        builder = builder if builder else self.builder
         for_statement = stat['forStatement']
         for_init = for_statement['init']
         condition = for_statement['condition']
@@ -264,28 +295,29 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         for_body_block = self.main_func.append_basic_block(name="for_body")
         exit_block = self.main_func.append_basic_block(name="exit_for")
-        for_cond = self.builder.icmp_unsigned(op,
-                                                self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        for_cond = builder.icmp_unsigned(op,
+                                            builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                            builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
         
-        self.builder.cbranch(for_cond, for_body_block, exit_block)
+        builder.cbranch(for_cond, for_body_block, exit_block)
         
-        self.builder.position_at_end(for_body_block)
+        builder.position_at_end(for_body_block)
         self.item_bypass(for_body)
                 
-        auto_inc = self.builder.add(self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+        auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
                                     ir.Constant(ir.IntType(32), 1))
-        self.builder.store(auto_inc, left_cond)
+        builder.store(auto_inc, left_cond)
         
-        for_cond = self.builder.icmp_unsigned(op,
-                                                self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
-        self.builder.cbranch(for_cond, for_body_block, exit_block)
-        self.builder.position_at_end(exit_block)
+        for_cond = builder.icmp_unsigned(op,
+                                            builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                            builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        builder.cbranch(for_cond, for_body_block, exit_block)
+        builder.position_at_end(exit_block)
         
         
         
-    def if_statement(self, stat: dict):
+    def if_statement(self, stat: dict, builder = None):
+        builder = builder if builder else self.builder
         if_statement = stat['ifStatement']
         condition = if_statement['condition']
         if_body = if_statement['body']
@@ -294,66 +326,56 @@ class TranslatorToLLVM(PrintFormatMixin):
         right_cond = self.evaluate_expression(condition['right'])
         op = condition['op']
         
-        if_cond = self.builder.icmp_signed(op,
-                                            self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                            self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        if_cond = builder.icmp_signed(op,
+                                        builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                        builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
         
         then_block = self.main_func.append_basic_block(name="if.then")
         end_block = self.main_func.append_basic_block(name="if.end")
         
-        self.builder.cbranch(if_cond, then_block, end_block)
+        builder.cbranch(if_cond, then_block, end_block)
         
-        self.builder.position_at_start(then_block)
+        builder.position_at_start(then_block)
         
         self.item_bypass(if_body)
         
-        self.builder.branch(end_block)
-        self.builder.position_at_start(end_block)
+        builder.branch(end_block)
+        builder.position_at_start(end_block)
                 
-    def if_else_statement(self, stat: dict):
+    def if_else_statement(self, stat: dict, builder = None):
+        builder = builder if builder else self.builder
         if_else_statement = stat['ifElseStatement']
         condition = if_else_statement['condition']
+        if_body = if_else_statement['body']
         if_else_body = if_else_statement['elseBody']
         
         left_cond = self.evaluate_expression(condition['left'])
         right_cond = self.evaluate_expression(condition['right'])
         op = condition['op']
         
-        if_cond = self.builder.icmp_signed(op,
-                                            self.builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                            self.builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        if_cond = builder.icmp_signed(op,
+                                        builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                        builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
         
         then_block = self.main_func.append_basic_block(name="if.then")
         else_block = self.main_func.append_basic_block(name="if.else")
         end_block = self.main_func.append_basic_block(name="if.end")
         
         
-        self.builder.cbranch(if_cond, then_block, else_block)
+        builder.cbranch(if_cond, then_block, else_block)
         
-        self.builder.position_at_start(then_block)
-        self.item_bypass(if_else_body)
+        builder.position_at_start(then_block)
+        self.item_bypass(if_body)
     
-        self.builder.branch(end_block)
+        builder.branch(end_block)
         
-        self.builder.position_at_start(else_block)
+        builder.position_at_start(else_block)
         
-        for item in if_else_body:
-            if 'stat' in item:
-                stat = item['stat']
-                if 'assignmentStatement' in stat:
-                    self.assign_statement(stat)
-                elif 'printStatement' in stat:
-                    self.print_statement(stat)
-            elif 'whileStatement' in item:
-                self.while_statement(item)
-            elif 'doWhileStatement' in item:
-                self.do_while_statement(item)
-            elif 'forStatement' in item:
-                self.for_statement(item)
+        self.item_bypass(if_else_body)
                 
-        self.builder.branch(end_block)
+        builder.branch(end_block)
         
-        self.builder.position_at_start(end_block)
+        builder.position_at_start(end_block)
         
         
     
@@ -365,6 +387,24 @@ class TranslatorToLLVM(PrintFormatMixin):
                 global_var = ir.GlobalVariable(self.module, int_type, item)
                 global_var.initializer = ir.Constant(int_type, 0)
                 self.variables[item] = global_var
+                
+    def function_statement(self, statement):
+        func_statement = statement["functionStatement"]
+        func_name  = func_statement['name']
+        func_body = func_statement['body']
+        type_entry = self.choose_type_entry[func_statement["type"]]
+
+        func_type = ir.FunctionType(type_entry, [])
+        func = ir.Function(self.module, func_type, name=func_name)
+        block = func.append_basic_block(name='entry')
+        builder = ir.IRBuilder(block)
+        self.functions[func_name] = builder
+        self.builder.call(func, [])
+
+        self.item_bypass(func_body, builder)
+
+        self.functions[func_name].ret_void()
+        
     
     
     def ast_bypass(self) -> None:
@@ -387,6 +427,9 @@ class TranslatorToLLVM(PrintFormatMixin):
                 self.if_else_statement(item)   
             elif 'globalStatement' in item:
                 self.global_variable_statement(item)
+            elif 'functionStatement' in item:
+                if item['functionStatement']['name'] not in self.functions:
+                    self.function_statement(item)
             
         self.builder.ret_void()
 
@@ -398,24 +441,3 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
