@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,32,240,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,33,240,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
@@ -42,7 +42,7 @@ def serializedATN():
         0,62,60,1,0,0,0,63,64,5,0,0,1,64,1,1,0,0,0,65,77,3,40,20,0,66,77,
         3,28,14,0,67,77,3,4,2,0,68,77,3,6,3,0,69,77,3,12,6,0,70,77,3,20,
         10,0,71,77,3,22,11,0,72,77,3,32,16,0,73,77,3,44,22,0,74,77,3,52,
-        26,0,75,77,5,32,0,0,76,65,1,0,0,0,76,66,1,0,0,0,76,67,1,0,0,0,76,
+        26,0,75,77,5,33,0,0,76,65,1,0,0,0,76,66,1,0,0,0,76,67,1,0,0,0,76,
         68,1,0,0,0,76,69,1,0,0,0,76,70,1,0,0,0,76,71,1,0,0,0,76,72,1,0,0,
         0,76,73,1,0,0,0,76,74,1,0,0,0,76,75,1,0,0,0,77,3,1,0,0,0,78,79,5,
         1,0,0,79,80,3,36,18,0,80,81,5,27,0,0,81,82,3,8,4,0,82,83,5,28,0,
@@ -113,7 +113,7 @@ class nevermorecompilerParser ( Parser ):
                       "<INVALID>", "ID", "INT", "DOUBLE", "END_STATE", "ADD", 
                       "SUB", "MUL", "DIV", "LPAREN", "RPAREN", "GT", "LT", 
                       "EQ_EQ", "NOT_EQ", "RCORNER", "LCORNER", "INCREMENT", 
-                      "EQ", "WS", "NEWLINE" ]
+                      "EQ", "WS", "SINGLE_LINE_COMMENT", "NEWLINE" ]
 
     RULE_prog = 0
     RULE_stat = 1
@@ -182,7 +182,8 @@ class nevermorecompilerParser ( Parser ):
     INCREMENT=29
     EQ=30
     WS=31
-    NEWLINE=32
+    SINGLE_LINE_COMMENT=32
+    NEWLINE=33
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -628,7 +629,7 @@ class nevermorecompilerParser ( Parser ):
             self.state = 99
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4294975226) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 8589942522) != 0):
                 self.state = 96
                 self.stat()
                 self.state = 101
@@ -688,7 +689,7 @@ class nevermorecompilerParser ( Parser ):
             self.state = 105
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4294975226) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 8589942522) != 0):
                 self.state = 102
                 self.stat()
                 self.state = 107
@@ -962,7 +963,7 @@ class nevermorecompilerParser ( Parser ):
             self.state = 131
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4294975226) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 8589942522) != 0):
                 self.state = 128
                 self.stat()
                 self.state = 133
@@ -1186,7 +1187,7 @@ class nevermorecompilerParser ( Parser ):
             self.state = 156
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4294975226) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 8589942522) != 0):
                 self.state = 153
                 self.stat()
                 self.state = 158
@@ -1963,7 +1964,7 @@ class nevermorecompilerParser ( Parser ):
             self.state = 223
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4294975226) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 8589942522) != 0):
                 self.state = 220
                 self.stat()
                 self.state = 225

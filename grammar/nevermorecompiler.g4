@@ -2,7 +2,7 @@
 grammar nevermorecompiler;
 
 //Программа состоит из 0 или более операторов (Parser Rule)
-prog: (globalStatement?  (functionStatement)*) EOF ;
+prog: (globalStatement? (functionStatement)*) EOF ;
 
 
 // Доступные операторы
@@ -84,18 +84,19 @@ type
     : 'int'
     | 'double'
     ;
-
+//Оператор создания функции
 functionStatement
    : funcType functionName LPAREN RPAREN RCORNER functionBody LCORNER END_STATE
    ;
-
+//Тело функции
 functionBody: (stat)*;
-
+//Имя функции
 functionName: ID;
-
+//Тип функции
 funcType: type
    | 'void'
    ;
+//Оператор вызова функции
 functionCall
     :'call' 'void' functionName LPAREN RPAREN END_STATE;
 
@@ -142,6 +143,7 @@ EQ: '=';
 // Пробельные символы (пробел, табуляция, новая строка)(Lexer Token)
 WS: [ \n\t\r] -> skip;
 
+SINGLE_LINE_COMMENT : '#' ~[\r\n]* -> skip;
 
 //Новая линия(Lexer Token)
 NEWLINE:'\r'? '\n' ;
