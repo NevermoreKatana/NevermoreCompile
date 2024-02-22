@@ -62,7 +62,6 @@ class EvalVisitor(nevermorecompilerVisitor):
         return json.dumps(self.ast)
 
     def visitExpr(self, ctx: nevermorecompilerParser.ExprContext):
-        print(self.variables)
         if ctx.ID():
             variable_name = ctx.ID().getText()
             if variable_name in self.variables:

@@ -66,6 +66,8 @@ class TranslatorToLLVM(PrintFormatMixin):
             elif 'functionStatement' in item:
                 if item['functionStatement']['name'] not in self.functions:
                     self.function_statement(item)
+            elif 'functionCall' in item:
+                self.function_call(item)
         
         
     def json_reader(self, input_file: str = "output_files/ast.json") -> None:
@@ -383,7 +385,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         builder = builder if builder else self.builder
         if_else_statement = stat['ifElseStatement']
         condition = if_else_statement['condition']
-        if_body = if_else_statement['body']
+        if_body = if_else_statement['ifBody']
         if_else_body = if_else_statement['elseBody']
         
         left_cond = self.evaluate_expression(condition['left'])
@@ -487,6 +489,7 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
 
 
 
