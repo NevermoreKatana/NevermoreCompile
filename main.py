@@ -46,6 +46,8 @@ class EvalVisitor(nevermorecompilerVisitor):
             return self.visitGlobalStatement(ctx.globalStatement())
         elif ctx.functionStatement():
             return self.visitFunctionStatement(ctx.functionStatement())
+        elif ctx.functionCall():
+            return self.visitFunctionCall(ctx.functionCall())
 
 
     def visitProg(self, ctx: nevermorecompilerParser.ProgContext):               
@@ -60,6 +62,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         return json.dumps(self.ast)
 
     def visitExpr(self, ctx: nevermorecompilerParser.ExprContext):
+        print(self.variables)
         if ctx.ID():
             variable_name = ctx.ID().getText()
             if variable_name in self.variables:
@@ -107,7 +110,18 @@ class EvalVisitor(nevermorecompilerVisitor):
         return self.visitChildren(ctx)
 
 
-
+    def visitFunctionCall(self, ctx: nevermorecompilerParser.FunctionCallContext):
+        function_name = ctx.functionName().getText()
+        function_type = ctx.getText()[4:8]
+        function_call = {
+            "functionCall":{
+                "name": function_name,
+                "type": function_type
+            }
+        }
+        return function_call
+    
+    
     def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
         fucn_name = ctx.functionName().getText()
         func_type = ctx.funcType().getText()
@@ -362,3 +376,4 @@ if __name__ == '__main__':
         f.write(json.dumps(json.loads(ast), indent=1))
     print('AST построено')
     
+

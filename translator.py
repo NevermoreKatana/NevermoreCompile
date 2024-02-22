@@ -436,13 +436,20 @@ class TranslatorToLLVM(PrintFormatMixin):
         block = func.append_basic_block(name='entry')
         builder = ir.IRBuilder(block)
         self.functions[func_name] = builder
-        self.builder.call(func, [])
+        
 
         self.item_bypass(func_body, builder)
 
         self.functions[func_name].ret_void()
         
-    
+    def function_call(self, stat: dict):
+        function_name = stat['functionCall']['name']
+        function_type = stat['functionCall']['type']
+        func = self.functions[function_name]
+        if function_type == 'void':
+            self.builder.call(func.function, [])
+        
+        
     
     def ast_bypass(self) -> None:
         for item in self.ast:
@@ -467,6 +474,8 @@ class TranslatorToLLVM(PrintFormatMixin):
             elif 'functionStatement' in item:
                 if item['functionStatement']['name'] not in self.functions:
                     self.function_statement(item)
+            elif 'functionCall' in item:
+                self.function_call(item)
             
         self.builder.ret_void()
 
@@ -478,16 +487,6 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
-
-
-
-
-
-
-
-
-
-
 
 
 

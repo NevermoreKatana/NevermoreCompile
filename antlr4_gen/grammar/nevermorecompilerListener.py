@@ -242,5 +242,14 @@ class nevermorecompilerListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by nevermorecompilerParser#functionCall.
+    def enterFunctionCall(self, ctx:nevermorecompilerParser.FunctionCallContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#functionCall.
+    def exitFunctionCall(self, ctx:nevermorecompilerParser.FunctionCallContext):
+        pass
+
+
 
 del nevermorecompilerParser

@@ -16,6 +16,7 @@ stat
     |doWhileStatement
     |globalStatement
     |functionStatement
+    |functionCall
     |NEWLINE
     ;
 
@@ -95,6 +96,8 @@ functionName: ID;
 funcType: type
    | 'void'
    ;
+functionCall
+    :'call' 'void' functionName LPAREN RPAREN END_STATE;
 
 // Идентификатор (начинается с буквы, может содержать буквы и цифры)(Lexer Token)
 ID: LETTER DIGIT*;

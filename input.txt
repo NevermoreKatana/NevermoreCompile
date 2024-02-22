@@ -1,9 +1,9 @@
+global: int:x;
 void main(){
-    void secondary(){
-        int y = 23;
-        int y = y*y;
-        print(y);
-    };
-  int y = 0;
-  print(y);
+  int x = 2;
+  void secondary(){
+    int x = x*x;
+  };
+  
+  print(x);
 };
