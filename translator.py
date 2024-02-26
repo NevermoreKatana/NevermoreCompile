@@ -288,11 +288,11 @@ class TranslatorToLLVM(PrintFormatMixin):
         do_while_statement = stat['doWhileStatement']
         condition = do_while_statement['condition']
         do_while_body = do_while_statement['body']
+        
     
         left_cond = self.evaluate_expression(condition['left'])
         right_cond = self.evaluate_expression(condition['right'])
         op = condition['op']
-        
         do_while_start_block = self.main_func.append_basic_block(name="do_while_start")
         do_while_body_block = self.main_func.append_basic_block(name="do_while_body")
         do_while_end_block = self.main_func.append_basic_block(name="do_while_end")
@@ -431,9 +431,12 @@ class TranslatorToLLVM(PrintFormatMixin):
         func_statement = statement["functionStatement"]
         func_name  = func_statement['name']
         func_body = func_statement['body']
-        type_entry = self.choose_type_entry[func_statement["type"]]
-
-        func_type = ir.FunctionType(type_entry, [])
+        f_type = func_statement["type"]
+        args = func_statement['args']
+        type_entry = self.choose_type_entry[f_type]
+        return_ = func_statement['return']
+        
+        func_type = ir.FunctionType(type_entry, [self.choose_type_entry[arg] for key, arg in args.items()])
         func = ir.Function(self.module, func_type, name=func_name)
         block = func.append_basic_block(name='entry')
         builder = ir.IRBuilder(block)
@@ -441,8 +444,26 @@ class TranslatorToLLVM(PrintFormatMixin):
         
 
         self.item_bypass(func_body, builder)
-
-        self.functions[func_name].ret_void()
+        type_ret = self.check_data_type(return_)
+        if f_type == 'void':
+            self.functions[func_name].ret_void()
+        elif type_ret == 'str':
+            self.functions[func_name].ret(builder.load(self.variables[return_]['var']))
+        elif type_ret == 'int':
+            self.functions[func_name].ret(ir.Constant(ir.IntType(32), int(return_)))
+        elif type_ret == 'float':
+            self.functions[func_name].ret(ir.Constant(ir.FloatType(32), int(return_)))
+        
+    def check_data_type(self, s):
+        try:
+            int(s)
+            return "int"
+        except ValueError:
+            try:
+                float(s)
+                return "float"
+            except ValueError:
+                return "str"    
         
     def function_call(self, stat: dict):
         function_name = stat['functionCall']['name']
@@ -489,6 +510,10 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
 
 
 

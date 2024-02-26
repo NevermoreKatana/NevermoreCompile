@@ -3,199 +3,23 @@
   "functionStatement": {
    "name": "main",
    "type": "void",
+   "args": {},
+   "return": null,
    "body": [
     {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "i",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 0
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "z",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 2
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "c",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 10
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "x",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 1
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
      "functionStatement": {
-      "name": "plus",
-      "type": "void",
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "x",
-          "expr": [
-           {
-            "type": "ADD",
-            "left": {
-             "type": "VAR",
-             "value": "x"
-            },
-            "right": {
-             "type": "INT",
-             "value": 1
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionStatement": {
-      "name": "mult",
-      "type": "void",
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "x",
-          "expr": [
-           {
-            "type": "MUL",
-            "left": {
-             "type": "VAR",
-             "value": "x"
-            },
-            "right": {
-             "type": "INT",
-             "value": 10
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "whileStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "i"
-       },
-       "left_ID": "i",
-       "right_ID": "c",
-       "op": "<",
-       "right": {
-        "type": "VAR",
-        "value": "c"
-       }
+      "name": "second",
+      "type": "int",
+      "args": {
+       "first": "int"
       },
-      "body": [
-       {
-        "ifElseStatement": {
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "i"
-          },
-          "left_ID": "i",
-          "right_ID": "z",
-          "op": "<",
-          "right": {
-           "type": "VAR",
-           "value": "z"
-          }
-         },
-         "ifBody": [
-          {
-           "functionCall": {
-            "name": "mult",
-            "type": "void"
-           }
-          }
-         ],
-         "elseBody": [
-          {
-           "functionCall": {
-            "name": "plus",
-            "type": "void"
-           }
-          }
-         ]
-        }
-       },
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "x"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
+      "return": "15",
+      "body": [],
+      "END_STATE": ";"
      }
     }
    ],
    "END_STATE": ";"
-  }
- },
- {
-  "globalStatement": {
-   "x": "int"
   }
  }
 ]

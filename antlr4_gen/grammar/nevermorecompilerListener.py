@@ -215,6 +215,24 @@ class nevermorecompilerListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by nevermorecompilerParser#ret.
+    def enterRet(self, ctx:nevermorecompilerParser.RetContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#ret.
+    def exitRet(self, ctx:nevermorecompilerParser.RetContext):
+        pass
+
+
+    # Enter a parse tree produced by nevermorecompilerParser#functionArgs.
+    def enterFunctionArgs(self, ctx:nevermorecompilerParser.FunctionArgsContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#functionArgs.
+    def exitFunctionArgs(self, ctx:nevermorecompilerParser.FunctionArgsContext):
+        pass
+
+
     # Enter a parse tree produced by nevermorecompilerParser#functionBody.
     def enterFunctionBody(self, ctx:nevermorecompilerParser.FunctionBodyContext):
         pass
@@ -239,6 +257,15 @@ class nevermorecompilerListener(ParseTreeListener):
 
     # Exit a parse tree produced by nevermorecompilerParser#funcType.
     def exitFuncType(self, ctx:nevermorecompilerParser.FuncTypeContext):
+        pass
+
+
+    # Enter a parse tree produced by nevermorecompilerParser#functionExpr.
+    def enterFunctionExpr(self, ctx:nevermorecompilerParser.FunctionExprContext):
+        pass
+
+    # Exit a parse tree produced by nevermorecompilerParser#functionExpr.
+    def exitFunctionExpr(self, ctx:nevermorecompilerParser.FunctionExprContext):
         pass
 
 

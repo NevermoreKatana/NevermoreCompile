@@ -84,10 +84,15 @@ type
     : 'int'
     | 'double'
     ;
+
+
 //Оператор создания функции
 functionStatement
-   : funcType functionName LPAREN RPAREN RCORNER functionBody LCORNER END_STATE
-   ;
+   : funcType functionName LPAREN functionArgs? RPAREN RCORNER functionBody ret? LCORNER END_STATE;
+
+ret: 'return' functionExpr END_STATE;
+
+functionArgs: (type ID (',' type ID)*)?;
 //Тело функции
 functionBody: (stat)*;
 //Имя функции
@@ -95,10 +100,16 @@ functionName: ID;
 //Тип функции
 funcType: type
    | 'void'
+   | 'int'
    ;
+functionExpr: ID
+            | INT
+            | DOUBLE
+            ;
+
 //Оператор вызова функции
 functionCall
-    :'call' 'void' functionName LPAREN RPAREN END_STATE;
+    :'call' funcType functionName LPAREN functionExpr(','functionExpr)*? RPAREN END_STATE;
 
 // Идентификатор (начинается с буквы, может содержать буквы и цифры)(Lexer Token)
 ID: LETTER DIGIT*;

@@ -124,8 +124,21 @@ class EvalVisitor(nevermorecompilerVisitor):
     def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
         fucn_name = ctx.functionName().getText()
         func_type = ctx.funcType().getText()
+        return_ = ctx.ret()
+
         function_body = []
-    
+        
+        args_dict = {}
+        args_ctx = ctx.functionArgs()
+        if args_ctx:
+            for i in range(args_ctx.getChildCount()):
+                arg_ctx = args_ctx.getChild(i)
+                if isinstance(arg_ctx, nevermorecompilerParser.TypeContext):
+                    type_name = arg_ctx.getText()
+                    var_name = args_ctx.getChild(i + 1).getText()
+                    args_dict[var_name] = type_name
+
+        
         for stat_ctx in ctx.functionBody().stat():
             body_node = self.visit(stat_ctx)
             if body_node in self.ast:
@@ -137,6 +150,8 @@ class EvalVisitor(nevermorecompilerVisitor):
                 "functionStatement": {
                     "name": fucn_name,
                     "type": func_type,
+                    "args": args_dict,
+                    "return": return_.functionExpr().getText() if return_ else None,
                     "body": function_body,
                     "END_STATE": ";"
                 }

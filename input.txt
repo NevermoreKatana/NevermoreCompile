@@ -1,24 +1,7 @@
-global: int:x;
 void main(){
-  int i = 0;
-  int z = 2;
-  int c = 10;
-  int x = 1;
-    void plus(){
-      int x = x+1;
-    };
-    void mult(){
-      int x = x*10;
-    };
 
-  while (i < c){
-    if i < z {
-      call void mult();
-    }
-    else{
-      call void plus();
+    int second(int first){
+        return 15;
     };
-  print(x);
-  };
 
 };
