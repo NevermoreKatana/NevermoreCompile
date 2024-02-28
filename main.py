@@ -73,6 +73,9 @@ class EvalVisitor(nevermorecompilerVisitor):
             return {"type": "INT", "value": int(ctx.INT().getText())}
         elif ctx.DOUBLE():
             return {"type": "DOUBLE", "value": float(ctx.DOUBLE().getText())}
+        elif ctx.functionCall():
+            function_call = self.visit(ctx.functionCall())
+            return function_call
         elif ctx.DIV():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
@@ -105,17 +108,26 @@ class EvalVisitor(nevermorecompilerVisitor):
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
             return {"type": "NOT_EQ", "left": left_expr, "right": right_expr}
-
+        
         return self.visitChildren(ctx)
 
 
     def visitFunctionCall(self, ctx: nevermorecompilerParser.FunctionCallContext):
         function_name = ctx.functionName().getText()
-        function_type = ctx.getText()[4:8]
+        function_type = ctx.funcType().getText()
+        args_dict = []
+        args_ctx = ctx.functionParams()
+        if args_ctx:
+            for i in range(args_ctx.getChildCount()):
+                arg_ctx = args_ctx.getChild(i)
+                if isinstance(arg_ctx, nevermorecompilerParser.FunctionExprContext):
+                    args_dict.append(arg_ctx.getText())
+        
         function_call = {
             "functionCall":{
                 "name": function_name,
-                "type": function_type
+                "type": function_type,
+                "params": args_dict
             }
         }
         return function_call

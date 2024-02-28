@@ -154,6 +154,11 @@ class nevermorecompilerVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by nevermorecompilerParser#functionParams.
+    def visitFunctionParams(self, ctx:nevermorecompilerParser.FunctionParamsContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by nevermorecompilerParser#functionCall.
     def visitFunctionCall(self, ctx:nevermorecompilerParser.FunctionCallContext):
         return self.visitChildren(ctx)

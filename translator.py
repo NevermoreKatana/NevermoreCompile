@@ -29,7 +29,8 @@ class PrintFormatMixin:
 class TranslatorToLLVM(PrintFormatMixin):
     choose_type_entry = {
         "void": ir.VoidType(),
-        "int": ir.IntType(32)
+        "int": ir.IntType(32),
+        'double': ir.FloatType(),
         }
     def __init__(self):
         self.module = ir.Module("nevermoreCompile")
@@ -108,7 +109,13 @@ class TranslatorToLLVM(PrintFormatMixin):
     
     def evaluate_expression(self, expr, builder = None):
         builder = builder if builder else self.builder
-        if expr['type'] == 'INT' or expr['type'] == 'int':
+        if 'functionCall' in expr:
+            expr = expr['functionCall']
+            func_name = expr['name']
+            params = expr['params']
+            value = builder.call(self.functions[func_name]['func'], params)
+            return value
+        elif expr['type'] == 'INT' or expr['type'] == 'int':
             return ir.Constant(ir.IntType(32), expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
             try:
@@ -199,11 +206,11 @@ class TranslatorToLLVM(PrintFormatMixin):
                 
         else:
             var = self.variables[var_name]
-        
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
             builder.store(value, var)
+        
         
         
         
@@ -440,19 +447,19 @@ class TranslatorToLLVM(PrintFormatMixin):
         func = ir.Function(self.module, func_type, name=func_name)
         block = func.append_basic_block(name='entry')
         builder = ir.IRBuilder(block)
-        self.functions[func_name] = builder
+        self.functions[func_name] = {"builder": builder, "func": func}
         
 
         self.item_bypass(func_body, builder)
         type_ret = self.check_data_type(return_)
         if f_type == 'void':
-            self.functions[func_name].ret_void()
+            self.functions[func_name]['builder'].ret_void()
         elif type_ret == 'str':
-            self.functions[func_name].ret(builder.load(self.variables[return_]['var']))
+            self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
         elif type_ret == 'int':
-            self.functions[func_name].ret(ir.Constant(ir.IntType(32), int(return_)))
-        elif type_ret == 'float':
-            self.functions[func_name].ret(ir.Constant(ir.FloatType(32), int(return_)))
+            self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
+        elif type_ret == 'double':
+            self.functions[func_name]['builder'].ret(ir.Constant(ir.FloatType(32), int(return_)))
         
     def check_data_type(self, s):
         try:
@@ -461,13 +468,14 @@ class TranslatorToLLVM(PrintFormatMixin):
         except ValueError:
             try:
                 float(s)
-                return "float"
+                return "double"
             except ValueError:
                 return "str"    
         
     def function_call(self, stat: dict):
         function_name = stat['functionCall']['name']
         function_type = stat['functionCall']['type']
+        print(stat)
         func = self.functions[function_name]
         if function_type == 'void':
             self.builder.call(func.function, [])
@@ -510,6 +518,9 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
 
 
 

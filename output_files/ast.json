@@ -10,12 +10,39 @@
      "functionStatement": {
       "name": "second",
       "type": "int",
-      "args": {
-       "first": "int"
-      },
-      "return": "15",
+      "args": {},
+      "return": "125",
       "body": [],
       "END_STATE": ";"
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "functionCall": {
+          "name": "second",
+          "type": "int",
+          "params": []
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "x"
+       },
+       "END_STATE": ";"
+      }
      }
     }
    ],

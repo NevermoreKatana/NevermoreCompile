@@ -1,7 +1,7 @@
 void main(){
-
-    int second(int first){
-        return 15;
+    int second(){
+        return 125  
     };
-
+    int x = call int second();;
+    print(x);
 };

@@ -50,6 +50,7 @@ expr
     |INT
     |ID
     |DOUBLE
+    | functionCall
     ;
 //Оператор вывода(Parser Rule)
 printState
@@ -90,7 +91,7 @@ type
 functionStatement
    : funcType functionName LPAREN functionArgs? RPAREN RCORNER functionBody ret? LCORNER END_STATE;
 
-ret: 'return' functionExpr END_STATE;
+ret: 'return' functionExpr;
 
 functionArgs: (type ID (',' type ID)*)?;
 //Тело функции
@@ -106,10 +107,10 @@ functionExpr: ID
             | INT
             | DOUBLE
             ;
+functionParams: (functionExpr (',' functionExpr)*)?;
 
 //Оператор вызова функции
-functionCall
-    :'call' funcType functionName LPAREN functionExpr(','functionExpr)*? RPAREN END_STATE;
+functionCall: 'call' funcType functionName LPAREN functionParams? RPAREN END_STATE;
 
 // Идентификатор (начинается с буквы, может содержать буквы и цифры)(Lexer Token)
 ID: LETTER DIGIT*;
