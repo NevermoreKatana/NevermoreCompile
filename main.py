@@ -397,7 +397,6 @@ if __name__ == '__main__':
 
     ast_visitor = EvalVisitor()
     ast = ast_visitor.visit(tree)
-    # print(ast)
     with open('output_files/ast.json', 'w') as f:
         f.write(json.dumps(json.loads(ast), indent=1))
     print('AST построено')

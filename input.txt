@@ -1,7 +1,14 @@
 void main(){
     int second(){
-        return 125  
+        int x = 1;
+        int y = 10;
+        int i = 0;
+        int counter = 10;
+        while (i<counter){
+            int y = y + 1;
+        };
+        return y
     };
-    int x = call int second();;
-    print(x);
+    int z = call int second();;
+    print(z);
 };
