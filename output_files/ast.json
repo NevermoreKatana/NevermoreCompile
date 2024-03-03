@@ -7,129 +7,29 @@
    "return": null,
    "body": [
     {
-     "functionStatement": {
-      "name": "second",
-      "type": "int",
-      "args": {},
-      "return": "y",
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "x",
-          "expr": [
-           {
-            "type": "INT",
-            "value": 1
-           }
-          ],
-          "END_STATE": ";"
-         }
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "x",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 1.1
         }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "y",
-          "expr": [
-           {
-            "type": "INT",
-            "value": 10
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "i",
-          "expr": [
-           {
-            "type": "INT",
-            "value": 0
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "counter",
-          "expr": [
-           {
-            "type": "INT",
-            "value": 10
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "whileStatement": {
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "i"
-          },
-          "left_ID": "i",
-          "right_ID": "counter",
-          "op": "<",
-          "right": {
-           "type": "VAR",
-           "value": "counter"
-          }
-         },
-         "body": [
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "int",
-             "ID": "y",
-             "expr": [
-              {
-               "type": "ADD",
-               "left": {
-                "type": "VAR",
-                "value": "y"
-               },
-               "right": {
-                "type": "INT",
-                "value": 1
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          }
-         ]
-        }
-       }
-      ],
-      "END_STATE": ";"
+       ],
+       "END_STATE": ";"
+      }
      }
     },
     {
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "z",
+       "ID": "y",
        "expr": [
         {
-         "functionCall": {
-          "name": "second",
-          "type": "int",
-          "params": []
-         }
+         "type": "INT",
+         "value": 1
         }
        ],
        "END_STATE": ";"
@@ -141,7 +41,40 @@
       "printStatement": {
        "expr": {
         "type": "ID",
-        "value": "z"
+        "value": "x"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "DOUBLE",
+        "value": 1.2
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "y"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "INT",
+        "value": 2
        },
        "END_STATE": ";"
       }

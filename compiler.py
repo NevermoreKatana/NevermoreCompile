@@ -1,5 +1,3 @@
-import old_trans
-import main
        
 
 

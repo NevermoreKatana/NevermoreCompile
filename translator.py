@@ -4,24 +4,38 @@ import json
 class PrintFormatMixin:
     def __init__(self, module) -> None:
         self.int32_type = ir.IntType(32)
-        self.int32_ptr_type = self.int32_type.as_pointer()
-        printf_type = ir.FunctionType(ir.IntType(32), [self.int32_ptr_type], var_arg=True)
+        self.double_type = ir.DoubleType()
+        self.int8_ptr_type = ir.IntType(8).as_pointer()
+        printf_type = ir.FunctionType(ir.IntType(32), [self.int8_ptr_type], var_arg=True)
         self.printf_func = ir.Function(module, printf_type, "printf")
 
-    def create_int32_print_function(self, builder, value):
-        format_str = "%d\n\0"  
-        format_str_array = ir.ArrayType(ir.IntType(8), len(format_str))
-        format_str_ptr = builder.alloca(format_str_array) 
-        format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))  
-        builder.store(format_str_const, format_str_ptr)  
-        
+    def create_print_function(self, value, builder):
         if isinstance(value, int):
+            format_str = "%d\n\0"
+            value_type = self.int32_type
             value_ptr = ir.Constant(ir.IntType(32), value)
+        elif isinstance(value, float):
+            format_str = "%f\n\0"
+            value_type = self.double_type
+            value_ptr = ir.Constant(ir.DoubleType(), value)
         else:
-            value_ptr = builder.bitcast(value, self.int32_type)
-        
-        
-        builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int32_ptr_type), value_ptr])
+            if value.type == ir.IntType(32):
+                format_str = "%d\n\0"
+            elif value.type == ir.DoubleType():
+                format_str = "%f\n\0"
+            else:
+                raise ValueError("Unsupported value type")
+            value_ptr = value
+
+        format_str_array = ir.ArrayType(ir.IntType(8), len(format_str))
+        format_str_ptr = builder.alloca(format_str_array)
+        format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))
+        builder.store(format_str_const, format_str_ptr)
+
+        builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int8_ptr_type), value_ptr])
+
+
+
 
         
 
@@ -30,7 +44,7 @@ class TranslatorToLLVM(PrintFormatMixin):
     choose_type_entry = {
         "void": ir.VoidType(),
         "int": ir.IntType(32),
-        'double': ir.FloatType(),
+        'double': ir.DoubleType(),
         }
     def __init__(self):
         self.module = ir.Module("nevermoreCompile")
@@ -118,6 +132,8 @@ class TranslatorToLLVM(PrintFormatMixin):
             return value
         elif expr['type'] == 'INT' or expr['type'] == 'int':
             return ir.Constant(ir.IntType(32), expr['value'])
+        elif expr['type'] == 'DOUBLE' or expr['type'] == 'double':
+            return ir.Constant(ir.DoubleType(), expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
             try:
                 return self.variables[expr['value']]['var']
@@ -151,12 +167,12 @@ class TranslatorToLLVM(PrintFormatMixin):
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
         
-        elif isinstance(left_value.type, ir.FloatType) or isinstance(right_value.type, ir.FloatType):
+        elif isinstance(left_value.type, ir.DoubleType) or isinstance(right_value.type, ir.DoubleTypesType):
             if isinstance(left_value.type, ir.IntType):
-                left_value = builder.sitofp(left_value, ir.FloatType())
+                left_value = builder.sitofp(left_value, ir.DoubleType())
             
             elif isinstance(right_value.type, ir.IntType):
-                right_value = builder.sitofp(right_value, ir.FloatType())
+                right_value = builder.sitofp(right_value, ir.DoubleType())
                 
             if expr['type'] == 'DIV':
                 return builder.fdiv(left_value, right_value)
@@ -187,7 +203,7 @@ class TranslatorToLLVM(PrintFormatMixin):
             
             
         elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
-            var = builder.alloca(ir.FloatType(), name=var_name)
+            var = builder.alloca(ir.DoubleType(), name=var_name)
             self.variables[var_name] = {"var":var, "func": builder.function.name}
         
         elif not isinstance(self.variables[var_name], ir.GlobalVariable): 
@@ -207,6 +223,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         else:
             var = self.variables[var_name]
         
+        
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
@@ -219,6 +236,8 @@ class TranslatorToLLVM(PrintFormatMixin):
         builder = builder if builder else self.builder
         if expr['type'] == 'INT' or expr['type'] == 'int':
             return int(expr['value'])
+        elif expr['type'] == 'DOUBLE' or expr['type'] == 'double':
+            return float(expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
             if not isinstance(self.variables[expr['value']], ir.GlobalVariable):
                 if expr['value'] in self.variables and builder.function.name != self.variables[expr['value']]['func']: 
@@ -239,7 +258,7 @@ class TranslatorToLLVM(PrintFormatMixin):
     def choose_print_type(self, value, builder = None):
         builder = builder if builder else self.builder
         
-        self.create_int32_print_function(builder, value)
+        self.create_print_function(value, builder)
         
 
     
@@ -469,7 +488,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         elif type_ret == 'int':
             self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
         elif type_ret == 'double':
-            self.functions[func_name]['builder'].ret(ir.Constant(ir.FloatType(32), int(return_)))
+            self.functions[func_name]['builder'].ret(ir.Constant(ir.Double(), float(return_)))
         
     def check_data_type(self, s):
         try:
@@ -528,5 +547,10 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
+
 
 
