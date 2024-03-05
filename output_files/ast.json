@@ -9,12 +9,12 @@
     {
      "stat": {
       "assignmentStatement": {
-       "type": "double",
-       "ID": "x",
+       "type": "int",
+       "ID": "i",
        "expr": [
         {
-         "type": "DOUBLE",
-         "value": 1.1
+         "type": "INT",
+         "value": 0
         }
        ],
        "END_STATE": ";"
@@ -25,7 +25,37 @@
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "y",
+       "ID": "z",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 2
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "c",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 10
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
        "expr": [
         {
          "type": "INT",
@@ -37,51 +67,143 @@
      }
     },
     {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
-        "value": "x"
-       },
-       "END_STATE": ";"
-      }
+     "functionStatement": {
+      "name": "plus",
+      "type": "void",
+      "args": {},
+      "return": null,
+      "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "x",
+          "expr": [
+           {
+            "type": "ADD",
+            "left": {
+             "type": "VAR",
+             "value": "x"
+            },
+            "right": {
+             "type": "INT",
+             "value": 1
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
      }
     },
     {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "DOUBLE",
-        "value": 1.2
-       },
-       "END_STATE": ";"
-      }
+     "functionStatement": {
+      "name": "mult",
+      "type": "void",
+      "args": {},
+      "return": null,
+      "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "x",
+          "expr": [
+           {
+            "type": "MUL",
+            "left": {
+             "type": "VAR",
+             "value": "x"
+            },
+            "right": {
+             "type": "INT",
+             "value": 10
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
      }
     },
     {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
-        "value": "y"
+     "whileStatement": {
+      "condition": {
+       "left": {
+        "type": "VAR",
+        "value": "i"
        },
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "INT",
-        "value": 2
+       "left_ID": "i",
+       "right_ID": "c",
+       "op": "<",
+       "right": {
+        "type": "VAR",
+        "value": "c"
+       }
+      },
+      "body": [
+       {
+        "ifElseStatement": {
+         "condition": {
+          "left": {
+           "type": "VAR",
+           "value": "i"
+          },
+          "left_ID": "i",
+          "right_ID": "z",
+          "op": "<",
+          "right": {
+           "type": "VAR",
+           "value": "z"
+          }
+         },
+         "ifBody": [
+          {
+           "functionCall": {
+            "name": "mult",
+            "type": "void",
+            "params": []
+           }
+          }
+         ],
+         "elseBody": [
+          {
+           "functionCall": {
+            "name": "plus",
+            "type": "void",
+            "params": []
+           }
+          }
+         ]
+        }
        },
-       "END_STATE": ";"
-      }
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "x"
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ]
      }
     }
    ],
    "END_STATE": ";"
+  }
+ },
+ {
+  "globalStatement": {
+   "x": "int"
   }
  }
 ]

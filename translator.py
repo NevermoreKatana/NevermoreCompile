@@ -36,10 +36,6 @@ class PrintFormatMixin:
 
 
 
-
-        
-
-
 class TranslatorToLLVM(PrintFormatMixin):
     choose_type_entry = {
         "void": ir.VoidType(),
@@ -167,7 +163,7 @@ class TranslatorToLLVM(PrintFormatMixin):
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
         
-        elif isinstance(left_value.type, ir.DoubleType) or isinstance(right_value.type, ir.DoubleTypesType):
+        elif isinstance(left_value.type, ir.DoubleType) or isinstance(right_value.type, ir.DoubleType):
             if isinstance(left_value.type, ir.IntType):
                 left_value = builder.sitofp(left_value, ir.DoubleType())
             
@@ -195,6 +191,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         expr = assigment['expr'][0]
         
         
+        
         value = self.evaluate_expression(expr, builder)
 
         if var_name not in self.variables and assigment['type'] == 'int' or assigment['type'] == 'INT':
@@ -205,6 +202,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
             var = builder.alloca(ir.DoubleType(), name=var_name)
             self.variables[var_name] = {"var":var, "func": builder.function.name}
+            
         
         elif not isinstance(self.variables[var_name], ir.GlobalVariable): 
             
@@ -222,6 +220,7 @@ class TranslatorToLLVM(PrintFormatMixin):
                 
         else:
             var = self.variables[var_name]
+        
         
         
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
@@ -282,7 +281,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         condition = while_statement['condition']
         while_body = while_statement['body']
         function_name = builder.function.name
-        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_function
+        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
         
         
         left_cond = self.evaluate_expression(condition['left'], builder)
@@ -394,7 +393,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         condition = if_statement['condition']
         if_body = if_statement['body']
         function_name = builder.function.name
-        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_function
+        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
         
         left_cond = self.evaluate_expression(condition['left'], builder)
         right_cond = self.evaluate_expression(condition['right'], builder)
@@ -423,7 +422,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         if_body = if_else_statement['ifBody']
         if_else_body = if_else_statement['elseBody']
         function_name = builder.function.name
-        func = self.functions[function_name]['func'] if function_name != 'main' else self.main_function
+        func = self.functions[function_name]['func'] if function_name != 'main' else self.main_func
         
         left_cond = self.evaluate_expression(condition['left'], builder)
         right_cond = self.evaluate_expression(condition['right'], builder)
@@ -480,7 +479,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         self.functions[func_name] = {"builder": builder, "func": func}
         
         self.item_bypass(func_body, builder)
-        type_ret = self.check_data_type(return_)
+        type_ret = self.check_data_type(return_) if f_type != 'void' else None
         if f_type == 'void':
             self.functions[func_name]['builder'].ret_void()
         elif type_ret == 'str':
@@ -504,10 +503,10 @@ class TranslatorToLLVM(PrintFormatMixin):
     def function_call(self, stat: dict):
         function_name = stat['functionCall']['name']
         function_type = stat['functionCall']['type']
-
+        
         func = self.functions[function_name]
         if function_type == 'void':
-            self.builder.call(func.function, [])
+            self.builder.call(func['func'], [])
         
         
     
@@ -547,10 +546,5 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
-
-
-
-
-
 
 
