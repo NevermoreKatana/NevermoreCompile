@@ -318,7 +318,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         condition = do_while_statement['condition']
         do_while_body = do_while_statement['body']
         function_name = builder.function.name
-        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_function
+        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
     
         left_cond = self.evaluate_expression(condition['left'], builder)
         right_cond = self.evaluate_expression(condition['right'], builder)
@@ -353,7 +353,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         for_modify = for_statement['modify']
         for_body = for_statement['body']
         function_name = builder.function.name
-        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_function
+        func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
         
         if 'stat' in for_init:
             stat = for_init['stat']

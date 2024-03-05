@@ -5,62 +5,32 @@ target datalayout = ""
 define void @"main"()
 {
 entry.main:
+  store i32 1, i32* @"x"
   %"i" = alloca i32
   store i32 0, i32* %"i"
-  %"z" = alloca i32
-  store i32 2, i32* %"z"
-  %"c" = alloca i32
-  store i32 10, i32* %"c"
-  store i32 1, i32* @"x"
-  %".6" = load i32, i32* %"i"
-  %".7" = load i32, i32* %"c"
-  %".8" = icmp ult i32 %".6", %".7"
-  br i1 %".8", label %"while", label %"end_while"
-while:
-  %".10" = load i32, i32* %"i"
-  %".11" = load i32, i32* %"z"
-  %".12" = icmp slt i32 %".10", %".11"
-  br i1 %".12", label %"if.then", label %"if.else"
-end_while:
+  %".4" = load i32, i32* %"i"
+  %".5" = icmp ult i32 %".4", 20
+  br i1 %".5", label %"for_body", label %"exit_for"
+for_body:
+  %".7" = load i32, i32* @"x"
+  %".8" = load i32, i32* @"x"
+  %".9" = add i32 %".7", %".8"
+  store i32 %".9", i32* @"x"
+  %".11" = load i32, i32* %"i"
+  %".12" = add i32 %".11", 1
+  store i32 %".12", i32* %"i"
+  %".14" = load i32, i32* %"i"
+  %".15" = icmp ult i32 %".14", 20
+  br i1 %".15", label %"for_body", label %"exit_for"
+exit_for:
+  %".17" = load i32, i32* @"x"
+  %".18" = alloca [4 x i8]
+  store [4 x i8] c"%d\0a\00", [4 x i8]* %".18"
+  %".20" = bitcast [4 x i8]* %".18" to i8*
+  %".21" = call i32 (i8*, ...) @"printf"(i8* %".20", i32 %".17")
   ret void
-if.then:
-  call void @"mult"()
-  br label %"if.end"
-if.else:
-  call void @"plus"()
-  br label %"if.end"
-if.end:
-  %".18" = load i32, i32* @"x"
-  %".19" = alloca [4 x i8]
-  store [4 x i8] c"%d\0a\00", [4 x i8]* %".19"
-  %".21" = bitcast [4 x i8]* %".19" to i8*
-  %".22" = call i32 (i8*, ...) @"printf"(i8* %".21", i32 %".18")
-  %".23" = load i32, i32* %"i"
-  %".24" = add i32 %".23", 1
-  store i32 %".24", i32* %"i"
-  %".26" = load i32, i32* %"i"
-  %".27" = load i32, i32* %"c"
-  %".28" = icmp ult i32 %".26", %".27"
-  br i1 %".28", label %"while", label %"end_while"
 }
 
 declare i32 @"printf"(i8* %".1", ...)
 
 @"x" = global i32 0
-define void @"plus"()
-{
-entry:
-  %".2" = load i32, i32* @"x"
-  %".3" = add i32 %".2", 1
-  store i32 %".3", i32* @"x"
-  ret void
-}
-
-define void @"mult"()
-{
-entry:
-  %".2" = load i32, i32* @"x"
-  %".3" = mul i32 %".2", 10
-  store i32 %".3", i32* @"x"
-  ret void
-}
