@@ -5,32 +5,32 @@ target datalayout = ""
 define void @"main"()
 {
 entry.main:
-  store i32 1, i32* @"x"
-  %"i" = alloca i32
-  store i32 0, i32* %"i"
-  %".4" = load i32, i32* %"i"
-  %".5" = icmp ult i32 %".4", 20
-  br i1 %".5", label %"for_body", label %"exit_for"
-for_body:
-  %".7" = load i32, i32* @"x"
-  %".8" = load i32, i32* @"x"
-  %".9" = add i32 %".7", %".8"
-  store i32 %".9", i32* @"x"
-  %".11" = load i32, i32* %"i"
-  %".12" = add i32 %".11", 1
-  store i32 %".12", i32* %"i"
-  %".14" = load i32, i32* %"i"
-  %".15" = icmp ult i32 %".14", 20
-  br i1 %".15", label %"for_body", label %"exit_for"
-exit_for:
-  %".17" = load i32, i32* @"x"
-  %".18" = alloca [4 x i8]
-  store [4 x i8] c"%d\0a\00", [4 x i8]* %".18"
-  %".20" = bitcast [4 x i8]* %".18" to i8*
-  %".21" = call i32 (i8*, ...) @"printf"(i8* %".20", i32 %".17")
+  %"x" = alloca i32
+  store i32 10, i32* %"x"
+  %"t" = alloca i32
+  store i32 15, i32* %"t"
+  %"y" = alloca double
+  store double 0x402e333333333333, double* %"y"
+  %"z" = alloca double
+  store double 0x4026333333333333, double* %"z"
+  %".6" = load i32, i32* %"x"
+  %".7" = load i32, i32* %"t"
+  br label %"do_while_start"
+do_while_start:
+  %".9" = alloca [4 x i8]
+  store [4 x i8] c"%d\0a\00", [4 x i8]* %".9"
+  %".11" = bitcast [4 x i8]* %".9" to i8*
+  %".12" = call i32 (i8*, ...) @"printf"(i8* %".11", i32 110)
+  %".13" = load i32, i32* %"x"
+  %".14" = icmp ult i32 %".13", %".7"
+  br i1 %".14", label %"do_while_body", label %"do_while_end"
+do_while_body:
+  %".16" = load i32, i32* %"x"
+  %".17" = add i32 %".16", 1
+  store i32 %".17", i32* %"x"
+  br label %"do_while_start"
+do_while_end:
   ret void
 }
 
 declare i32 @"printf"(i8* %".1", ...)
-
-@"x" = global i32 0

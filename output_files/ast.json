@@ -14,7 +14,7 @@
        "expr": [
         {
          "type": "INT",
-         "value": 1
+         "value": 10
         }
        ],
        "END_STATE": ";"
@@ -22,81 +22,82 @@
      }
     },
     {
-     "forStatement": {
-      "init": {
-       "stat": {
-        "assignmentStatement": {
-         "type": "int",
-         "ID": "i",
-         "expr": [
-          {
-           "type": "INT",
-           "value": 0
-          }
-         ],
-         "END_STATE": ";"
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "t",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 15
         }
-       }
-      },
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "i"
-       },
-       "op": "<",
-       "right": {
-        "type": "INT",
-        "value": 20
-       }
-      },
-      "modify": {
-       "ID": "i",
-       "op": "++"
-      },
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "x",
-          "expr": [
-           {
-            "type": "ADD",
-            "left": {
-             "type": "VAR",
-             "value": "x"
-            },
-            "right": {
-             "type": "VAR",
-             "value": "x"
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
+       ],
+       "END_STATE": ";"
+      }
      }
     },
     {
      "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "y",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 15.1
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "z",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 11.1
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "doWhileStatement": {
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 110
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "condition": {
+       "left": {
+        "type": "VAR",
         "value": "x"
        },
-       "END_STATE": ";"
+       "left_ID": "x",
+       "right_ID": "t",
+       "op": "<",
+       "right": {
+        "type": "VAR",
+        "value": "t"
+       }
       }
      }
     }
    ],
    "END_STATE": ";"
-  }
- },
- {
-  "globalStatement": {
-   "x": "int"
   }
  }
 ]

@@ -118,7 +118,7 @@ class TranslatorToLLVM(PrintFormatMixin):
 
         
     
-    def evaluate_expression(self, expr, builder = None):
+    def evaluate_expression(self, expr, builder = None, ):
         builder = builder if builder else self.builder
         if 'functionCall' in expr:
             expr = expr['functionCall']
@@ -184,45 +184,50 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         
     
+    def assign_type_checker(self, var, type_):
+        if type_ == 'double':
+            type_ = ir.DoubleType
+        if type_ == 'int':
+            type_ = ir.IntType
+        return isinstance(var.type.pointee, type_)
+    
     def assign_statement(self, stat:dict, builder = None):
         builder = builder if builder else self.builder
         assigment = stat['assignmentStatement']
         var_name = assigment['ID']
         expr = assigment['expr'][0]
-        
-        
+        var_type = assigment['type']
         
         value = self.evaluate_expression(expr, builder)
 
-        if var_name not in self.variables and assigment['type'] == 'int' or assigment['type'] == 'INT':
+        if var_name not in self.variables and var_type == 'int' or var_type == 'INT':
             var = builder.alloca(ir.IntType(32), name=var_name)
             self.variables[var_name] = {"var":var, "func": builder.function.name}
             
             
-        elif var_name not in self.variables and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+        elif var_name not in self.variables and var_type == 'double' or var_type == 'DOUBLE':
             var = builder.alloca(ir.DoubleType(), name=var_name)
             self.variables[var_name] = {"var":var, "func": builder.function.name}
-            
+        
         
         elif not isinstance(self.variables[var_name], ir.GlobalVariable): 
             
-            if var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
+            
+            if var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and var_type == 'int' or var_type == 'INT':
                 var = self.variables[var_name]['var']
                 
-            elif var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+            elif var_name in self.variables and self.variables[var_name]['func'] == builder.function.name and var_type == 'double' or var_type == 'DOUBLE':
                 var = self.variables[var_name]['var']
-                
-            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'int' or assigment['type'] == 'INT':
+            
+            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and var_type == 'int' or var_type == 'INT':
                 raise ValueError(f"{var_name} не сущетсвует в области")
                 
-            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and assigment['type'] == 'double' or assigment['type'] == 'DOUBLE':
+            elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and var_type == 'double' or var_type == 'DOUBLE':
                 raise ValueError(f"{var_name} не сущетсвует в области")
-                
         else:
             var = self.variables[var_name]
-        
-        
-        
+        if not self.assign_type_checker(var, var_type):
+            raise TypeError(f"Нельзя присвоить тип данных {var_type} к существующей переменной {var_name} с типом данных {var.type.pointee}")
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
@@ -282,17 +287,19 @@ class TranslatorToLLVM(PrintFormatMixin):
         while_body = while_statement['body']
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
-        
-        
-        left_cond = self.evaluate_expression(condition['left'], builder)
-        right_cond = self.evaluate_expression(condition['right'],builder)
         op = condition['op']
         
+        left_cond_ptr = self.evaluate_expression(condition['left'], builder)
+        right_cond_ptr = self.evaluate_expression(condition['right'],builder)
+        left_cond = builder.load(left_cond_ptr) if isinstance(left_cond_ptr, ir.AllocaInstr) else left_cond_ptr
+        right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
+        if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
+            raise TypeError(f"Нельзя использовать значения типа double в условии цикла while")
         while_block = func.append_basic_block(name="while")
         end_while_block = func.append_basic_block(name="end_while")
         while_cond = builder.icmp_unsigned(op, 
-                                                builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                 builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+                                            left_cond,
+                                            right_cond)
         
         builder.cbranch(while_cond, while_block, end_while_block)
         
@@ -300,13 +307,10 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         self.item_bypass(while_body, builder)
         
-        auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                    ir.Constant(ir.IntType(32), 1))
-        builder.store(auto_inc, left_cond)
+        auto_inc = builder.add(builder.load(left_cond_ptr), ir.Constant(ir.IntType(32), 1))
+        builder.store(auto_inc, left_cond_ptr)
         
-        while_cond = builder.icmp_unsigned(op, 
-                                                builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        while_cond = builder.icmp_unsigned(op, builder.load(left_cond_ptr), right_cond)
         
         
         builder.cbranch(while_cond, while_block, end_while_block)
@@ -320,8 +324,12 @@ class TranslatorToLLVM(PrintFormatMixin):
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
     
-        left_cond = self.evaluate_expression(condition['left'], builder)
-        right_cond = self.evaluate_expression(condition['right'], builder)
+        left_cond_ptr = self.evaluate_expression(condition['left'], builder)
+        right_cond_ptr = self.evaluate_expression(condition['right'],builder)
+        left_cond = builder.load(left_cond_ptr) if isinstance(left_cond_ptr, ir.AllocaInstr) else left_cond_ptr
+        right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
+        if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
+            raise TypeError(f"Нельзя использовать значения типа double в условии цикла doWhile")
         op = condition['op']
         do_while_start_block = func.append_basic_block(name="do_while_start")
         do_while_body_block = func.append_basic_block(name="do_while_body")
@@ -333,17 +341,16 @@ class TranslatorToLLVM(PrintFormatMixin):
         self.item_bypass(do_while_body, builder)
 
         do_while_cond = builder.icmp_unsigned(op,
-                                                builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                                builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+                                                builder.load(left_cond_ptr), right_cond)
         builder.cbranch(do_while_cond, do_while_body_block, do_while_end_block)
         builder.position_at_end(do_while_body_block)
         
-        auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+        auto_inc = builder.add(builder.load(left_cond_ptr),
                                     ir.Constant(ir.IntType(32), 1))
-        builder.store(auto_inc, left_cond)
+        builder.store(auto_inc, left_cond_ptr)
         
         builder.branch(do_while_start_block)
-        builder.position_at_end(do_while_end_block)                                    
+        builder.position_at_end(do_while_end_block)                                  
     
     def for_statement(self, stat: dict, builder = None):
         builder = builder if builder else self.builder
@@ -397,11 +404,20 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         left_cond = self.evaluate_expression(condition['left'], builder)
         right_cond = self.evaluate_expression(condition['right'], builder)
+        
+        
+        left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
         op = condition['op']
         
-        if_cond = builder.icmp_signed(op,
-                                        builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                        builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.IntType):
+            right_cond = builder.sitofp(right_cond, left_cond.type)
+        elif isinstance(right_cond.type, ir.DoubleType) and isinstance(left_cond.type, ir.IntType):
+            left_cond = builder.sitofp(left_cond, right_cond.type)
+        if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.DoubleType):
+            if_cond = builder.fcmp_ordered(op, left_cond, right_cond)
+        else:
+            if_cond = builder.icmp_signed(op, left_cond, right_cond)
         
         then_block = func.append_basic_block(name="if.then")
         end_block = func.append_basic_block(name="if.end")
@@ -426,11 +442,20 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         left_cond = self.evaluate_expression(condition['left'], builder)
         right_cond = self.evaluate_expression(condition['right'], builder)
+        
+        left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
         op = condition['op']
         
-        if_cond = builder.icmp_signed(op,
-                                        builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                        builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond)
+        if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.IntType):
+            right_cond = builder.sitofp(right_cond, left_cond.type)
+        elif isinstance(right_cond.type, ir.DoubleType) and isinstance(left_cond.type, ir.IntType):
+            left_cond = builder.sitofp(left_cond, right_cond.type)
+        
+        if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.DoubleType):
+            if_cond = builder.fcmp_ordered(op, left_cond, right_cond)
+        else:
+            if_cond = builder.icmp_signed(op, left_cond, right_cond)
         
         then_block = func.append_basic_block(name="if.then")
         else_block = func.append_basic_block(name="if.else")
@@ -546,5 +571,18 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
