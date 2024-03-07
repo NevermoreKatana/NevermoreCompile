@@ -26,6 +26,7 @@ visitor.visit(tree)
 class EvalVisitor(nevermorecompilerVisitor):
     def __init__(self):
         self.variables = {}
+        self.tmp_variable = {}
         self.ast = []
     def visitStat(self, ctx: nevermorecompilerParser.StatContext):
         if ctx.ifStatement():
@@ -134,7 +135,7 @@ class EvalVisitor(nevermorecompilerVisitor):
     
     
     def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
-        fucn_name = ctx.functionName().getText()
+        func_name = ctx.functionName().getText()
         func_type = ctx.funcType().getText()
         return_ = ctx.ret()
 
@@ -142,12 +143,14 @@ class EvalVisitor(nevermorecompilerVisitor):
         
         args_dict = {}
         args_ctx = ctx.functionArgs()
+        
         if args_ctx:
             for i in range(args_ctx.getChildCount()):
                 arg_ctx = args_ctx.getChild(i)
                 if isinstance(arg_ctx, nevermorecompilerParser.TypeContext):
                     type_name = arg_ctx.getText()
                     var_name = args_ctx.getChild(i + 1).getText()
+                    self.variables[var_name] = {"type": type_name, "value": var_name}
                     args_dict[var_name] = type_name
 
         
@@ -160,7 +163,7 @@ class EvalVisitor(nevermorecompilerVisitor):
     
         function_body = {
                 "functionStatement": {
-                    "name": fucn_name,
+                    "name": func_name,
                     "type": func_type,
                     "args": args_dict,
                     "return": return_.functionExpr().getText() if return_ else None,
@@ -168,7 +171,9 @@ class EvalVisitor(nevermorecompilerVisitor):
                     "END_STATE": ";"
                 }
         }
-        
+        for k, v in args_dict.items():
+            del self.variables[k]
+        print(self.variables)
         return function_body
 
     def visitPrintBody(self, ctx: nevermorecompilerParser.PrintBodyContext):
@@ -401,4 +406,5 @@ if __name__ == '__main__':
         f.write(json.dumps(json.loads(ast), indent=1))
     print('AST построено')
     
+
 

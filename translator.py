@@ -56,7 +56,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         
     def item_bypass(self, items:dict, builder = None):
-
+        
         builder = builder if builder else self.builder
         for item in items:
             if 'stat' in item:
@@ -118,12 +118,12 @@ class TranslatorToLLVM(PrintFormatMixin):
 
         
     
-    def evaluate_expression(self, expr, builder = None, ):
+    def evaluate_expression(self, expr, builder = None):
         builder = builder if builder else self.builder
         if 'functionCall' in expr:
             expr = expr['functionCall']
             func_name = expr['name']
-            params = expr['params']
+            params = [ir.Constant(ir.IntType(32), int(param)) for param in expr['params']]
             value = builder.call(self.functions[func_name]['func'], params)
             return value
         elif expr['type'] == 'INT' or expr['type'] == 'int':
@@ -131,6 +131,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         elif expr['type'] == 'DOUBLE' or expr['type'] == 'double':
             return ir.Constant(ir.DoubleType(), expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
+            
             try:
                 return self.variables[expr['value']]['var']
             except:
@@ -490,10 +491,10 @@ class TranslatorToLLVM(PrintFormatMixin):
                 
     def function_statement(self, statement):
         func_statement = statement["functionStatement"]
+        args = func_statement['args']
         func_name  = func_statement['name']
         func_body = func_statement['body']
         f_type = func_statement["type"]
-        args = func_statement['args']
         type_entry = self.choose_type_entry[f_type]
         return_ = func_statement['return']
         
@@ -502,18 +503,22 @@ class TranslatorToLLVM(PrintFormatMixin):
         block = func.append_basic_block(name='entry')
         builder = ir.IRBuilder(block)
         self.functions[func_name] = {"builder": builder, "func": func}
-        
+
+        for arg, var_name in zip(func.args, args.keys()):
+            var = builder.alloca(self.choose_type_entry[args[var_name]], name=f"{var_name}_tmp")
+            builder.store(arg, var)
+            self.variables[var_name] = {"var": var, "func": builder.function.name}
+
         self.item_bypass(func_body, builder)
         type_ret = self.check_data_type(return_) if f_type != 'void' else None
         if f_type == 'void':
             self.functions[func_name]['builder'].ret_void()
-        elif type_ret == 'str':
-            self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
         elif type_ret == 'int':
             self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
-        elif type_ret == 'double':
-            self.functions[func_name]['builder'].ret(ir.Constant(ir.Double(), float(return_)))
-        
+        elif type_ret == 'str':
+            self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+
+
     def check_data_type(self, s):
         try:
             int(s)
@@ -526,12 +531,17 @@ class TranslatorToLLVM(PrintFormatMixin):
                 return "str"    
         
     def function_call(self, stat: dict):
-        function_name = stat['functionCall']['name']
-        function_type = stat['functionCall']['type']
-        
-        func = self.functions[function_name]
-        if function_type == 'void':
-            self.builder.call(func['func'], [])
+        pass
+        # print(stat)
+        # function_name = stat['functionCall']['name']
+        # function_type = stat['functionCall']['type']
+        # params = stat['params']
+        # print(params)
+        # func = self.functions[function_name]
+        # if function_type == 'void':
+        #     self.builder.call(func['func'], [])
+        # elif function_type == 'int':
+        #     self.builder.call(func['func'], [])
         
         
     
@@ -571,6 +581,11 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+
+
+
 
 
 

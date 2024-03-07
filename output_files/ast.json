@@ -7,92 +7,77 @@
    "return": null,
    "body": [
     {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "x",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 10
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "t",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 15
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "y",
-       "expr": [
-        {
-         "type": "DOUBLE",
-         "value": 15.1
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "z",
-       "expr": [
-        {
-         "type": "DOUBLE",
-         "value": 11.1
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "doWhileStatement": {
+     "functionStatement": {
+      "name": "calc",
+      "type": "int",
+      "args": {
+       "x": "int",
+       "y": "int"
+      },
+      "return": "result",
       "body": [
        {
         "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 110
-          },
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "result",
+          "expr": [
+           {
+            "type": "MUL",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "VAR",
+              "value": "x"
+             },
+             "right": {
+              "type": "VAR",
+              "value": "y"
+             }
+            },
+            "right": {
+             "type": "INT",
+             "value": 24
+            }
+           }
+          ],
           "END_STATE": ";"
          }
         }
        }
       ],
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "x"
+      "END_STATE": ";"
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "res",
+       "expr": [
+        {
+         "functionCall": {
+          "name": "calc",
+          "type": "int",
+          "params": [
+           "0",
+           "3"
+          ]
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "res"
        },
-       "left_ID": "x",
-       "right_ID": "t",
-       "op": "<",
-       "right": {
-        "type": "VAR",
-        "value": "t"
-       }
+       "END_STATE": ";"
       }
      }
     }

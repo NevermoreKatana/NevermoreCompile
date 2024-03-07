@@ -1,13 +1,9 @@
 void main(){
-    int x = 10;
-    int t = 15;
-    double y = 15.1;
-    double z = 11.1;
-
-    do{
-      print(110);
-    }
-    while( x < t);
-
+  int calc(int x, int y){
+    int result = x *y*24;
+    return result
+  };
+  int res = call int calc(0,3);;
+  print(res);
 
 };
