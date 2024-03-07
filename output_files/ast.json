@@ -7,63 +7,14 @@
    "return": null,
    "body": [
     {
-     "functionStatement": {
-      "name": "calc",
-      "type": "int",
-      "args": {
-       "x": "int",
-       "y": "int"
-      },
-      "return": "result",
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "result",
-          "expr": [
-           {
-            "type": "MUL",
-            "left": {
-             "type": "MUL",
-             "left": {
-              "type": "VAR",
-              "value": "x"
-             },
-             "right": {
-              "type": "VAR",
-              "value": "y"
-             }
-            },
-            "right": {
-             "type": "INT",
-             "value": 24
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "res",
+       "ID": "i",
        "expr": [
         {
-         "functionCall": {
-          "name": "calc",
-          "type": "int",
-          "params": [
-           "0",
-           "3"
-          ]
-         }
+         "type": "INT",
+         "value": 0
         }
        ],
        "END_STATE": ";"
@@ -72,13 +23,75 @@
     },
     {
      "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
-        "value": "res"
-       },
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "i1",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 1
+        }
+       ],
        "END_STATE": ";"
       }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "d",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 2.1
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "d1",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 2.3
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "ifStatement": {
+      "condition": {
+       "left": {
+        "type": "INT",
+        "value": 3
+       },
+       "op": "<",
+       "right": {
+        "type": "INT",
+        "value": 5
+       }
+      },
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 7
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ]
      }
     }
    ],

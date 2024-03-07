@@ -232,6 +232,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
+            print(var)
             builder.store(value, var)
         
         
@@ -296,6 +297,9 @@ class TranslatorToLLVM(PrintFormatMixin):
         right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
         if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
             raise TypeError(f"Нельзя использовать значения типа double в условии цикла while")
+        
+        original_value = builder.load(left_cond_ptr)
+        
         while_block = func.append_basic_block(name="while")
         end_while_block = func.append_basic_block(name="end_while")
         while_cond = builder.icmp_unsigned(op, 
@@ -316,6 +320,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         builder.cbranch(while_cond, while_block, end_while_block)
         builder.position_at_end(end_while_block)
+        builder.store(original_value, left_cond_ptr)
     
     def do_while_statement(self, stat: dict, builder = None):
         builder = builder if builder else self.builder
@@ -332,6 +337,9 @@ class TranslatorToLLVM(PrintFormatMixin):
         if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
             raise TypeError(f"Нельзя использовать значения типа double в условии цикла doWhile")
         op = condition['op']
+        
+        original_value = builder.load(left_cond_ptr)
+        
         do_while_start_block = func.append_basic_block(name="do_while_start")
         do_while_body_block = func.append_basic_block(name="do_while_body")
         do_while_end_block = func.append_basic_block(name="do_while_end")
@@ -351,7 +359,8 @@ class TranslatorToLLVM(PrintFormatMixin):
         builder.store(auto_inc, left_cond_ptr)
         
         builder.branch(do_while_start_block)
-        builder.position_at_end(do_while_end_block)                                  
+        builder.position_at_end(do_while_end_block)
+        builder.store(original_value, left_cond_ptr)                                  
     
     def for_statement(self, stat: dict, builder = None):
         builder = builder if builder else self.builder
@@ -366,8 +375,8 @@ class TranslatorToLLVM(PrintFormatMixin):
         if 'stat' in for_init:
             stat = for_init['stat']
             if 'assignmentStatement' in stat:
-                self.assign_statement(stat)
-                
+                self.assign_statement(stat, builder)
+        
         left_cond = self.evaluate_expression(condition['left'], builder)
         right_cond = self.evaluate_expression(condition['right'], builder)
         op = condition['op']
@@ -531,17 +540,13 @@ class TranslatorToLLVM(PrintFormatMixin):
                 return "str"    
         
     def function_call(self, stat: dict):
-        pass
-        # print(stat)
-        # function_name = stat['functionCall']['name']
-        # function_type = stat['functionCall']['type']
-        # params = stat['params']
-        # print(params)
-        # func = self.functions[function_name]
-        # if function_type == 'void':
-        #     self.builder.call(func['func'], [])
-        # elif function_type == 'int':
-        #     self.builder.call(func['func'], [])
+        function_name = stat['functionCall']['name']
+        function_type = stat['functionCall']['type']
+
+        func = self.functions[function_name]
+        if function_type == 'void':
+            self.builder.call(func['func'], [])
+
         
         
     
@@ -581,23 +586,6 @@ if __name__ == '__main__':
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
