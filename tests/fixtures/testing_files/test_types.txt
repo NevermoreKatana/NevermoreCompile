@@ -1,0 +1,11 @@
+void main(){
+  int i = 40;
+  int c = 60;
+  print(i);
+  print(c);
+  double x = 1.123;
+  double y = 3.33231323;
+  print(x);
+  print(y);
+
+};

@@ -1,0 +1,32 @@
+global: int:j;
+void main(){
+  int j = 2;
+  int x = 0;
+  int y = 5;
+  int z = 1;
+
+  do{
+  print(1);
+  }
+  while(x<y);
+
+  do{
+    int z = z+z;
+  }
+  while(x<y);
+  print(z);
+
+  void loop(){
+    int t = 0;
+    int q = 5;
+    do{
+      int j = j+j;
+    }
+    while(t<q);
+  };
+
+  call void loop();
+  print(j);
+
+
+};
