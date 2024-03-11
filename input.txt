@@ -1,17 +1,10 @@
 void main(){
-  int i = 0;
-  int i1 = 1;
+  int i = 40;
+  int c = 60;
 
-  double d = 2.1;
-  double d1 = 2.3;
-
-
-  if 3<5{
-    print(7);
+  while (i < c){
+    print(i);
   };
-
-
-
-
+  print(i);
 
 };

@@ -4,23 +4,10 @@ from antlr4_gen.grammar.nevermorecompilerParser import nevermorecompilerParser
 from antlr4_gen.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
 from antlr4_gen.grammar.nevermorecompilerListener import nevermorecompilerListener
 from llvmlite import ir, binding
-
 import json
 
-with open('input.txt', 'r') as file:
-    input_text = file.read()
 
-input_stream = InputStream(input_text)
-lexer = nevermorecompilerLexer(input_stream)
-stream = CommonTokenStream(lexer)
-parser = nevermorecompilerParser(stream)
-tree = parser.prog()
 
-# listener = nevermorecompilerListener()
-# walker = ParseTreeWalker()
-visitor = nevermorecompilerVisitor()
-visitor.visit(tree)
-# walker.walk(listener, tree)
 
 
 class EvalVisitor(nevermorecompilerVisitor):
@@ -173,7 +160,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         }
         for k, v in args_dict.items():
             del self.variables[k]
-        print(self.variables)
+
         return function_body
 
     def visitPrintBody(self, ctx: nevermorecompilerParser.PrintBodyContext):
@@ -397,14 +384,31 @@ class EvalVisitor(nevermorecompilerVisitor):
                 flattened_expr.extend(self.flatten_expr(sub_expr))
         return flattened_expr
 
+def reader(filename):
+    with open(filename, 'r') as file:
+        input_text = file.read()
+    return input_text
 
-if __name__ == '__main__':
+def ast_creator(input_file=None, output_file=None):
+    if input_file is None:
+        input_file = 'input.txt'
+    elif output_file is None:
+        output_file = 'output_files/ast.json'
+    input_text = reader(input_file)
 
+    input_stream = InputStream(input_text)
+    lexer = nevermorecompilerLexer(input_stream)
+    stream = CommonTokenStream(lexer)
+    parser = nevermorecompilerParser(stream)
+    tree = parser.prog()
+
+    visitor = nevermorecompilerVisitor()
+    visitor.visit(tree)
+    
+    
     ast_visitor = EvalVisitor()
     ast = ast_visitor.visit(tree)
-    with open('output_files/ast.json', 'w') as f:
+    with open(output_file, 'w') as f:
         f.write(json.dumps(json.loads(ast), indent=1))
     print('AST построено')
     
-
-

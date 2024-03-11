@@ -232,7 +232,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
-            print(var)
+
             builder.store(value, var)
         
         
@@ -579,13 +579,10 @@ class TranslatorToLLVM(PrintFormatMixin):
         self.builder.ret_void()
 
 
-if __name__ == '__main__':
+def translate_to_llvm():
     tolvm = TranslatorToLLVM()
     tolvm.json_reader()
     tolvm.builder_init()
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
-
-
-

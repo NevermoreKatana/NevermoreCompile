@@ -14,7 +14,7 @@
        "expr": [
         {
          "type": "INT",
-         "value": 0
+         "value": 40
         }
        ],
        "END_STATE": ";"
@@ -25,11 +25,11 @@
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "i1",
+       "ID": "c",
        "expr": [
         {
          "type": "INT",
-         "value": 1
+         "value": 60
         }
        ],
        "END_STATE": ";"
@@ -37,46 +37,18 @@
      }
     },
     {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "d",
-       "expr": [
-        {
-         "type": "DOUBLE",
-         "value": 2.1
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "d1",
-       "expr": [
-        {
-         "type": "DOUBLE",
-         "value": 2.3
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "ifStatement": {
+     "whileStatement": {
       "condition": {
        "left": {
-        "type": "INT",
-        "value": 3
+        "type": "VAR",
+        "value": "i"
        },
+       "left_ID": "i",
+       "right_ID": "c",
        "op": "<",
        "right": {
-        "type": "INT",
-        "value": 5
+        "type": "VAR",
+        "value": "c"
        }
       },
       "body": [
@@ -84,14 +56,25 @@
         "stat": {
          "printStatement": {
           "expr": {
-           "type": "INT",
-           "value": 7
+           "type": "ID",
+           "value": "i"
           },
           "END_STATE": ";"
          }
         }
        }
       ]
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "i"
+       },
+       "END_STATE": ";"
+      }
      }
     }
    ],

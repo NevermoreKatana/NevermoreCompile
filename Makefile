@@ -6,7 +6,7 @@ to_llvm:
 	clang output_files/output.ll -o output_files/output
 
 compile:
-	python compiler.py
+	python compiler.py -f input.txt
 
 full:
 	make compile
@@ -15,3 +15,4 @@ full:
 
 install:
 	pip install -r requirements.txt
+
