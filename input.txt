@@ -1,3 +1,13 @@
 void main(){
+    int x = 15;
+    double y = 2.5;
+    int z = 0;
+
+    void second(int x, double y){
+        print(x);
+        print(y);
+        print(z);
+    };
+    call void second(x, 1)
 
 };

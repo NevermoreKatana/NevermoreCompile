@@ -280,8 +280,11 @@ class TranslatorToLLVM(PrintFormatMixin):
             return float(expr['value'])
         elif expr['type'] == 'ID' or expr['type'] == 'VAR':
             if not isinstance(self.variables[expr['value']], ir.GlobalVariable):
+                if f"{expr['value']}_tmp" in self.variables : 
+                    return self.variables[f"{expr['value']}_tmp"]['var']
                 if expr['value'] in self.variables and builder.function.name != self.variables[expr['value']]['func']: 
                     raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}")
+                
                 else:
                     try:
                         return self.variables[expr['value']]['var']
@@ -562,7 +565,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         for arg, var_name in zip(func.args, args.keys()):
             var = builder.alloca(self.choose_type_entry[args[var_name]], name=f"{var_name}_tmp")
             builder.store(arg, var)
-            self.variables[var_name] = {"var": var, "func": builder.function.name}
+            self.variables[f"{var_name}_tmp"] = {"var": var, "func": builder.function.name}
 
         self.item_bypass(func_body, builder)
         type_ret = self.check_data_type(return_) if f_type != 'void' else None
@@ -573,6 +576,8 @@ class TranslatorToLLVM(PrintFormatMixin):
             self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
         elif type_ret == 'str':
             self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+            
+        
 
 
     def check_data_type(self, s):
@@ -597,7 +602,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         func = self.functions[function_name]
         
         expected_types = [arg.type for arg in func['func'].args]
-        
+
         params = []
         for i, arg in enumerate(function_args):
             if arg in self.variables:
@@ -612,18 +617,17 @@ class TranslatorToLLVM(PrintFormatMixin):
                 try:
                     arg = int(arg)
                 except ValueError:
-                    raise TypeError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
-                
-                params.append(ir.Constant(ir.IntType(32), arg))
+                    raise ValueError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
+                finally:
+                    params.append(ir.Constant(ir.IntType(32), arg))
                 
             elif isinstance(expected_types[i], ir.DoubleType):
                 try:
                     arg = float(arg)
-                    if arg.is_integer():
-                        raise TypeError(f"Аргумент {i} должен быть типа 'double', а не 'int'")
-                except ValueError:
-                    raise TypeError(f"Аргумент {i} должен быть типа 'double'")
-                params.append(ir.Constant(ir.DoubleType(), arg))
+                    if arg.is_integer():     
+                        raise ValueError(f"Аргумент {i} должен быть типа 'double'")
+                finally:
+                    params.append(ir.Constant(ir.DoubleType(), arg))
 
         if function_type == 'void':
             self.builder.call(func['func'], params) 

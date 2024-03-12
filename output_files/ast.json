@@ -5,7 +5,110 @@
    "type": "void",
    "args": {},
    "return": null,
-   "body": [],
+   "body": [
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 15
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "y",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 2.5
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "z",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 0
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "second",
+      "type": "void",
+      "args": {
+       "x": "int",
+       "y": "double"
+      },
+      "return": null,
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "x"
+          },
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "y"
+          },
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "z"
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionCall": {
+      "name": "second",
+      "type": "void",
+      "params": [
+       "x",
+       "1"
+      ]
+     }
+    }
+   ],
    "END_STATE": ";"
   }
  }
