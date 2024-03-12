@@ -29,7 +29,7 @@ ifBody:  (stat)* ;
 //Оператор отслеживания тела иначе в "если" и "если-иначе"(Parser Rule)
 elseBody: (stat)* ;
 //Оператор цикла "for"(Parser Rule)
-forStatement: 'for' LPAREN forInit equation END_STATE forModify RPAREN RCORNER forBody LCORNER;
+forStatement: 'for' LPAREN forInit equation END_STATE forModify RPAREN RCORNER forBody LCORNER END_STATE;
 //Оператор отслеживания увелечения цикла(Parser Rule)
 forModify: ID INCREMENT;
 //Оператор отслеживания инициализации цикла "фор"(Parser Rule)

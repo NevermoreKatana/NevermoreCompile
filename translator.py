@@ -79,7 +79,7 @@ class TranslatorToLLVM(PrintFormatMixin):
                 if item['functionStatement']['name'] not in self.functions:
                     self.function_statement(item)
             elif 'functionCall' in item:
-                self.function_call(item)
+                self.function_call(item, builder)
         
         
     def json_reader(self, input_file: str = "output_files/ast.json") -> None:
@@ -121,9 +121,39 @@ class TranslatorToLLVM(PrintFormatMixin):
     def evaluate_expression(self, expr, builder = None):
         builder = builder if builder else self.builder
         if 'functionCall' in expr:
+            #Дописать
             expr = expr['functionCall']
             func_name = expr['name']
-            params = [ir.Constant(ir.IntType(32), int(param)) for param in expr['params']]
+            function_args = expr['params']
+            func = self.functions[func_name]
+            expected_types = [arg.type for arg in func['func'].args]
+        
+            params = []
+            for i, arg in enumerate(function_args):
+                if arg in self.variables:
+                    var_info = self.variables[arg]
+                    arg_type = var_info['var'].type.pointee
+                    if arg_type == expected_types[i]:
+                        params.append(builder.load(var_info['var']))
+                    else:
+                        raise TypeError(f"Аргумент {i} должен быть типом '{expected_types[i]}', а не '{arg_type}'")
+
+                elif isinstance(expected_types[i], ir.IntType):
+                    try:
+                        arg = int(arg)
+                    except ValueError:
+                        raise TypeError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
+                    
+                    params.append(ir.Constant(ir.IntType(32), arg))
+                    
+                elif isinstance(expected_types[i], ir.DoubleType):
+                    try:
+                        arg = float(arg)
+                        if arg.is_integer():
+                            raise TypeError(f"Аргумент {i} должен быть типа 'double', а не 'int'")
+                    except ValueError:
+                        raise TypeError(f"Аргумент {i} должен быть типа 'double'")
+                    params.append(ir.Constant(ir.DoubleType(), arg))
             value = builder.call(self.functions[func_name]['func'], params)
             return value
         elif expr['type'] == 'INT' or expr['type'] == 'int':
@@ -221,10 +251,12 @@ class TranslatorToLLVM(PrintFormatMixin):
                 var = self.variables[var_name]['var']
             
             elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and var_type == 'int' or var_type == 'INT':
-                raise ValueError(f"{var_name} не сущетсвует в области")
+                var = builder.alloca(ir.IntType(32), name=var_name)
+                self.variables[var_name] = {"var":var, "func": builder.function.name}
                 
             elif var_name in self.variables and self.variables[var_name]['func'] != builder.function.name and var_type == 'double' or var_type == 'DOUBLE':
-                raise ValueError(f"{var_name} не сущетсвует в области")
+                var = builder.alloca(ir.DoubleType(), name=var_name)
+                self.variables[var_name] = {"var":var, "func": builder.function.name}
         else:
             var = self.variables[var_name]
         if not self.assign_type_checker(var, var_type):
@@ -295,6 +327,9 @@ class TranslatorToLLVM(PrintFormatMixin):
         right_cond_ptr = self.evaluate_expression(condition['right'],builder)
         left_cond = builder.load(left_cond_ptr) if isinstance(left_cond_ptr, ir.AllocaInstr) else left_cond_ptr
         right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
+        
+        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
             raise TypeError(f"Нельзя использовать значения типа double в условии цикла while")
         
@@ -334,6 +369,9 @@ class TranslatorToLLVM(PrintFormatMixin):
         right_cond_ptr = self.evaluate_expression(condition['right'],builder)
         left_cond = builder.load(left_cond_ptr) if isinstance(left_cond_ptr, ir.AllocaInstr) else left_cond_ptr
         right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
+        
+        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
             raise TypeError(f"Нельзя использовать значения типа double в условии цикла doWhile")
         op = condition['op']
@@ -418,6 +456,9 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
         right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
+        
+        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         op = condition['op']
         
         if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.IntType):
@@ -455,13 +496,16 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
         right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
+        
+        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
+        
         op = condition['op']
         
         if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.IntType):
             right_cond = builder.sitofp(right_cond, left_cond.type)
         elif isinstance(right_cond.type, ir.DoubleType) and isinstance(left_cond.type, ir.IntType):
             left_cond = builder.sitofp(left_cond, right_cond.type)
-        
         if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.DoubleType):
             if_cond = builder.fcmp_ordered(op, left_cond, right_cond)
         else:
@@ -520,6 +564,7 @@ class TranslatorToLLVM(PrintFormatMixin):
 
         self.item_bypass(func_body, builder)
         type_ret = self.check_data_type(return_) if f_type != 'void' else None
+        
         if f_type == 'void':
             self.functions[func_name]['builder'].ret_void()
         elif type_ret == 'int':
@@ -537,17 +582,54 @@ class TranslatorToLLVM(PrintFormatMixin):
                 float(s)
                 return "double"
             except ValueError:
-                return "str"    
+                return "str"  
+            finally:
+                raise TypeError("Функция должна возвращать значение!")  
         
-    def function_call(self, stat: dict):
+    def function_call(self, stat: dict, builder = None):
+        builder = builder if builder is not None else self.builder
         function_name = stat['functionCall']['name']
         function_type = stat['functionCall']['type']
-
-        func = self.functions[function_name]
-        if function_type == 'void':
-            self.builder.call(func['func'], [])
-
+        function_args = stat['functionCall']['params']
         
+        func = self.functions[function_name]
+        
+        expected_types = [arg.type for arg in func['func'].args]
+        
+        params = []
+        for i, arg in enumerate(function_args):
+            if arg in self.variables:
+                var_info = self.variables[arg]
+                arg_type = var_info['var'].type.pointee
+                if arg_type == expected_types[i]:
+                    params.append(builder.load(var_info['var']))
+                else:
+                    raise TypeError(f"Аргумент {i} должен быть типом '{expected_types[i]}', а не '{arg_type}'")
+
+            elif isinstance(expected_types[i], ir.IntType):
+                try:
+                    arg = int(arg)
+                except ValueError:
+                    raise TypeError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
+                
+                params.append(ir.Constant(ir.IntType(32), arg))
+                
+            elif isinstance(expected_types[i], ir.DoubleType):
+                try:
+                    arg = float(arg)
+                    if arg.is_integer():
+                        raise TypeError(f"Аргумент {i} должен быть типа 'double', а не 'int'")
+                except ValueError:
+                    raise TypeError(f"Аргумент {i} должен быть типа 'double'")
+                params.append(ir.Constant(ir.DoubleType(), arg))
+
+        if function_type == 'void':
+            self.builder.call(func['func'], params) 
+        elif function_type == 'int':
+            self.builder.call(func['func'], params) 
+
+
+
         
     
     def ast_bypass(self) -> None:
@@ -586,3 +668,14 @@ def translate_to_llvm():
     tolvm.ast_bypass()
     tolvm.ll_writer()
     print("Промежуточный код готов!")
+
+
+if __name__ == "__main__":
+    translate_to_llvm()
+
+
+
+
+
+
+

@@ -16,12 +16,12 @@ def main():
     ast_file = args.ast if args.ast else None
     output_file = f'{args.output}.txt' if args.output else 'output_files/programm_output.txt'
     
+    subprocess.run(["clear"])
     print("Старт")
     ast_creator(input_file, ast_file)
     translate_to_llvm()
     
     subprocess.run(["clang", "output_files/output.ll", "-o", "output_files/output"])
-    # subprocess.run(["clear"])
     print("\033[31mEXECUTABLE\033[0m", "\033[32mOUTPUT\033[0m")
     with open(output_file, 'w') as f:
         result = subprocess.run(["./output_files/output"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False, universal_newlines=True)

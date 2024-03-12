@@ -1,61 +1,13 @@
-global: int:j;
+global: int: x;
 void main(){
-  int j = 1;
-  int x = 0;
-  int y = 2;
-  double d = 2.3;
-  double z = 3.3;
-
-  if x<y{
-    print(j);
+  int x1 = 15;
+  double y1 = 2.2;
+  int test(double x, int y){
+    print(x);
+    print(y);
+    return 1
   };
 
-  if x>y{
-    print(j);
-  }
-  else {
-    print(22);
-  };
-
-  if d<z{
-    print(j);
-  };
-
-  if d>z{
-    print(j);
-  }
-  else {
-    print(22);
-  };
-
-  if d!=z{
-    print(j);
-  };
-
-  if d == z{
-    print(j);
-  }
-  else{
-    print(22);
-  };
-
-  if x!=z{
-    print(j);
-  };
-  if x == z{
-    print(j);
-  }
-  else {
-    print(22);
-  };
-
-  if d > x{
-    print(j);
-  };
-  if z > y{
-    print(j);
-  };
-
-
-
+  int result = call int test(1.1,2);;
+  print(result);
 };
