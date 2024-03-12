@@ -1,5 +1,7 @@
 # NevermoreCompile
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2872b16241524d4fb703e2ad4a2eff3e)](https://app.codacy.com/gh/NevermoreKatana/NevermoreCompile?utm_source=github.com&utm_medium=referral&utm_content=NevermoreKatana/NevermoreCompile&utm_campaign=Badge_Grade)
+
 # Install
 ```make
 make install
