@@ -1,43 +1,12 @@
 import llvmlite.ir as ir 
 import json
 from ini import *
-
-class PrintFormatMixin:
-    def __init__(self, module) -> None:
-        self.int32_type = ir.IntType(32)
-        self.double_type = ir.DoubleType()
-        self.int8_ptr_type = ir.IntType(8).as_pointer()
-        printf_type = ir.FunctionType(ir.IntType(32), [self.int8_ptr_type], var_arg=True)
-        self.printf_func = ir.Function(module, printf_type, "printf")
-
-    def create_print_function(self, value, builder):
-        if isinstance(value, int):
-            format_str = "%d\n\0"
-            value_type = self.int32_type
-            value_ptr = ir.Constant(ir.IntType(32), value)
-        elif isinstance(value, float):
-            format_str = "%f\n\0"
-            value_type = self.double_type
-            value_ptr = ir.Constant(ir.DoubleType(), value)
-        else:
-            if value.type == ir.IntType(32):
-                format_str = "%d\n\0"
-            elif value.type == ir.DoubleType():
-                format_str = "%f\n\0"
-            else:
-                raise ValueError("Unsupported value type")
-            value_ptr = value
-
-        format_str_array = ir.ArrayType(ir.IntType(8), len(format_str))
-        format_str_ptr = builder.alloca(format_str_array)
-        format_str_const = ir.Constant(format_str_array, bytearray(format_str.encode("utf-8")))
-        builder.store(format_str_const, format_str_ptr)
-
-        builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int8_ptr_type), value_ptr])
+import sys
+from mixins import PrintFormatMixin, CheckersMixin
 
 
 
-class TranslatorToLLVM(PrintFormatMixin):
+class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
     choose_type_entry = {
         "void": ir.VoidType(),
         "int": ir.IntType(32),
@@ -171,7 +140,11 @@ class TranslatorToLLVM(PrintFormatMixin):
         elif expr['type'] in ['DIV', 'MUL', 'ADD', 'SUB']:
             return self.execute_math_operation(expr, builder)
         else:
-            raise ValueError(f"Unsupported expression type: {expr['type']}")
+            try:
+                raise ValueError(f"Unsupported expression type: {expr['type']}")
+            except ValueError as e:
+                print(str(e))
+                sys.exit(1)
 
     def execute_math_operation(self, expr, builder = None):
         builder = builder if builder else self.builder
@@ -217,12 +190,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         
         
     
-    def assign_type_checker(self, var, type_):
-        if type_ == 'double':
-            type_ = ir.DoubleType
-        if type_ == 'int':
-            type_ = ir.IntType
-        return isinstance(var.type.pointee, type_)
+    
     
     def assign_statement(self, stat:dict, builder = None):
         builder = builder if builder else self.builder
@@ -283,7 +251,11 @@ class TranslatorToLLVM(PrintFormatMixin):
                 if f"{expr['value']}_tmp" in self.variables : 
                     return self.variables[f"{expr['value']}_tmp"]['var']
                 if expr['value'] in self.variables and builder.function.name != self.variables[expr['value']]['func']: 
-                    raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}")
+                    try:
+                        raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}")
+                    except ValueError as e:
+                        print(str(e))
+                        sys.exit(1)
                 
                 else:
                     try:
@@ -296,8 +268,12 @@ class TranslatorToLLVM(PrintFormatMixin):
                 except:
                     return self.variables[expr['value']]
         else:
-            raise ValueError(f"Unsupported expression type: {expr['type']}")
-    
+            try:
+                raise ValueError(f"Unsupported expression type: {expr['type']}")
+            except ValueError as e:
+                print(str(e))
+                sys.exit(1)
+                
     def choose_print_type(self, value, builder = None):
         builder = builder if builder else self.builder
         
@@ -336,7 +312,11 @@ class TranslatorToLLVM(PrintFormatMixin):
         left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
         right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
-            raise TypeError(f"Нельзя использовать значения типа double в условии цикла while")
+            try:
+                raise TypeError(f"Нельзя использовать значения типа double в условии цикла while")
+            except TypeError as e:
+                print(str(e))
+                sys.exit(1) 
         
         original_value = builder.load(left_cond_ptr)
         
@@ -378,7 +358,11 @@ class TranslatorToLLVM(PrintFormatMixin):
         left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
         right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
-            raise TypeError(f"Нельзя использовать значения типа double в условии цикла doWhile")
+            try:
+                raise TypeError(f"Нельзя использовать значения типа double в условии цикла doWhile")
+            except TypeError as e:
+                print(str(e))
+                sys.exit(1)
         op = condition['op']
         
         original_value = builder.load(left_cond_ptr)
@@ -580,18 +564,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         
 
 
-    def check_data_type(self, s):
-        try:
-            int(s)
-            return "int"
-        except ValueError:
-            try:
-                float(s)
-                return "double"
-            except ValueError:
-                return "str"  
-            finally:
-                raise TypeError("Функция должна возвращать значение!")  
+    
         
     def function_call(self, stat: dict, builder = None):
         builder = builder if builder is not None else self.builder
@@ -611,21 +584,33 @@ class TranslatorToLLVM(PrintFormatMixin):
                 if arg_type == expected_types[i]:
                     params.append(builder.load(var_info['var']))
                 else:
-                    raise TypeError(f"Аргумент {i} должен быть типом '{expected_types[i]}', а не '{arg_type}'")
+                    try:
+                        raise TypeError(f"Аргумент {i} должен быть типом '{expected_types[i]}', а не '{arg_type}'")
+                    except TypeError as e:
+                        print(str(e))
+                        sys.exit(1)
 
             elif isinstance(expected_types[i], ir.IntType):
                 try:
                     arg = int(arg)
                 except ValueError:
-                    raise ValueError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
+                    try:    
+                        raise ValueError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
+                    except ValueError as e:
+                        print(str(e))
+                        sys.exit(1)
                 finally:
                     params.append(ir.Constant(ir.IntType(32), arg))
                 
             elif isinstance(expected_types[i], ir.DoubleType):
                 try:
                     arg = float(arg)
-                    if arg.is_integer():     
-                        raise ValueError(f"Аргумент {i} должен быть типа 'double'")
+                    if arg.is_integer():   
+                        try:  
+                            raise ValueError(f"Аргумент {i} должен быть типа 'double'")
+                        except ValueError as e:
+                            print(str(e))
+                            sys.exit(1)
                 finally:
                     params.append(ir.Constant(ir.DoubleType(), arg))
 

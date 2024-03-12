@@ -3,11 +3,5 @@ void main(){
     double y = 2.5;
     int z = 0;
 
-    void second(int x, double y){
-        print(x);
-        print(y);
-        print(z);
-    };
-    call void second(x, 1)
-
+    do{}while(x<y);
 };

@@ -52,60 +52,21 @@
      }
     },
     {
-     "functionStatement": {
-      "name": "second",
-      "type": "void",
-      "args": {
-       "x": "int",
-       "y": "double"
-      },
-      "return": null,
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "x"
-          },
-          "END_STATE": ";"
-         }
-        }
+     "doWhileStatement": {
+      "body": [],
+      "condition": {
+       "left": {
+        "type": "VAR",
+        "value": "x"
        },
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "y"
-          },
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "z"
-          },
-          "END_STATE": ";"
-         }
-        }
+       "left_ID": "x",
+       "right_ID": "y",
+       "op": "<",
+       "right": {
+        "type": "VAR",
+        "value": "y"
        }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionCall": {
-      "name": "second",
-      "type": "void",
-      "params": [
-       "x",
-       "1"
-      ]
+      }
      }
     }
    ],
