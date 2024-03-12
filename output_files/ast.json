@@ -7,50 +7,96 @@
    "return": null,
    "body": [
     {
-     "forStatement": {
-      "init": {
-       "stat": {
-        "assignmentStatement": {
-         "type": "int",
-         "ID": "i",
-         "expr": [
-          {
-           "type": "INT",
-           "value": 15
-          }
-         ],
-         "END_STATE": ";"
-        }
-       }
-      },
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "i"
-       },
-       "op": ">",
-       "right": {
-        "type": "INT",
-        "value": 5
-       }
-      },
-      "modify": {
-       "ID": "i",
-       "op": "--"
+     "functionStatement": {
+      "name": "second",
+      "type": "int",
+      "args": {},
+      "return": {
+       "type": "INT",
+       "value": 1
       },
       "body": [
        {
         "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 11
-          },
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "x",
+          "expr": [
+           {
+            "type": "INT",
+            "value": 10
+           }
+          ],
           "END_STATE": ";"
          }
         }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "y",
+          "expr": [
+           {
+            "type": "INT",
+            "value": 12
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "whileStatement": {
+         "condition": {
+          "left": {
+           "type": "VAR",
+           "value": "x"
+          },
+          "left_ID": "x",
+          "right_ID": "y",
+          "op": "<",
+          "right": {
+           "type": "VAR",
+           "value": "y"
+          }
+         },
+         "body": [
+          {}
+         ]
+        }
        }
-      ]
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "functionCall": {
+          "name": "second",
+          "type": "int",
+          "params": []
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "x"
+       },
+       "END_STATE": ";"
+      }
      }
     }
    ],

@@ -1,5 +1,11 @@
 void main(){
-for (int i = 15; i > 5; i--){
-    print(11);
-};
+    int second(){
+        int x = 10;
+        int y = 12;
+        while(x<y){
+            return 1;
+        };
+    };
+    int x = call int second();
+    print(x);
 };

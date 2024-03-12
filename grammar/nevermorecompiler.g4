@@ -17,6 +17,7 @@ stat
     |globalStatement
     |functionStatement
     |functionCall
+    |ret
     |NEWLINE
     ;
 

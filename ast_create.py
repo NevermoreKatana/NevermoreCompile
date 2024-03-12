@@ -36,6 +36,8 @@ class EvalVisitor(nevermorecompilerVisitor):
             return self.visitFunctionStatement(ctx.functionStatement())
         elif ctx.functionCall():
             return self.visitFunctionCall(ctx.functionCall())
+        elif ctx.ret():
+            return self.visitRet(ctx.ret())
 
 
     def visitProg(self, ctx: nevermorecompilerParser.ProgContext):               
@@ -120,6 +122,28 @@ class EvalVisitor(nevermorecompilerVisitor):
         }
         return function_call
     
+    def visitRet(self, ctx: nevermorecompilerParser.RetContext):
+        return {"ret": self.visitExpr(ctx.functionExpr())}
+    
+    def find_and_remove_return(self, node):
+        if isinstance(node, dict):
+            if 'ret' in node:
+                return_value = node['ret']
+                del node['ret']
+                return return_value, node
+            for key in node:
+                result, updated_node = self.find_and_remove_return(node[key])
+                if result is not None:
+                    node[key] = updated_node
+                    return result, node
+        elif isinstance(node, list):
+            for i, item in enumerate(node):
+                result, updated_node = self.find_and_remove_return(item)
+                if result is not None:
+                    node[i] = updated_node
+                    return result, node
+        return None, node
+
     
     def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
         func_name = ctx.functionName().getText()
@@ -143,24 +167,25 @@ class EvalVisitor(nevermorecompilerVisitor):
         
         for stat_ctx in ctx.functionBody().stat():
             body_node = self.visit(stat_ctx)
+            return_, body_node = self.find_and_remove_return(body_node)
             if body_node in self.ast:
                 self.ast.remove(body_node)
             if body_node:
                 function_body.append(body_node)
+
     
         function_body = {
                 "functionStatement": {
                     "name": func_name,
                     "type": func_type,
                     "args": args_dict,
-                    "return": return_.functionExpr().getText() if return_ else None,
+                    "return": return_ if return_ else None,
                     "body": function_body,
                     "END_STATE": ";"
                 }
         }
         for k, v in args_dict.items():
             del self.variables[k]
-
         return function_body
 
     def visitPrintBody(self, ctx: nevermorecompilerParser.PrintBodyContext):

@@ -541,7 +541,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         func_body = func_statement['body']
         f_type = func_statement["type"]
         type_entry = self.choose_type_entry[f_type]
-        return_ = func_statement['return']
+        return_ = func_statement['return']['value']
         
         func_type = ir.FunctionType(type_entry, [self.choose_type_entry[arg] for key, arg in args.items()])
         func = ir.Function(self.module, func_type, name=func_name)
@@ -666,4 +666,6 @@ def translate_to_llvm():
 
 if __name__ == "__main__":
     translate_to_llvm()
+
+
 
