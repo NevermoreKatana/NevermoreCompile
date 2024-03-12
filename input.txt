@@ -1,7 +1,29 @@
+global: int:j;
 void main(){
-    int x = 15;
-    double y = 2.5;
-    int z = 0;
+  int j = 2;
+  int x = 0;
+  int y = 5;
+  int z = 1;
 
-    do{}while(x<y);
+  while(x<y){
+  print(1);
+  };
+
+  while(x<y){
+    int z = z+z;
+  };
+  print(z);
+
+  void loop(){
+    int t = 0;
+    int q = 5;
+    while(t<q){
+      int j = j+j;
+    };
+  };
+
+  call void loop()
+  print(j);
+
+
 };

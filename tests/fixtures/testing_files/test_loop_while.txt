@@ -22,7 +22,7 @@ void main(){
     };
   };
 
-  call void loop();
+  call void loop()
   print(j);
 
 
