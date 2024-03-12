@@ -394,7 +394,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         for_statement = stat['forStatement']
         for_init = for_statement['init']
         condition = for_statement['condition']
-        for_modify = for_statement['modify']
+        for_modify = for_statement['modify']['op']
         for_body = for_statement['body']
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
@@ -418,9 +418,12 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         
         builder.position_at_end(for_body_block)
         self.item_bypass(for_body, builder)
-                
-        auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
-                                    ir.Constant(ir.IntType(32), 1))
+        if for_modify == '++':      
+            auto_inc = builder.add(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                        ir.Constant(ir.IntType(32), 1))
+        elif for_modify == '--':
+            auto_inc = builder.sub(builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond,
+                                        ir.Constant(ir.IntType(32), 1))
         builder.store(auto_inc, left_cond)
         
         for_cond = builder.icmp_unsigned(op,
@@ -663,3 +666,4 @@ def translate_to_llvm():
 
 if __name__ == "__main__":
     translate_to_llvm()
+

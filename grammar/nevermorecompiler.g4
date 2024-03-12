@@ -31,7 +31,7 @@ elseBody: (stat)* ;
 //Оператор цикла "for"(Parser Rule)
 forStatement: 'for' LPAREN forInit equation END_STATE forModify RPAREN RCORNER forBody LCORNER END_STATE;
 //Оператор отслеживания увелечения цикла(Parser Rule)
-forModify: ID INCREMENT;
+forModify: ID (INCREMENT|DECREMENT);
 //Оператор отслеживания инициализации цикла "фор"(Parser Rule)
 forInit: type ID EQ expr END_STATE;
 //Оператор отслеживания тела цикла "фор"(Parser Rule)
@@ -148,6 +148,7 @@ LCORNER: '}';
 
 // Оператор инкремента(Lexer Token)
 INCREMENT: ADD ADD;
+DECREMENT: SUB SUB;
 
 // Оператор присваивания(Lexer Token)
 EQ: '=';

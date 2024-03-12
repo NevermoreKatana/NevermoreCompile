@@ -316,7 +316,11 @@ class EvalVisitor(nevermorecompilerVisitor):
 
     def visitForModify(self, ctx:nevermorecompilerParser.ForModifyContext):
         id_name = ctx.ID().getText()
-        op = ctx.INCREMENT().getText()
+        if ctx.INCREMENT():
+            op = ctx.INCREMENT().getText()
+        elif ctx.DECREMENT():
+            op = ctx.DECREMENT().getText()
+
         return {"ID": id_name, "op": op}
 
     def visitEquation(self, ctx: nevermorecompilerParser.EquationContext):
