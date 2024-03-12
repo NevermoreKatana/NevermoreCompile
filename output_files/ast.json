@@ -12,57 +12,39 @@
       "type": "int",
       "args": {},
       "return": {
-       "type": "INT",
-       "value": 1
+       "type": "VAR",
+       "value": "x"
       },
       "body": [
        {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "x",
-          "expr": [
-           {
-            "type": "INT",
-            "value": 10
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "y",
-          "expr": [
-           {
-            "type": "INT",
-            "value": 12
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "whileStatement": {
+        "ifStatement": {
          "condition": {
           "left": {
-           "type": "VAR",
-           "value": "x"
+           "type": "INT",
+           "value": 3
           },
-          "left_ID": "x",
-          "right_ID": "y",
-          "op": "<",
+          "op": ">",
           "right": {
-           "type": "VAR",
-           "value": "y"
+           "type": "INT",
+           "value": 2
           }
          },
          "body": [
-          {}
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "int",
+             "ID": "x",
+             "expr": [
+              {
+               "type": "INT",
+               "value": 123
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          }
          ]
         }
        }

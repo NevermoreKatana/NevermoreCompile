@@ -1,10 +1,9 @@
 void main(){
     int second(){
-        int x = 10;
-        int y = 12;
-        while(x<y){
-            return 1;
+        if 3 > 2{
+            int x = 123;
         };
+        return x;
     };
     int x = call int second();
     print(x);

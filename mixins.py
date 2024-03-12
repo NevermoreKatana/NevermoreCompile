@@ -47,15 +47,9 @@ class CheckersMixin:
         try:
             int(s)
             return "int"
-        except ValueError:
+        except:
             try:
                 float(s)
                 return "double"
-            except ValueError:
+            except:
                 return "str"  
-            finally:
-                try:
-                    raise TypeError("Функция должна возвращать значение!")  
-                except TypeError as e:
-                    print(str(e))
-                    sys.exit(1)

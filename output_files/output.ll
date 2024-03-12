@@ -21,23 +21,13 @@ declare i32 @"printf"(i8* %".1", ...)
 define i32 @"second"()
 {
 entry:
+  %".2" = icmp sgt i32 3, 2
+  br i1 %".2", label %"if.then", label %"if.end"
+if.then:
   %"x" = alloca i32
-  store i32 10, i32* %"x"
-  %"y" = alloca i32
-  store i32 12, i32* %"y"
-  %".4" = load i32, i32* %"x"
-  %".5" = load i32, i32* %"y"
+  store i32 123, i32* %"x"
+  br label %"if.end"
+if.end:
   %".6" = load i32, i32* %"x"
-  %".7" = icmp ult i32 %".4", %".5"
-  br i1 %".7", label %"while", label %"end_while"
-while:
-  %".9" = load i32, i32* %"x"
-  %".10" = add i32 %".9", 1
-  store i32 %".10", i32* %"x"
-  %".12" = load i32, i32* %"x"
-  %".13" = icmp ult i32 %".12", %".5"
-  br i1 %".13", label %"while", label %"end_while"
-end_while:
-  store i32 %".6", i32* %"x"
-  ret i32 1
+  ret i32 %".6"
 }
