@@ -1,13 +1,3 @@
-global: int: x;
 void main(){
-  int x1 = 15;
-  double y1 = 2.2;
-  int test(double x, int y){
-    print(x);
-    print(y);
-    return 1;
-  };
 
-  int result = call int test(1.1,2);
-  print(result);
 };

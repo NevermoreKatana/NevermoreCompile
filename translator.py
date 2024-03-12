@@ -1,5 +1,6 @@
 import llvmlite.ir as ir 
 import json
+from ini import *
 
 class PrintFormatMixin:
     def __init__(self, module) -> None:
@@ -44,6 +45,7 @@ class TranslatorToLLVM(PrintFormatMixin):
         }
     def __init__(self):
         self.module = ir.Module("nevermoreCompile")
+        self.module.triple = 'x86_64-pc-linux-gnu'
         self.ast = None
         self.print_func = None
         self.print_func_float = None
@@ -82,11 +84,11 @@ class TranslatorToLLVM(PrintFormatMixin):
                 self.function_call(item, builder)
         
         
-    def json_reader(self, input_file: str = "output_files/ast.json") -> None:
+    def json_reader(self, input_file: str = ast_output_file) -> None:
         with open(input_file, "r") as f:
             self.ast = json.load(f)
             
-    def ll_writer(self, output_file: str = "output_files/output.ll") -> None:
+    def ll_writer(self, output_file: str = ll_output_file) -> None:
         with open(output_file, "w") as f:
             f.write(str(self.module))
     
@@ -672,10 +674,3 @@ def translate_to_llvm():
 
 if __name__ == "__main__":
     translate_to_llvm()
-
-
-
-
-
-
-

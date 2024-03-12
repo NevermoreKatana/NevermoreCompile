@@ -5,7 +5,7 @@ from antlr4_gen.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
 from antlr4_gen.grammar.nevermorecompilerListener import nevermorecompilerListener
 from llvmlite import ir, binding
 import json
-
+from ini import *
 
 
 
@@ -391,9 +391,9 @@ def reader(filename):
 
 def ast_creator(input_file=None, output_file=None):
     if input_file is None:
-        input_file = 'input.txt'
+        input_file = ast_input_file
     elif output_file is None:
-        output_file = 'output_files/ast.json'
+        output_file = ast_output_file
     input_text = reader(input_file)
 
     input_stream = InputStream(input_text)
