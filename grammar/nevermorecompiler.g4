@@ -91,7 +91,7 @@ type
 functionStatement
    : funcType functionName LPAREN functionArgs? RPAREN RCORNER functionBody ret? LCORNER END_STATE;
 
-ret: 'return' functionExpr;
+ret: 'return' functionExpr END_STATE;
 
 functionArgs: (type ID (',' type ID)*)?;
 //Тело функции
@@ -110,7 +110,7 @@ functionExpr: ID
 functionParams: (functionExpr (',' functionExpr)*)?;
 
 //Оператор вызова функции
-functionCall: 'call' funcType functionName LPAREN functionParams? RPAREN END_STATE;
+functionCall: 'call' funcType functionName LPAREN functionParams? RPAREN;
 
 // Идентификатор (начинается с буквы, может содержать буквы и цифры)(Lexer Token)
 ID: LETTER DIGIT*;

@@ -28,11 +28,11 @@ def serializedATN():
         10,16,12,16,200,9,16,1,16,1,16,1,17,1,17,1,17,1,17,1,18,1,18,1,18,
         1,18,1,19,1,19,1,20,1,20,1,20,1,20,1,20,1,20,1,21,1,21,1,22,1,22,
         1,22,1,22,3,22,226,8,22,1,22,1,22,1,22,1,22,3,22,232,8,22,1,22,1,
-        22,1,22,1,23,1,23,1,23,1,24,1,24,1,24,1,24,1,24,1,24,5,24,246,8,
-        24,10,24,12,24,249,9,24,3,24,251,8,24,1,25,5,25,254,8,25,10,25,12,
-        25,257,9,25,1,26,1,26,1,27,1,27,1,27,3,27,264,8,27,1,28,1,28,1,29,
-        1,29,1,29,5,29,271,8,29,10,29,12,29,274,9,29,3,29,276,8,29,1,30,
-        1,30,1,30,1,30,1,30,3,30,283,8,30,1,30,1,30,1,30,1,30,0,1,26,31,
+        22,1,22,1,23,1,23,1,23,1,23,1,24,1,24,1,24,1,24,1,24,1,24,5,24,247,
+        8,24,10,24,12,24,250,9,24,3,24,252,8,24,1,25,5,25,255,8,25,10,25,
+        12,25,258,9,25,1,26,1,26,1,27,1,27,1,27,3,27,265,8,27,1,28,1,28,
+        1,29,1,29,1,29,5,29,272,8,29,10,29,12,29,275,9,29,3,29,277,8,29,
+        1,30,1,30,1,30,1,30,1,30,3,30,284,8,30,1,30,1,30,1,30,0,1,26,31,
         0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,
         46,48,50,52,54,56,58,60,0,5,1,0,21,22,1,0,19,20,1,0,15,17,1,0,25,
         28,1,0,9,10,288,0,63,1,0,0,0,2,84,1,0,0,0,4,86,1,0,0,0,6,93,1,0,
@@ -40,9 +40,9 @@ def serializedATN():
         131,1,0,0,0,18,140,1,0,0,0,20,143,1,0,0,0,22,152,1,0,0,0,24,165,
         1,0,0,0,26,173,1,0,0,0,28,186,1,0,0,0,30,192,1,0,0,0,32,194,1,0,
         0,0,34,203,1,0,0,0,36,207,1,0,0,0,38,211,1,0,0,0,40,213,1,0,0,0,
-        42,219,1,0,0,0,44,221,1,0,0,0,46,236,1,0,0,0,48,250,1,0,0,0,50,255,
-        1,0,0,0,52,258,1,0,0,0,54,263,1,0,0,0,56,265,1,0,0,0,58,275,1,0,
-        0,0,60,277,1,0,0,0,62,64,3,32,16,0,63,62,1,0,0,0,63,64,1,0,0,0,64,
+        42,219,1,0,0,0,44,221,1,0,0,0,46,236,1,0,0,0,48,251,1,0,0,0,50,256,
+        1,0,0,0,52,259,1,0,0,0,54,264,1,0,0,0,56,266,1,0,0,0,58,276,1,0,
+        0,0,60,278,1,0,0,0,62,64,3,32,16,0,63,62,1,0,0,0,63,64,1,0,0,0,64,
         68,1,0,0,0,65,67,3,44,22,0,66,65,1,0,0,0,67,70,1,0,0,0,68,66,1,0,
         0,0,68,69,1,0,0,0,69,71,1,0,0,0,70,68,1,0,0,0,71,72,5,0,0,1,72,1,
         1,0,0,0,73,85,3,40,20,0,74,85,3,28,14,0,75,85,3,4,2,0,76,85,3,6,
@@ -91,23 +91,23 @@ def serializedATN():
         0,0,225,226,1,0,0,0,226,227,1,0,0,0,227,228,5,24,0,0,228,229,5,29,
         0,0,229,231,3,50,25,0,230,232,3,46,23,0,231,230,1,0,0,0,231,232,
         1,0,0,0,232,233,1,0,0,0,233,234,5,30,0,0,234,235,5,18,0,0,235,45,
-        1,0,0,0,236,237,5,11,0,0,237,238,3,56,28,0,238,47,1,0,0,0,239,240,
-        3,42,21,0,240,247,5,15,0,0,241,242,5,12,0,0,242,243,3,42,21,0,243,
-        244,5,15,0,0,244,246,1,0,0,0,245,241,1,0,0,0,246,249,1,0,0,0,247,
-        245,1,0,0,0,247,248,1,0,0,0,248,251,1,0,0,0,249,247,1,0,0,0,250,
-        239,1,0,0,0,250,251,1,0,0,0,251,49,1,0,0,0,252,254,3,2,1,0,253,252,
-        1,0,0,0,254,257,1,0,0,0,255,253,1,0,0,0,255,256,1,0,0,0,256,51,1,
-        0,0,0,257,255,1,0,0,0,258,259,5,15,0,0,259,53,1,0,0,0,260,264,3,
-        42,21,0,261,264,5,13,0,0,262,264,5,9,0,0,263,260,1,0,0,0,263,261,
-        1,0,0,0,263,262,1,0,0,0,264,55,1,0,0,0,265,266,7,2,0,0,266,57,1,
-        0,0,0,267,272,3,56,28,0,268,269,5,12,0,0,269,271,3,56,28,0,270,268,
-        1,0,0,0,271,274,1,0,0,0,272,270,1,0,0,0,272,273,1,0,0,0,273,276,
-        1,0,0,0,274,272,1,0,0,0,275,267,1,0,0,0,275,276,1,0,0,0,276,59,1,
-        0,0,0,277,278,5,14,0,0,278,279,3,54,27,0,279,280,3,52,26,0,280,282,
-        5,23,0,0,281,283,3,58,29,0,282,281,1,0,0,0,282,283,1,0,0,0,283,284,
-        1,0,0,0,284,285,5,24,0,0,285,286,5,18,0,0,286,61,1,0,0,0,20,63,68,
-        84,107,113,140,165,173,181,183,198,225,231,247,250,255,263,272,275,
-        282
+        1,0,0,0,236,237,5,11,0,0,237,238,3,56,28,0,238,239,5,18,0,0,239,
+        47,1,0,0,0,240,241,3,42,21,0,241,248,5,15,0,0,242,243,5,12,0,0,243,
+        244,3,42,21,0,244,245,5,15,0,0,245,247,1,0,0,0,246,242,1,0,0,0,247,
+        250,1,0,0,0,248,246,1,0,0,0,248,249,1,0,0,0,249,252,1,0,0,0,250,
+        248,1,0,0,0,251,240,1,0,0,0,251,252,1,0,0,0,252,49,1,0,0,0,253,255,
+        3,2,1,0,254,253,1,0,0,0,255,258,1,0,0,0,256,254,1,0,0,0,256,257,
+        1,0,0,0,257,51,1,0,0,0,258,256,1,0,0,0,259,260,5,15,0,0,260,53,1,
+        0,0,0,261,265,3,42,21,0,262,265,5,13,0,0,263,265,5,9,0,0,264,261,
+        1,0,0,0,264,262,1,0,0,0,264,263,1,0,0,0,265,55,1,0,0,0,266,267,7,
+        2,0,0,267,57,1,0,0,0,268,273,3,56,28,0,269,270,5,12,0,0,270,272,
+        3,56,28,0,271,269,1,0,0,0,272,275,1,0,0,0,273,271,1,0,0,0,273,274,
+        1,0,0,0,274,277,1,0,0,0,275,273,1,0,0,0,276,268,1,0,0,0,276,277,
+        1,0,0,0,277,59,1,0,0,0,278,279,5,14,0,0,279,280,3,54,27,0,280,281,
+        3,52,26,0,281,283,5,23,0,0,282,284,3,58,29,0,283,282,1,0,0,0,283,
+        284,1,0,0,0,284,285,1,0,0,0,285,286,5,24,0,0,286,61,1,0,0,0,20,63,
+        68,84,107,113,140,165,173,181,183,198,225,231,248,251,256,264,273,
+        276,283
     ]
 
 class nevermorecompilerParser ( Parser ):
@@ -1997,6 +1997,9 @@ class nevermorecompilerParser ( Parser ):
             return self.getTypedRuleContext(nevermorecompilerParser.FunctionExprContext,0)
 
 
+        def END_STATE(self):
+            return self.getToken(nevermorecompilerParser.END_STATE, 0)
+
         def getRuleIndex(self):
             return nevermorecompilerParser.RULE_ret
 
@@ -2027,6 +2030,8 @@ class nevermorecompilerParser ( Parser ):
             self.match(nevermorecompilerParser.T__10)
             self.state = 237
             self.functionExpr()
+            self.state = 238
+            self.match(nevermorecompilerParser.END_STATE)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2083,25 +2088,25 @@ class nevermorecompilerParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 250
+            self.state = 251
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==9 or _la==10:
-                self.state = 239
-                self.type_()
                 self.state = 240
+                self.type_()
+                self.state = 241
                 self.match(nevermorecompilerParser.ID)
-                self.state = 247
+                self.state = 248
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==12:
-                    self.state = 241
-                    self.match(nevermorecompilerParser.T__11)
                     self.state = 242
-                    self.type_()
+                    self.match(nevermorecompilerParser.T__11)
                     self.state = 243
+                    self.type_()
+                    self.state = 244
                     self.match(nevermorecompilerParser.ID)
-                    self.state = 249
+                    self.state = 250
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
@@ -2157,13 +2162,13 @@ class nevermorecompilerParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 255
+            self.state = 256
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & 34359764730) != 0):
-                self.state = 252
+                self.state = 253
                 self.stat()
-                self.state = 257
+                self.state = 258
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -2212,7 +2217,7 @@ class nevermorecompilerParser ( Parser ):
         self.enterRule(localctx, 52, self.RULE_functionName)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 258
+            self.state = 259
             self.match(nevermorecompilerParser.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -2259,24 +2264,24 @@ class nevermorecompilerParser ( Parser ):
         localctx = nevermorecompilerParser.FuncTypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 54, self.RULE_funcType)
         try:
-            self.state = 263
+            self.state = 264
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,16,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 260
+                self.state = 261
                 self.type_()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 261
+                self.state = 262
                 self.match(nevermorecompilerParser.T__12)
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 262
+                self.state = 263
                 self.match(nevermorecompilerParser.T__8)
                 pass
 
@@ -2333,7 +2338,7 @@ class nevermorecompilerParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 265
+            self.state = 266
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 229376) != 0)):
                 self._errHandler.recoverInline(self)
@@ -2390,21 +2395,21 @@ class nevermorecompilerParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 275
+            self.state = 276
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & 229376) != 0):
-                self.state = 267
+                self.state = 268
                 self.functionExpr()
-                self.state = 272
+                self.state = 273
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==12:
-                    self.state = 268
-                    self.match(nevermorecompilerParser.T__11)
                     self.state = 269
+                    self.match(nevermorecompilerParser.T__11)
+                    self.state = 270
                     self.functionExpr()
-                    self.state = 274
+                    self.state = 275
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
@@ -2440,9 +2445,6 @@ class nevermorecompilerParser ( Parser ):
         def RPAREN(self):
             return self.getToken(nevermorecompilerParser.RPAREN, 0)
 
-        def END_STATE(self):
-            return self.getToken(nevermorecompilerParser.END_STATE, 0)
-
         def functionParams(self):
             return self.getTypedRuleContext(nevermorecompilerParser.FunctionParamsContext,0)
 
@@ -2473,26 +2475,24 @@ class nevermorecompilerParser ( Parser ):
         self.enterRule(localctx, 60, self.RULE_functionCall)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 277
-            self.match(nevermorecompilerParser.T__13)
             self.state = 278
-            self.funcType()
+            self.match(nevermorecompilerParser.T__13)
             self.state = 279
-            self.functionName()
+            self.funcType()
             self.state = 280
+            self.functionName()
+            self.state = 281
             self.match(nevermorecompilerParser.LPAREN)
-            self.state = 282
+            self.state = 283
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,19,self._ctx)
             if la_ == 1:
-                self.state = 281
+                self.state = 282
                 self.functionParams()
 
 
-            self.state = 284
-            self.match(nevermorecompilerParser.RPAREN)
             self.state = 285
-            self.match(nevermorecompilerParser.END_STATE)
+            self.match(nevermorecompilerParser.RPAREN)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
