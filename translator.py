@@ -51,6 +51,8 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                     self.function_statement(item)
             elif 'functionCall' in item:
                 self.function_call(item, builder)
+            elif 'return' in item:
+                self.return_statement(item, builder)
         
         
     def json_reader(self, input_file: str = ast_output_file) -> None:
@@ -92,7 +94,6 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
     def evaluate_expression(self, expr, builder = None):
         builder = builder if builder else self.builder
         if 'functionCall' in expr:
-            #Дописать
             expr = expr['functionCall']
             func_name = expr['name']
             function_args = expr['params']
@@ -229,8 +230,14 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                 self.variables[var_name] = {"var":var, "func": builder.function.name}
         else:
             var = self.variables[var_name]
-        if not self.assign_type_checker(var, var_type):
-            raise TypeError(f"Нельзя присвоить тип данных {var_type} к существующей переменной {var_name} с типом данных {var.type.pointee}")
+        
+        if not isinstance(value.type, type(var.type.pointee)):
+            try:
+                raise TypeError(f"Нельзя присвоить тип данных {value.type} переменной {var_name} с типом данных {var.type.pointee}")
+            except TypeError as e:
+                print(str(e))
+                sys.exit(1)
+ 
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             builder.store(builder.load(value), var)
         else:
@@ -541,7 +548,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         func_body = func_statement['body']
         f_type = func_statement["type"]
         type_entry = self.choose_type_entry[f_type]
-        return_ = func_statement['return']['value']
+        
         
         func_type = ir.FunctionType(type_entry, [self.choose_type_entry[arg] for key, arg in args.items()])
         func = ir.Function(self.module, func_type, name=func_name)
@@ -555,15 +562,9 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
             self.variables[f"{var_name}_tmp"] = {"var": var, "func": builder.function.name}
 
         self.item_bypass(func_body, builder)
-        type_ret = self.check_data_type(return_) if f_type != 'void' else None
         
         if f_type == 'void':
             self.functions[func_name]['builder'].ret_void()
-        elif type_ret == 'int':
-            self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
-        elif type_ret == 'str':
-            self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
-            
         
 
 
@@ -623,6 +624,21 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
             self.builder.call(func['func'], params) 
 
 
+    def return_statement(self,stat, builder = None):
+        builder = builder if builder is not None else self.builder
+        return_ = stat['return']['value']
+        func_name = builder.function.name
+        
+        print(builder.function.ftype.return_type)
+        if isinstance(builder.function.ftype.return_type, ir.VoidType):
+            self.functions[func_name]['builder'].ret_void()
+        elif isinstance(builder.function.ftype.return_type, ir.IntType):
+            try:
+                self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
+            except:
+                self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+
+        
 
         
     
@@ -651,6 +667,8 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                     self.function_statement(item)
             elif 'functionCall' in item:
                 self.function_call(item)
+            elif 'return' in item:
+                self.return_statement(item)
             
         self.builder.ret_void()
 
@@ -666,6 +684,9 @@ def translate_to_llvm():
 
 if __name__ == "__main__":
     translate_to_llvm()
+
+
+
 
 
 

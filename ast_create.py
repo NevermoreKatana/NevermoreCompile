@@ -123,33 +123,12 @@ class EvalVisitor(nevermorecompilerVisitor):
         return function_call
     
     def visitRet(self, ctx: nevermorecompilerParser.RetContext):
-        return {"ret": self.visitExpr(ctx.functionExpr())}
+        return {"return": self.visitExpr(ctx.functionExpr())}
     
-    def find_and_remove_return(self, node):
-        if isinstance(node, dict):
-            if 'ret' in node:
-                return_value = node['ret']
-                del node['ret']
-                return return_value, node
-            for key in node:
-                result, updated_node = self.find_and_remove_return(node[key])
-                if result is not None:
-                    node[key] = updated_node
-                    return result, node
-        elif isinstance(node, list):
-            for i, item in enumerate(node):
-                result, updated_node = self.find_and_remove_return(item)
-                if result is not None:
-                    node[i] = updated_node
-                    return result, node
-        return None, node
-
     
     def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
         func_name = ctx.functionName().getText()
         func_type = ctx.funcType().getText()
-        return_ = ctx.ret()
-
         function_body = []
         
         args_dict = {}
@@ -167,7 +146,6 @@ class EvalVisitor(nevermorecompilerVisitor):
         
         for stat_ctx in ctx.functionBody().stat():
             body_node = self.visit(stat_ctx)
-            return_, body_node = self.find_and_remove_return(body_node)
             if body_node in self.ast:
                 self.ast.remove(body_node)
             if body_node:
@@ -179,7 +157,6 @@ class EvalVisitor(nevermorecompilerVisitor):
                     "name": func_name,
                     "type": func_type,
                     "args": args_dict,
-                    "return": return_ if return_ else None,
                     "body": function_body,
                     "END_STATE": ";"
                 }
