@@ -54,7 +54,7 @@ ROOT_URLCONF = 'WebCompiler.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['WebCompiler/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
