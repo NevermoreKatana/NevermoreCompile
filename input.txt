@@ -1,17 +1,112 @@
+global: int:j;
 void main(){
-  int x = 1;
-  double y = 2.3;
+  # Создание переменных для условий
+  int j = 1;
+  int x = 0;
+  int y = 2;
+  double d = 2.3;
+  double z = 3.3;
+  # Создание условий для тестов int&int, double&double, int&double, id&id etc
+  if x<y{
+    print(j);
+  };
 
-  int result = 2 + 4 + 24/6*3 -24/24 + 31;
-  print(result);
-  int result = x + x * 2 * x/x*x*x;
-  print(result);
-  int result = x + 2 * 2 + x/1 + 24 * 6 /3;
-  print(result);
+  if x>y{
+    print(j);
+  }
+  else {
+    print(22);
+  };
 
-  double result1 = y + y *2 / y*3 + y*y /y*8;
-  print(result1);
-  double result1 = 2 * y + 3.3 * y/y*3*y + 4*y/5;
-  print(result1);
+  if d<z{
+    print(j);
+  };
 
+  if d>z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d!=z{
+    print(j);
+  };
+
+  if d == z{
+    print(j);
+  }
+  else{
+    print(22);
+  };
+
+  if x!=z{
+    print(j);
+  };
+  if x == z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d > x{
+    print(j);
+  };
+  if z > y{
+    print(j);
+  };
+
+  void test(int x, int y, double d, double z){
+        if x<y{
+    print(j);
+  };
+
+  if x>y{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d<z{
+    print(j);
+  };
+
+  if d>z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d!=z{
+    print(j);
+  };
+
+  if d == z{
+    print(j);
+  }
+  else{
+    print(22);
+  };
+
+  if x!=z{
+    print(j);
+  };
+  if x == z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d > x{
+    print(j);
+  };
+  if z > y{
+    print(j);
+  };
+  };
+  call void test(1, 2, 2.2, 3.2)
 };

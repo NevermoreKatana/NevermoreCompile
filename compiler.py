@@ -1,6 +1,7 @@
 import argparse
 from ast_create import ast_creator
 from translator import translate_to_llvm
+from optimizer import optimize_ll
 import subprocess
 from ini import *
 
@@ -20,9 +21,13 @@ def main():
     subprocess.run(["clear"])
     print("Старт")
     ast_creator(input_file, ast_file)
+    print('Перевод в машинно-независимый код')
     translate_to_llvm()
+    print('Оптимизация машинно-независимого кода')
+    optimize_ll()
     
-    subprocess.run(["clang", STANDART_OUPUT_PATH / "output.ll", "-o", STANDART_OUPUT_PATH / "output"])
+    
+    subprocess.run(["clang", ll_optimize_file, "-o", executable_file])
 
     print("\033[31mEXECUTABLE\033[0m", "\033[32mOUTPUT\033[0m")
     with open(output_file, 'w') as f:

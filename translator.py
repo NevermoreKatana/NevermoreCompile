@@ -182,7 +182,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
             right_value = builder.load(right_value)
         
         if isinstance(left_value.type, ir.IntType) and isinstance(right_value.type, ir.IntType):
-        
+            
             if expr['type'] == 'DIV':
                 return builder.udiv(left_value, right_value)
             elif expr['type'] == 'MUL':
@@ -765,6 +765,9 @@ def translate_to_llvm():
 
 if __name__ == "__main__":
     translate_to_llvm()
+
+
+
 
 
 

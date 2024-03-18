@@ -6,6 +6,8 @@ ast_input_file = 'input.txt'
 ast_output_file = STANDART_OUPUT_PATH / 'ast.json'
 program_output_file = STANDART_OUPUT_PATH / 'programm_output.txt'
 ll_output_file = STANDART_OUPUT_PATH / 'output.ll'
+ll_optimize_file = STANDART_OUPUT_PATH / 'optimized.ll'
+executable_file = STANDART_OUPUT_PATH / 'output'
 
 descr = 'Компилятор процедурного языка NevermoreCompile'
 help_f = 'Путь до исходного файла'
