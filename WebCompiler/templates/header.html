@@ -1,42 +1,40 @@
+{% load static %}
 <header>
-<div class="w-full max-w-7xl mx-auto px-4">
-  <div class="flex items-center justify-between py-4">
-    <a class="flex items-center space-x-2" href="#">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
-        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-        <line x1="4" x2="4" y1="22" y2="15"></line>
-      </svg><span class="font-semibold">Nevermore PL</span>
-    </a><div class="flex-1 max-w-2xl w-full mx-auto lg:px-10">
-      <div class="relative">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3.5 top-3.5 h-4 w-4 text-gray-300 dark:text-gray-700">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.3-4.3"></path>
-        </svg>
-        <input class="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 w-full sm:w-[300px]" placeholder="Search the Acme site" type="search" />
-      </div>
+    <div class="w-full max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between py-4">
+            <a class="flex items-center space-x-2" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" width="45" height="45">
+                <span class="font-semibold">NEPL</span>
+            </a>
+            <nav class="hidden space-x-4 lg:flex">
+                <a class="font-medium" href="{% url 'home' %}">Home</a>
+                <a class="font-medium" href="#">Documentation</a>
+                <a class="font-medium" href="#">Tutorials</a>
+                <a class="font-medium" href="#">Examples</a>
+                <a class="font-medium" href="#">Community</a>
+            </nav>
+            <div class="flex lg:hidden">
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="h-4 w-4">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                    <span class="sr-only">Toggle search bar</span>
+                </button>
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="h-4 w-4">
+                        <line x1="4" x2="20" y1="12" y2="12"></line>
+                        <line x1="4" x2="20" y1="6" y2="6"></line>
+                        <line x1="4" x2="20" y1="18" y2="18"></line>
+                    </svg>
+                    <span class="sr-only">Toggle navigation menu</span>
+                </button>
+            </div>
+        </div>
     </div>
-    <nav class="hidden space-x-4 lg:flex">
-      <a class="font-medium" href="#">Home</a>
-      <a class="font-medium" href="#">Documentation</a>
-      <a class="font-medium" href="#">Tutorials</a>
-      <a class="font-medium" href="#">Examples</a>
-      <a class="font-medium" href="#">Community</a>
-    </nav>
-    <div class="flex lg:hidden">
-      <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.3-4.3"></path>
-        </svg><span class="sr-only">Toggle search bar</span>
-      </button><button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-          <line x1="4" x2="20" y1="12" y2="12"></line>
-          <line x1="4" x2="20" y1="6" y2="6"></line>
-          <line x1="4" x2="20" y1="18" y2="18"></line>
-        </svg><span class="sr-only">Toggle navigation menu</span>
-      </button>
-    </div>
-  </div>
-</div>
-<hr>
+    <hr>
 </header>
