@@ -6,11 +6,6 @@ void main(){
   int z = 1;
 
   do{
-  print(1);
-  }
-  while(x<y);
-
-  do{
     int z = z+z;
   }
   while(x<y);
@@ -25,8 +20,18 @@ void main(){
     while(t<q);
   };
 
+  int loop1(int x, int y){
+    int result = 1;
+    do{
+      int result = result + result;
+    }
+    while (x < y);
+    return result;
+  };
+
+
   call void loop()
   print(j);
-
-
+  int result = call int loop1(0, 10);
+  print(result);
 };

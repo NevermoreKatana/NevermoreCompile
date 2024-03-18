@@ -9,7 +9,7 @@
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "j",
+       "ID": "x",
        "expr": [
         {
          "type": "INT",
@@ -23,38 +23,8 @@
     {
      "stat": {
       "assignmentStatement": {
-       "type": "int",
-       "ID": "x",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 0
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "y",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 2
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
        "type": "double",
-       "ID": "d",
+       "ID": "y",
        "expr": [
         {
          "type": "DOUBLE",
@@ -68,12 +38,61 @@
     {
      "stat": {
       "assignmentStatement": {
-       "type": "double",
-       "ID": "z",
+       "type": "int",
+       "ID": "result",
        "expr": [
         {
-         "type": "DOUBLE",
-         "value": 3.3
+         "type": "ADD",
+         "left": {
+          "type": "SUB",
+          "left": {
+           "type": "ADD",
+           "left": {
+            "type": "ADD",
+            "left": {
+             "type": "INT",
+             "value": 2
+            },
+            "right": {
+             "type": "INT",
+             "value": 4
+            }
+           },
+           "right": {
+            "type": "MUL",
+            "left": {
+             "type": "DIV",
+             "left": {
+              "type": "INT",
+              "value": 24
+             },
+             "right": {
+              "type": "INT",
+              "value": 6
+             }
+            },
+            "right": {
+             "type": "INT",
+             "value": 3
+            }
+           }
+          },
+          "right": {
+           "type": "DIV",
+           "left": {
+            "type": "INT",
+            "value": 24
+           },
+           "right": {
+            "type": "INT",
+            "value": 24
+           }
+          }
+         },
+         "right": {
+          "type": "INT",
+          "value": 31
+         }
         }
        ],
        "END_STATE": ";"
@@ -81,364 +100,332 @@
      }
     },
     {
-     "ifStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "x"
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result"
        },
-       "left_ID": "x",
-       "right_ID": "y",
-       "op": "<",
-       "right": {
-        "type": "VAR",
-        "value": "y"
-       }
-      },
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "ifElseStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "x"
-       },
-       "left_ID": "x",
-       "right_ID": "y",
-       "op": ">",
-       "right": {
-        "type": "VAR",
-        "value": "y"
-       }
-      },
-      "ifBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "result",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "VAR",
+          "value": "x"
+         },
+         "right": {
+          "type": "MUL",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "DIV",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "MUL",
+              "left": {
+               "type": "VAR",
+               "value": "x"
+              },
+              "right": {
+               "type": "INT",
+               "value": 2
+              }
+             },
+             "right": {
+              "type": "VAR",
+              "value": "x"
+             }
+            },
+            "right": {
+             "type": "VAR",
+             "value": "x"
+            }
+           },
+           "right": {
+            "type": "VAR",
+            "value": "x"
+           }
           },
-          "END_STATE": ";"
+          "right": {
+           "type": "VAR",
+           "value": "x"
+          }
          }
         }
-       }
-      ],
-      "elseBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "result",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "ADD",
+           "left": {
+            "type": "VAR",
+            "value": "x"
+           },
+           "right": {
+            "type": "MUL",
+            "left": {
+             "type": "INT",
+             "value": 2
+            },
+            "right": {
+             "type": "INT",
+             "value": 2
+            }
+           }
+          },
+          "right": {
+           "type": "DIV",
+           "left": {
+            "type": "VAR",
+            "value": "x"
+           },
+           "right": {
+            "type": "INT",
+            "value": 1
+           }
+          }
+         },
+         "right": {
+          "type": "DIV",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 24
+           },
+           "right": {
+            "type": "INT",
+            "value": 6
+           }
+          },
+          "right": {
            "type": "INT",
-           "value": 22
-          },
-          "END_STATE": ";"
+           "value": 3
+          }
          }
         }
-       }
-      ]
+       ],
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "ifStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "d"
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result"
        },
-       "left_ID": "d",
-       "right_ID": "z",
-       "op": "<",
-       "right": {
-        "type": "VAR",
-        "value": "z"
-       }
-      },
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "ifElseStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "d"
-       },
-       "left_ID": "d",
-       "right_ID": "z",
-       "op": ">",
-       "right": {
-        "type": "VAR",
-        "value": "z"
-       }
-      },
-      "ifBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "result1",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "VAR",
+           "value": "y"
           },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "elseBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
+          "right": {
+           "type": "MUL",
+           "left": {
+            "type": "DIV",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "VAR",
+              "value": "y"
+             },
+             "right": {
+              "type": "INT",
+              "value": 2
+             }
+            },
+            "right": {
+             "type": "VAR",
+             "value": "y"
+            }
+           },
+           "right": {
+            "type": "INT",
+            "value": 3
+           }
+          }
+         },
+         "right": {
+          "type": "MUL",
+          "left": {
+           "type": "DIV",
+           "left": {
+            "type": "MUL",
+            "left": {
+             "type": "VAR",
+             "value": "y"
+            },
+            "right": {
+             "type": "VAR",
+             "value": "y"
+            }
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          },
+          "right": {
            "type": "INT",
-           "value": 22
-          },
-          "END_STATE": ";"
+           "value": 8
+          }
          }
         }
-       }
-      ]
+       ],
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "ifStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "d"
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result1"
        },
-       "left_ID": "d",
-       "right_ID": "z",
-       "op": "!=",
-       "right": {
-        "type": "VAR",
-        "value": "z"
-       }
-      },
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "ifElseStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "d"
-       },
-       "left_ID": "d",
-       "right_ID": "z",
-       "op": "==",
-       "right": {
-        "type": "VAR",
-        "value": "z"
-       }
-      },
-      "ifBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "result1",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 2
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
           },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "elseBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
+          "right": {
+           "type": "MUL",
+           "left": {
+            "type": "MUL",
+            "left": {
+             "type": "DIV",
+             "left": {
+              "type": "MUL",
+              "left": {
+               "type": "DOUBLE",
+               "value": 3.3
+              },
+              "right": {
+               "type": "VAR",
+               "value": "y"
+              }
+             },
+             "right": {
+              "type": "VAR",
+              "value": "y"
+             }
+            },
+            "right": {
+             "type": "INT",
+             "value": 3
+            }
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          }
+         },
+         "right": {
+          "type": "DIV",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 4
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          },
+          "right": {
            "type": "INT",
-           "value": 22
-          },
-          "END_STATE": ";"
+           "value": 5
+          }
          }
         }
-       }
-      ]
+       ],
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "ifStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "x"
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result1"
        },
-       "left_ID": "x",
-       "right_ID": "z",
-       "op": "!=",
-       "right": {
-        "type": "VAR",
-        "value": "z"
-       }
-      },
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
-     }
-    },
-    {
-     "ifElseStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "x"
-       },
-       "left_ID": "x",
-       "right_ID": "z",
-       "op": "==",
-       "right": {
-        "type": "VAR",
-        "value": "z"
-       }
-      },
-      "ifBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "elseBody": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 22
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
-     }
-    },
-    {
-     "ifStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "d"
-       },
-       "left_ID": "d",
-       "right_ID": "x",
-       "op": ">",
-       "right": {
-        "type": "VAR",
-        "value": "x"
-       }
-      },
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
-     }
-    },
-    {
-     "ifStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "z"
-       },
-       "left_ID": "z",
-       "right_ID": "y",
-       "op": ">",
-       "right": {
-        "type": "VAR",
-        "value": "y"
-       }
-      },
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "j"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ]
+       "END_STATE": ";"
+      }
      }
     }
    ],
    "END_STATE": ";"
-  }
- },
- {
-  "globalStatement": {
-   "j": "int"
   }
  }
 ]

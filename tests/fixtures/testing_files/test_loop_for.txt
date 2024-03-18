@@ -1,16 +1,28 @@
 global: int:x;
 void main(){
+  # Обычный вызов цикла
   int x = 1;
   for (int i=0; i<10; i++){
     print(i);
-  }
-
+  };
+  # Выхов цикла в функции Void
   void loop(){
     for (int i=0; i<10; i++){
       int x = x + x;
-    }
+    };
   
   };
+  # Вызов функции в функции int с аргументом
+  int loop1(int y){
+    
+    for (int i=0; i<2; i++){
+    int y = y + i;
+    };
+    return y;
+  };
+
   call void loop()
   print(x);
+  int result = call int loop1(3);
+  print(result);
 };

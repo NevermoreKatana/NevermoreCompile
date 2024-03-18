@@ -137,21 +137,45 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
             try:
                 return self.variables[expr['value']]['var']
             except:
-                return self.variables[expr['value']]
+                try:
+                    return self.variables[expr['value']]
+                except:
+                    return None
         elif expr['type'] in ['DIV', 'MUL', 'ADD', 'SUB']:
             return self.execute_math_operation(expr, builder)
         else:
             try:
                 raise ValueError(f"Unsupported expression type: {expr['type']}")
             except ValueError as e:
-                print(str(e))
+                # print(str(e))
                 sys.exit(1)
 
     def execute_math_operation(self, expr, builder = None):
         builder = builder if builder else self.builder
-        left_value = self.evaluate_expression(expr['left'], builder)
-        right_value = self.evaluate_expression(expr['right'], builder)
+        func = builder.function
+        cond_l = expr['left']
+        cond_r = expr['right']
         
+
+        left_value = self.evaluate_expression(cond_l, builder)
+        right_value = self.evaluate_expression(cond_r, builder)  
+        
+        if left_value is None:
+            left_value = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_value = self.evaluate_expression(left_value, builder)
+        elif not isinstance(left_value, ir.GlobalVariable) and cond_l['type'] == 'VAR' and left_value.function != func:
+            left_value = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_value = self.evaluate_expression(left_value, builder)
+        
+        
+        if right_value is None:
+            right_value = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_value = self.evaluate_expression(right_value, builder)
+        elif not isinstance(right_value, ir.GlobalValue) and cond_r['type'] == 'VAR' and right_value.function != func:
+            right_value = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_value = self.evaluate_expression(right_value, builder)
+
+            
         if isinstance(left_value, ir.AllocaInstr) or isinstance(left_value, ir.GlobalVariable):
             left_value = builder.load(left_value)
         if isinstance(right_value, ir.AllocaInstr) or isinstance(right_value, ir.GlobalVariable):
@@ -199,6 +223,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         var_name = assigment['ID']
         expr = assigment['expr'][0]
         var_type = assigment['type']
+
         
         value = self.evaluate_expression(expr, builder)
 
@@ -230,7 +255,6 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                 self.variables[var_name] = {"var":var, "func": builder.function.name}
         else:
             var = self.variables[var_name]
-        
         if not isinstance(value.type, type(var.type.pointee)):
             try:
                 raise TypeError(f"Нельзя присвоить тип данных {value.type} переменной {var_name} с типом данных {var.type.pointee}")
@@ -261,7 +285,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                     try:
                         raise ValueError(f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}")
                     except ValueError as e:
-                        print(str(e))
+                        # print(str(e))
                         sys.exit(1)
                 
                 else:
@@ -311,8 +335,21 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
         op = condition['op']
         
-        left_cond_ptr = self.evaluate_expression(condition['left'], builder)
-        right_cond_ptr = self.evaluate_expression(condition['right'],builder)
+        cond_l = condition['left']
+        cond_r = condition['right']
+
+        left_cond_ptr = self.evaluate_expression(cond_l, builder)
+        right_cond_ptr = self.evaluate_expression(cond_r, builder)  
+                 
+        if cond_l['type'] == 'VAR' and left_cond_ptr.function != func:
+            left_cond_ptr = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond_ptr = self.evaluate_expression(left_cond_ptr, builder)
+            
+            
+        if cond_r['type'] == 'VAR' and right_cond_ptr.function != func:
+            right_cond_ptr = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond_ptr = self.evaluate_expression(right_cond_ptr, builder)
+        
         left_cond = builder.load(left_cond_ptr) if isinstance(left_cond_ptr, ir.AllocaInstr) else left_cond_ptr
         right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
         
@@ -357,8 +394,21 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
     
-        left_cond_ptr = self.evaluate_expression(condition['left'], builder)
-        right_cond_ptr = self.evaluate_expression(condition['right'],builder)
+        cond_l = condition['left']
+        cond_r = condition['right']
+
+        left_cond_ptr = self.evaluate_expression(cond_l, builder)
+        right_cond_ptr = self.evaluate_expression(cond_r, builder)  
+                 
+        if cond_l['type'] == 'VAR' and left_cond_ptr.function != func:
+            left_cond_ptr = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond_ptr = self.evaluate_expression(left_cond_ptr, builder)
+            
+            
+        if cond_r['type'] == 'VAR' and right_cond_ptr.function != func:
+            right_cond_ptr = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond_ptr = self.evaluate_expression(right_cond_ptr, builder)
+            
         left_cond = builder.load(left_cond_ptr) if isinstance(left_cond_ptr, ir.AllocaInstr) else left_cond_ptr
         right_cond = builder.load(right_cond_ptr) if isinstance(right_cond_ptr, ir.AllocaInstr) else right_cond_ptr
         
@@ -382,7 +432,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         builder.position_at_end(do_while_start_block)
         
         self.item_bypass(do_while_body, builder)
-
+        
         do_while_cond = builder.icmp_unsigned(op,
                                                 builder.load(left_cond_ptr), right_cond)
         builder.cbranch(do_while_cond, do_while_body_block, do_while_end_block)
@@ -449,8 +499,20 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if  function_name != 'main' else self.main_func
         
-        left_cond = self.evaluate_expression(condition['left'], builder)
-        right_cond = self.evaluate_expression(condition['right'], builder)
+        cond_l = condition['left']
+        cond_r = condition['right']
+
+        left_cond = self.evaluate_expression(cond_l, builder)
+        right_cond = self.evaluate_expression(cond_r, builder)  
+                 
+        if cond_l['type'] == 'VAR' and left_cond.function != func:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+            
+            
+        if cond_r['type'] == 'VAR' and right_cond.function != func:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
         
         
         left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
@@ -490,8 +552,20 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if function_name != 'main' else self.main_func
         
-        left_cond = self.evaluate_expression(condition['left'], builder)
-        right_cond = self.evaluate_expression(condition['right'], builder)
+        cond_l = condition['left']
+        cond_r = condition['right']
+
+        left_cond = self.evaluate_expression(cond_l, builder)
+        right_cond = self.evaluate_expression(cond_r, builder)  
+                 
+        if cond_l['type'] == 'VAR' and left_cond.function != func:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+            
+            
+        if cond_r['type'] == 'VAR' and right_cond.function != func:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
         
         left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
         right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
@@ -540,7 +614,11 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                 global_var = ir.GlobalVariable(self.module, int_type, item)
                 global_var.initializer = ir.Constant(int_type, 0)
                 self.variables[item] = global_var
-                
+            if value == 'double':
+                double_type = ir.DoubleType()
+                global_var = ir.GlobalVariable(self.module, double_type, item)
+                global_var.initializer = ir.Constant(double_type, 0.0)
+                self.variables[item] = global_var
     def function_statement(self, statement):
         func_statement = statement["functionStatement"]
         args = func_statement['args']
@@ -628,9 +706,11 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         builder = builder if builder is not None else self.builder
         return_ = stat['return']['value']
         func_name = builder.function.name
-        
-        print(builder.function.ftype.return_type)
-        if isinstance(builder.function.ftype.return_type, ir.VoidType):
+
+        if builder.block.is_terminated:
+    
+            return
+        elif isinstance(builder.function.ftype.return_type, ir.VoidType):
             self.functions[func_name]['builder'].ret_void()
         elif isinstance(builder.function.ftype.return_type, ir.IntType):
             try:
@@ -679,11 +759,31 @@ def translate_to_llvm():
     tolvm.builder_init()
     tolvm.ast_bypass()
     tolvm.ll_writer()
-    print("Промежуточный код готов!")
+    # print(tolvm.variables)
+    # print("Промежуточный код готов!")
 
 
 if __name__ == "__main__":
     translate_to_llvm()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

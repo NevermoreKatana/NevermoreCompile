@@ -4,16 +4,12 @@ void main(){
   int x = 0;
   int y = 5;
   int z = 1;
-
-  while(x<y){
-  print(1);
-  };
-
+  # Обычный вызов цикла 
   while(x<y){
     int z = z+z;
   };
   print(z);
-
+  # Вызов цикла в функции void
   void loop(){
     int t = 0;
     int q = 5;
@@ -21,9 +17,18 @@ void main(){
       int j = j+j;
     };
   };
+  # Вызов цикла в функции int с аргументами
+  int loop1(int x, int y){
+    int result = 1;
+    while (x < y){
+      int result = result +result;
+    };
+    return result;
+  };
 
   call void loop()
   print(j);
-
+  int result = call int loop1(0, 10);
+  print(result);
 
 };

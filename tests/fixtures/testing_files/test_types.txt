@@ -1,11 +1,23 @@
 void main(){
-  int i = 40;
-  int c = 60;
-  print(i);
-  print(c);
-  double x = 1.123;
-  double y = 3.33231323;
+  # Создание переменной с типами int и double и их вывод
+  int x = 111;
+  double y = 22.2221;
   print(x);
   print(y);
+  # Создание функции внутри которой создаются переменные с такими же именами 
+  void test(){
+    int x = 222;
+    double y = 33.333;
+    print(x);
+    print(y);
+  };
+  # Создание функции в аргументах которой переменные с такими же именами
+  void test1(int x, double y){
+    print(x);
+    print(y);
+  };
+
+  call void test()
+  call void test1(x, y)
 
 };
