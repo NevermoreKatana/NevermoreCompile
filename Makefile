@@ -1,12 +1,12 @@
 gramar:
-	antlr4 -Dlanguage=Python3 grammar/nevermorecompiler.g4 -o antlr4_gen/
-	antlr4 -Dlanguage=Python3 -visitor grammar/nevermorecompiler.g4 -o antlr4_gen/
+	antlr4 -Dlanguage=Python3 compil/grammar/nevermorecompiler.g4 -o compil/antlr4_gen/
+	antlr4 -Dlanguage=Python3 -visitor compil/grammar/nevermorecompiler.g4 -o compil/antlr4_gen/
 
 to_llvm:
 	clang output_files/output.ll -o output_files/output
 
 compile:
-	python compiler.py -f input.txt
+	python3 compil/compiler.py -f input.txt
 
 full:
 	make compile

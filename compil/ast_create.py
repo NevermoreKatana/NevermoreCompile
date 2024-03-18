@@ -1,8 +1,8 @@
 from antlr4 import *
-from antlr4_gen.grammar.nevermorecompilerLexer import nevermorecompilerLexer
-from antlr4_gen.grammar.nevermorecompilerParser import nevermorecompilerParser
-from antlr4_gen.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
-from antlr4_gen.grammar.nevermorecompilerListener import nevermorecompilerListener
+from antlr4_gen.compil.grammar.nevermorecompilerLexer import nevermorecompilerLexer
+from antlr4_gen.compil.grammar.nevermorecompilerParser import nevermorecompilerParser
+from antlr4_gen.compil.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
+from antlr4_gen.compil.grammar.nevermorecompilerListener import nevermorecompilerListener
 from llvmlite import ir, binding
 import json
 from ini import *

@@ -1,8 +1,8 @@
 import argparse
+import subprocess
 from ast_create import ast_creator
 from translator import translate_to_llvm
 from optimizer import optimize_ll
-import subprocess
 from ini import *
 
 def main():
@@ -31,7 +31,7 @@ def main():
 
     print("\033[31mEXECUTABLE\033[0m", "\033[32mOUTPUT\033[0m")
     with open(output_file, 'w') as f:
-        result = subprocess.run(["./output_files/output"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False, universal_newlines=True)
+        result = subprocess.run(["./compil/output_files/output"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False, universal_newlines=True)
         print(result.stdout)
         f.write(result.stdout)
         

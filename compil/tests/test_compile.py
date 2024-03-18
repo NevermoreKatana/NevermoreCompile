@@ -4,12 +4,12 @@ from pathlib import Path
 import os
 
 
-TRUE_FILES = Path('tests/fixtures/true_files')
-TEST_FILES = Path('tests/fixtures/testing_files')
-PROGRAMM_OUTPUT = Path('tests/fixtures/programm_output')
+TRUE_FILES = Path('compil/tests/fixtures/true_files')
+TEST_FILES = Path('compil/tests/fixtures/testing_files')
+PROGRAMM_OUTPUT = Path('compil/tests/fixtures/programm_output')
 
 def run_compiler(input_file):
-    subprocess.run(["python3", "compiler.py", "-f", f"{input_file}", "-o", f"{PROGRAMM_OUTPUT}"])
+    subprocess.run(["python3", "compil/compiler.py", "-f", f"{input_file}", "-o", f"{PROGRAMM_OUTPUT}"])
 
 def test_compile_types_print():
     run_compiler(TEST_FILES / 'test_types.txt')
