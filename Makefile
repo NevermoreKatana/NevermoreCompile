@@ -6,7 +6,7 @@ to_llvm:
 	clang output_files/output.ll -o output_files/output
 
 compile:
-	python3 compil/compiler.py -f input.txt
+	python3 compil/compiler.py -f compil/input.txt
 
 full:
 	make compile
