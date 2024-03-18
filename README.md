@@ -1,5 +1,7 @@
 # NevermoreCompile
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/edf91b9620424cb9bd320449b735abe6)](https://app.codacy.com/gh/NevermoreKatana/NevermoreCompile/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Тесты](https://github.com/NevermoreKatana/NevermoreCompile/actions/workflows/python-app.yml/badge.svg)](https://github.com/NevermoreKatana/NevermoreCompile/actions/workflows/python-app.yml)
+
 # Install
 ```make
 make install
