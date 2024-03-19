@@ -3,7 +3,7 @@
 sudo apt-get update
 
 apt-get install -y clang
-python3-pip
+apt-get install python3-pip
 pip install -r requirements.txt
 echo 'export PATH=/usr/bin:$PATH' >> ~/.bashrc
 
