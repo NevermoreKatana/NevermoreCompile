@@ -32,10 +32,3 @@ requirements:
 	pip freeze > requirements.txt
 start-dev:
 	python3 manage.py runserver
-
-
-deploy_install:
-	./deploy.sh
-
-start-production:
-	 gunicorn -b 0.0.0.0:8000 WebCompiler.wsgi:application
