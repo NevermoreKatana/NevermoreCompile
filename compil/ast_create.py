@@ -2,8 +2,6 @@ from antlr4 import *
 from compil.antlr4_gen.compil.grammar.nevermorecompilerLexer import nevermorecompilerLexer
 from compil.antlr4_gen.compil.grammar.nevermorecompilerParser import nevermorecompilerParser
 from compil.antlr4_gen.compil.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
-from compil.antlr4_gen.compil.grammar.nevermorecompilerListener import nevermorecompilerListener
-from llvmlite import ir, binding
 import json
 from compil.ini import *
 import tempfile
