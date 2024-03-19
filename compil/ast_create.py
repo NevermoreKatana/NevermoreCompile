@@ -8,13 +8,12 @@ import json
 from ini import *
 
 
-
-
 class EvalVisitor(nevermorecompilerVisitor):
     def __init__(self):
         self.variables = {}
         self.tmp_variable = {}
         self.ast = []
+
     def visitStat(self, ctx: nevermorecompilerParser.StatContext):
         if ctx.ifStatement():
             return self.visitIfStatement(ctx.ifStatement())
@@ -27,7 +26,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         elif ctx.forStatement():
             return self.visitForStatement(ctx.forStatement())
         elif ctx.whileStatement():
-            return  self.visitWhileStatement(ctx.whileStatement())
+            return self.visitWhileStatement(ctx.whileStatement())
         elif ctx.doWhileStatement():
             return self.visitDoWhileStatement(ctx.doWhileStatement())
         elif ctx.globalStatement():
@@ -39,8 +38,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         elif ctx.ret():
             return self.visitRet(ctx.ret())
 
-
-    def visitProg(self, ctx: nevermorecompilerParser.ProgContext):               
+    def visitProg(self, ctx: nevermorecompilerParser.ProgContext):
         for child in ctx.functionStatement():
             ast_node = self.visit(child)
             if ast_node not in self.ast:
@@ -69,11 +67,11 @@ class EvalVisitor(nevermorecompilerVisitor):
         elif ctx.DIV():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
-            return {"type": "DIV", "left": left_expr, "right":right_expr}
+            return {"type": "DIV", "left": left_expr, "right": right_expr}
         elif ctx.MUL():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
-            return {"type": "MUL", "left": left_expr, "right":right_expr}
+            return {"type": "MUL", "left": left_expr, "right": right_expr}
         elif ctx.ADD():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
@@ -81,7 +79,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         elif ctx.SUB():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
-            return {"type": "SUB", "left": left_expr, "right":right_expr}
+            return {"type": "SUB", "left": left_expr, "right": right_expr}
         elif ctx.GT():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
@@ -98,9 +96,8 @@ class EvalVisitor(nevermorecompilerVisitor):
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
             return {"type": "NOT_EQ", "left": left_expr, "right": right_expr}
-        
-        return self.visitChildren(ctx)
 
+        return self.visitChildren(ctx)
 
     def visitFunctionCall(self, ctx: nevermorecompilerParser.FunctionCallContext):
         function_name = ctx.functionName().getText()
@@ -112,28 +109,27 @@ class EvalVisitor(nevermorecompilerVisitor):
                 arg_ctx = args_ctx.getChild(i)
                 if isinstance(arg_ctx, nevermorecompilerParser.FunctionExprContext):
                     args_dict.append(arg_ctx.getText())
-        
+
         function_call = {
-            "functionCall":{
+            "functionCall": {
                 "name": function_name,
                 "type": function_type,
                 "params": args_dict
             }
         }
         return function_call
-    
+
     def visitRet(self, ctx: nevermorecompilerParser.RetContext):
         return {"return": self.visitExpr(ctx.functionExpr())}
-    
-    
-    def visitFunctionStatement(self, ctx:nevermorecompilerParser.FunctionStatementContext):
+
+    def visitFunctionStatement(self, ctx: nevermorecompilerParser.FunctionStatementContext):
         func_name = ctx.functionName().getText()
         func_type = ctx.funcType().getText()
         function_body = []
-        
+
         args_dict = {}
         args_ctx = ctx.functionArgs()
-        
+
         if args_ctx:
             for i in range(args_ctx.getChildCount()):
                 arg_ctx = args_ctx.getChild(i)
@@ -143,7 +139,6 @@ class EvalVisitor(nevermorecompilerVisitor):
                     self.variables[var_name] = {"type": type_name, "value": var_name}
                     args_dict[var_name] = type_name
 
-        
         for stat_ctx in ctx.functionBody().stat():
             body_node = self.visit(stat_ctx)
             if body_node in self.ast:
@@ -151,15 +146,14 @@ class EvalVisitor(nevermorecompilerVisitor):
             if body_node:
                 function_body.append(body_node)
 
-    
         function_body = {
-                "functionStatement": {
-                    "name": func_name,
-                    "type": func_type,
-                    "args": args_dict,
-                    "body": function_body,
-                    "END_STATE": ";"
-                }
+            "functionStatement": {
+                "name": func_name,
+                "type": func_type,
+                "args": args_dict,
+                "body": function_body,
+                "END_STATE": ";"
+            }
         }
         for k, v in args_dict.items():
             del self.variables[k]
@@ -194,7 +188,6 @@ class EvalVisitor(nevermorecompilerVisitor):
             type_ = globalBody.type_().getText()
             variables[variable_name] = type_
             self.variables[variable_name] = {"type": type_, "value": None}
-
 
         global_node = {
             "globalStatement": variables
@@ -251,7 +244,7 @@ class EvalVisitor(nevermorecompilerVisitor):
 
         return if_node
 
-    def visitForStatement(self, ctx:nevermorecompilerParser.ForStatementContext):
+    def visitForStatement(self, ctx: nevermorecompilerParser.ForStatementContext):
         init = self.visit(ctx.forInit())
         condition = self.visit(ctx.equation())
         modify = self.visit(ctx.forModify())
@@ -274,7 +267,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         self.ast.append(for_node)
         return for_node
 
-    def visitWhileStatement(self, ctx:nevermorecompilerParser.WhileStatementContext):
+    def visitWhileStatement(self, ctx: nevermorecompilerParser.WhileStatementContext):
         condition = self.visit(ctx.equation())
         body = []
 
@@ -295,10 +288,9 @@ class EvalVisitor(nevermorecompilerVisitor):
         self.ast.append(while_node)
         return while_node
 
-    def visitDoWhileStatement(self, ctx:nevermorecompilerParser.WhileStatementContext):
+    def visitDoWhileStatement(self, ctx: nevermorecompilerParser.WhileStatementContext):
         condition = self.visit(ctx.equation())
         body = []
-
 
         for stat_ctx in ctx.whileBody().stat():
             body_node = self.visit(stat_ctx)
@@ -316,7 +308,7 @@ class EvalVisitor(nevermorecompilerVisitor):
         self.ast.append(while_node)
         return while_node
 
-    def visitForModify(self, ctx:nevermorecompilerParser.ForModifyContext):
+    def visitForModify(self, ctx: nevermorecompilerParser.ForModifyContext):
         id_name = ctx.ID().getText()
         if ctx.INCREMENT():
             op = ctx.INCREMENT().getText()
@@ -332,11 +324,11 @@ class EvalVisitor(nevermorecompilerVisitor):
         try:
             left_ID = ctx.expr(0).ID().getText()
             right_ID = ctx.expr(1).ID().getText()
-            return {"left": left_expr, "left_ID": left_ID, 'right_ID':right_ID, "op": op, "right": right_expr}
+            return {"left": left_expr, "left_ID": left_ID, 'right_ID': right_ID, "op": op, "right": right_expr}
         except:
             return {"left": left_expr, "op": op, "right": right_expr}
 
-    def visitForInit(self, ctx:nevermorecompilerParser.ForInitContext):
+    def visitForInit(self, ctx: nevermorecompilerParser.ForInitContext):
 
         type_ = ctx.type_().getText()
         variable_name = ctx.ID().getText()
@@ -354,10 +346,8 @@ class EvalVisitor(nevermorecompilerVisitor):
                 }
             }
         }
-    
+
         return assignment_node
-
-
 
     def visitAssignmentStatement(self, ctx: nevermorecompilerParser.AssignmentStatementContext):
 
@@ -390,10 +380,12 @@ class EvalVisitor(nevermorecompilerVisitor):
                 flattened_expr.extend(self.flatten_expr(sub_expr))
         return flattened_expr
 
+
 def reader(filename):
     with open(filename, 'r') as file:
         input_text = file.read()
     return input_text
+
 
 def ast_creator(input_file=None, output_file=None):
     if input_file is None:
@@ -410,11 +402,9 @@ def ast_creator(input_file=None, output_file=None):
 
     visitor = nevermorecompilerVisitor()
     visitor.visit(tree)
-    
-    
+
     ast_visitor = EvalVisitor()
     ast = ast_visitor.visit(tree)
     with open(output_file, 'w') as f:
         f.write(json.dumps(json.loads(ast), indent=1))
     print('AST построено')
-    

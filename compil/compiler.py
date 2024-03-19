@@ -5,6 +5,7 @@ from translator import translate_to_llvm
 from optimizer import optimize_ll
 from ini import *
 
+
 def main():
     parser = argparse.ArgumentParser(description=descr)
 
@@ -17,7 +18,7 @@ def main():
     input_file = args.file if args.file else None
     ast_file = args.ast if args.ast else None
     output_file = f'{args.output}.txt' if args.output else program_output_file
-    
+
     subprocess.run(["clear"])
     print("Старт")
     ast_creator(input_file, ast_file)
@@ -25,23 +26,18 @@ def main():
     translate_to_llvm()
     print('Оптимизация машинно-независимого кода')
     optimize_ll()
-    
-    
+
     subprocess.run(["clang", ll_optimize_file, "-o", executable_file])
 
     print("\033[31mEXECUTABLE\033[0m", "\033[32mOUTPUT\033[0m")
     with open(output_file, 'w') as f:
-        result = subprocess.run(["./compil/output_files/output"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False, universal_newlines=True)
+        result = subprocess.run(["./compil/output_files/output"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                text=True, check=False, universal_newlines=True)
         print(result.stdout)
         f.write(result.stdout)
-        
+
         print(f"Вывод сохранён в файл {output_file}".upper())
-        
-    
-    
-    
+
+
 if __name__ == "__main__":
     main()
-
-
-

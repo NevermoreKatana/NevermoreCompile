@@ -1,4 +1,4 @@
-import llvmlite.ir as ir 
+import llvmlite.ir as ir
 import sys
 
 
@@ -35,6 +35,7 @@ class PrintFormatMixin:
 
         builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int8_ptr_type), value_ptr])
 
+
 class CheckersMixin:
     def assign_type_checker(self, var, type_):
         if type_ == 'double':
@@ -42,7 +43,7 @@ class CheckersMixin:
         if type_ == 'int':
             type_ = ir.IntType
         return isinstance(var.type.pointee, type_)
-    
+
     def check_data_type(self, s):
         try:
             int(s)
@@ -52,4 +53,4 @@ class CheckersMixin:
                 float(s)
                 return "double"
             except:
-                return "str"  
+                return "str"

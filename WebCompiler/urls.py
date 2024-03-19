@@ -20,5 +20,7 @@ from WebCompiler import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.HomePageView.as_view(), name = 'home'),
+    path('', views.HomePageView.as_view(), name='home'),
+    path('docs/', views.DocsPageView.as_view(), name='docs'),
+    path('compiler/', views.OnlineCompilerView.as_view(), name='compiler')
 ]
