@@ -15,4 +15,4 @@ export PATH="/clang_10/bin:${PATH}"
 export LD_LIBRARY_PATH="/clang_10/lib:${LD_LIBRARY_PATH}"
 
 pip install -r requirements.txt
-python manage.py collectstatic --no-input
+#python manage.py collectstatic --no-input
