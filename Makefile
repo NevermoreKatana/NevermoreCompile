@@ -37,4 +37,4 @@ start-dev:
 deploy_install:
 	./deploy.sh
 start-production:
-	poetry run gunicorn -b 0.0.0.0:8000 WebCompiler.wsgi:application
+	 gunicorn -b 0.0.0.0:8000 WebCompiler.wsgi:application
