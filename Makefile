@@ -38,4 +38,4 @@ deploy_install:
 	./deploy.sh
 
 start-production:
-	 python -m gunicorn 0.0.0.0:8000 WebCompiler.wsgi:application
+	 gunicorn 0.0.0.0:8000 WebCompiler.wsgi:application
