@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
+    <title>NEPL Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+{% include 'header.html' %}
+<body>
+<div class="grid min-h-[600px] items-start w-full gap-0 lg:grid-cols-[260px_1fr] xl:gap-0">
+    <nav class="flex flex-col min-h-[600px] border-b border-gray-200 py-4 lg:col-start-1 lg:border-0 lg:min-h-0 xl:border-0 xl:py-0 dark:border-gray-800">
+        <div class="container px-4 md:px-6">
+            <div class="space-y-1.5"><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Introduction</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Installation</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Syntax</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Variables</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Control Flow</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Functions</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Data Structures</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Modules</span></a><a
+                    class="flex items-center font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                    href="#"><span class="truncate">Examples</span></a></div>
+        </div>
+    </nav>
+    <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Getting Started with ShadScript
+        </h1>
+        <div class="max-w-3xl space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript is a lightweight scripting language designed for
+                embedding in applications to provide users with a way to customize
+                and extend functionality through scripting.
+            </p>
+            <p>
+                This guide will walk you through the basics of the ShadScript
+                language, including syntax, variables, control flow, functions,
+                and data structures.
+            </p></div>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Introduction
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript is designed to be easy to read and write, with a syntax
+                that is familiar to users of other scripting languages. It is
+                interpreted at runtime, allowing for rapid iteration and
+                experimentation.
+            </p>
+            <p>
+                The language is designed to be safe to run in untrusted
+                environments, with built-in sandboxing and access controls to
+                prevent malicious code from causing harm.
+            </p></div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Installation
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript is embedded in the application and does not require a
+                separate installation. To use ShadScript, simply create a script
+                file with the .shad extension and start writing code.
+            </p></div>
+        <h2 id="syntax" class="anchor text-2xl font-bold tracking-tight">
+            Syntax
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript has a simple and expressive syntax that is easy to read
+                and write. Statements are terminated with a semicolon, and
+                indentation is used to indicate blocks of code.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+&lt;span class="token keyword"&gt;if&lt;/span&gt; (user.age &lt; 18) message = "You are not old enough to vote";
+&lt;span class="token keyword"&gt;else if&lt;/span&gt; (user.age &lt; 21) message = "You are not old enough to drink";
+&lt;span class="token keyword"&gt;else&lt;/span&gt; message = "You are old enough to vote and drink";
+        '}
+      </pre>
+        </div>
+        <h2 id="variables" class="anchor text-2xl font-bold tracking-tight">
+            Variables
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Variables in ShadScript are dynamically typed, meaning that the
+                type of a variable is determined at runtime based on the value
+                assigned to it. Variables are declared using the &lt;span
+                class="token keyword"&gt;let&lt;/span&gt; keyword.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+&lt;span class="token keyword"&gt;let&lt;/span&gt; message = "Hello, world!";
+&lt;span class="token keyword"&gt;let&lt;/span&gt; count = 10;
+&lt;span class="token keyword"&gt;let&lt;/span&gt; pi = 3.14159;
+&lt;span class="token keyword"&gt;let&lt;/span&gt; isTrue = true;
+      </pre>
+        </div>
+        <h2 id="control-flow" class="anchor text-2xl font-bold tracking-tight">
+            Control Flow
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript provides several control flow statements for
+                controlling the execution of code, including &lt;span
+                class="token keyword"&gt;if&lt;/span&gt;...&lt;span
+                class="token keyword"&gt;else&lt;/span&gt;,
+                &lt;span class="token keyword"&gt;for&lt;/span&gt;, and &lt;span
+                class="token keyword"&gt;while&lt;/span&gt;.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+&lt;span class="token keyword"&gt;if&lt;/span&gt; (user.age &lt; 18) message = "You are not old enough to vote";
+&lt;span class="token keyword"&gt;else if&lt;/span&gt; (user.age &lt; 21) message = "You are not old enough to drink";
+&lt;span class="token keyword"&gt;else&lt;/span&gt; message = "You are old enough to vote and drink";
+        '}
+      </pre>
+        </div>
+        <h2 id="functions" class="anchor text-2xl font-bold tracking-tight">
+            Functions
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Functions in ShadScript are defined using the &lt;span
+                class="token keyword"&gt;fn&lt;/span&gt; keyword, followed by the
+                name of the function and a list of parameters in parentheses. The
+                body of the function is enclosed in curly braces.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+&lt;span class="token keyword"&gt;fn&lt;/span&gt; greet(name) ;span class="token keyword"&gt;return&lt;/span&gt; "Hello, " + name;
+        '}
+      </pre>
+        </div>
+        <h2 id="data-structures" class="anchor text-2xl font-bold tracking-tight">
+            Data Structures
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript provides several built-in data structures for storing
+                and manipulating data, including arrays, objects, and maps.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+&lt;span class="token keyword"&gt;let&lt;/span&gt; names = ['Alice', 'Bob', 'Carol'];
+&lt;span class="token keyword"&gt;let&lt;/span&gt; person = name: 'Alice',
+          age: 30,
+          isAdmin: true,
+        '};
+      </pre>
+        </div>
+        <h2 id="modules" class="anchor text-2xl font-bold tracking-tight">
+            Modules
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                ShadScript supports modular programming through the use of
+                modules. A module is a separate file that contains code and
+                exports one or more values that can be imported into other
+                modules.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+&lt;span class="token keyword"&gt;import&lt;/span&gt; math;
+&lt;span class="token keyword"&gt;let&lt;/span&gt; result = math.add(10, 20);
+      </pre>
+        </div>
+        <h2 id="examples" class="anchor text-2xl font-bold tracking-tight">
+            Examples
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                The best way to learn ShadScript is to experiment with the
+                language. Here are a few examples to get you started:
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+span class="token keyword"&gt;let&lt;/span&gt; message = "Hello, world!";
+&lt;span class="token keyword"&gt;let&lt;/span&gt; count = 10;
+&lt;span class="token keyword"&gt;let&lt;/span&gt; pi = 3.14159;
+&lt;span class="token keyword"&gt;let&lt;/span&gt; isTrue = true;
+      </pre>
+        </div>
+    </div>
+</div>
+
+</body>
+{% include 'footer.html' %}
+</html>
