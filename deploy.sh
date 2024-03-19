@@ -8,3 +8,4 @@ sudo pip install -r requirements.txt
 echo 'export PATH=/usr/bin:$PATH' >> ~/.bashrc
 
 source ~/.bashrc
+python3 manage.py collectstatic --no-input

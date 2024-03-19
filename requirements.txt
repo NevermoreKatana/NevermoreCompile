@@ -1,3 +1,4 @@
+annotated-types==0.6.0
 antlr4-python3-runtime==4.13.1
 antlr4-tools==0.2.1
 asgiref==3.7.2
@@ -9,7 +10,12 @@ install-jdk==1.1.0
 llvmlite==0.42.0
 packaging==24.0
 pluggy==1.4.0
+pydantic==2.6.4
+pydantic-settings==2.2.1
+pydantic_core==2.16.3
 pytest==8.1.1
+python-dotenv==1.0.1
 sqlparse==0.4.4
 tomli==2.0.1
 typing_extensions==4.10.0
+whitenoise==6.6.0
