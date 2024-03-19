@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt-get update
+apt-get update
 
 apt-get install -y clang
 apt-get install python3-pip
