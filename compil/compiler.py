@@ -15,17 +15,18 @@ def main():
     parser.add_argument('-od', '--outputdir', type=str, help=help_od)
     args = parser.parse_args()
 
-    input_file = args.file if args.file else None
-    ast_file = args.ast if args.ast else None
+    input_file = args.file if args.file else ast_input_file
+    ast_file = args.ast if args.ast else ast_output_file
+
     output_file = f'{args.output}.txt' if args.output else program_output_file
 
     subprocess.run(["clear"])
     print("Старт")
     ast_creator(input_file, ast_file)
     print('Перевод в машинно-независимый код')
-    translate_to_llvm()
+    translate_to_llvm(ast_file, ll_output_file)
     print('Оптимизация машинно-независимого кода')
-    optimize_ll()
+    optimize_ll(ll_output_file, ll_optimize_file)
 
     subprocess.run(["clang", ll_optimize_file, "-o", executable_file])
 
