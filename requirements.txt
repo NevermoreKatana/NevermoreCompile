@@ -3,6 +3,7 @@ antlr4-tools==0.2.1
 asgiref==3.7.2
 Django==5.0.3
 exceptiongroup==1.2.0
+gunicorn==21.2.0
 iniconfig==2.0.0
 install-jdk==1.1.0
 llvmlite==0.42.0
