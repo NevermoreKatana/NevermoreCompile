@@ -6,8 +6,10 @@ from django.http import HttpResponse
 from WebCompiler.forms import CompilerForm
 from WebCompiler.services import online_compile
 from django.http import FileResponse
+from WebCompiler.services import tmp_dir
+import os
 def download_file(request, filename):
-    response = FileResponse(open('tmp_files/' + filename, 'rb'))
+    response = FileResponse(open(os.path.join(tmp_dir, filename), 'rb'))
     return response
 
 class HomePageView(View):

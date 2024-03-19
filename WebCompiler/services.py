@@ -6,9 +6,12 @@ import subprocess
 import tempfile
 import os
 
-DOCKER_DIR = 'tmp_files/'
+
+tmp_dir = os.path.join(os.getcwd(), 'tmp_files')
+os.makedirs(tmp_dir, exist_ok=True)
+
 def code_to_txt(input_code: str):
-    with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, dir=DOCKER_DIR) as input_txt:
+    with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, dir=tmp_dir) as input_txt:
         with open(input_txt.name, 'w') as f:
             f.write(input_code)
 
@@ -21,10 +24,10 @@ def delete_file(file_path):
 
 def online_compile(input_code: str):
     input_file = code_to_txt(input_code)
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False, dir=DOCKER_DIR) as ast_file, \
-            tempfile.NamedTemporaryFile(suffix=".ll", delete=False, dir=DOCKER_DIR) as ll_file, \
-            tempfile.NamedTemporaryFile(suffix=".ll", delete=False, dir=DOCKER_DIR) as ll_optimize_file, \
-            tempfile.NamedTemporaryFile(suffix="", delete=False, dir=DOCKER_DIR) as executable_file:
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False, dir=tmp_dir) as ast_file, \
+            tempfile.NamedTemporaryFile(suffix=".ll", delete=False, dir=tmp_dir) as ll_file, \
+            tempfile.NamedTemporaryFile(suffix=".ll", delete=False, dir=tmp_dir) as ll_optimize_file, \
+            tempfile.NamedTemporaryFile(suffix="", delete=False, dir=tmp_dir) as executable_file:
         ast_creator(input_file, ast_file.name)
         translate_to_llvm(ast_file.name, ll_file.name)
         optimize_ll(ll_file.name, ll_optimize_file.name)
