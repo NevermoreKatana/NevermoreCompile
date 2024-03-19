@@ -30,3 +30,5 @@ docker-build:
 
 requirements:
 	pip freeze > requirements.txt
+start-dev:
+	python3 manage.py runserver

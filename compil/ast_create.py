@@ -1,12 +1,12 @@
 from antlr4 import *
-from antlr4_gen.compil.grammar.nevermorecompilerLexer import nevermorecompilerLexer
-from antlr4_gen.compil.grammar.nevermorecompilerParser import nevermorecompilerParser
-from antlr4_gen.compil.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
-from antlr4_gen.compil.grammar.nevermorecompilerListener import nevermorecompilerListener
+from compil.antlr4_gen.compil.grammar.nevermorecompilerLexer import nevermorecompilerLexer
+from compil.antlr4_gen.compil.grammar.nevermorecompilerParser import nevermorecompilerParser
+from compil.antlr4_gen.compil.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
+from compil.antlr4_gen.compil.grammar.nevermorecompilerListener import nevermorecompilerListener
 from llvmlite import ir, binding
 import json
-from ini import *
-
+from compil.ini import *
+import tempfile
 
 class EvalVisitor(nevermorecompilerVisitor):
     def __init__(self):
@@ -382,9 +382,11 @@ class EvalVisitor(nevermorecompilerVisitor):
 
 
 def reader(filename):
+    if isinstance(filename, tempfile._TemporaryFileWrapper):
+        filename = filename.name
+
     with open(filename, 'r') as file:
-        input_text = file.read()
-    return input_text
+        return file.read()
 
 
 def ast_creator(input_file=None, output_file=None):

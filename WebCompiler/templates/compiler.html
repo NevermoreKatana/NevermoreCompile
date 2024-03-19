@@ -3,7 +3,7 @@
 <html>
 <head>
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
-    <title>Nevermore Compiler</title>
+    <title>NEPL Compiler</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 {% include 'header.html' %}
@@ -12,50 +12,89 @@
 
 <div class="w-full py-10 space-y-10 ">
     <div class="container grid gap-6 px-4 md:px-6 lg:gap-10 lg:grid-cols-2">
+
         <div class="flex flex-col gap-2">
-            <label
-                    class="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-lg leading-none"
-                    for="code"
-            >
-                Code
-            </label>
-            <textarea
-                    class="flex rounded-md border border-input bg-background px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[200px] text-sm font-mono w-full resize-none"
-                    id="code"
-                    placeholder="Enter your code here"
-            ></textarea>
+            <form method="post">
+                {% csrf_token %}
+                <label
+                        class="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-lg leading-none"
+                >
+                    {{ form.input_code.label_tag }}
+                </label>
+                {{ form.input_code }}
+
+                <div class="container flex flex-col gap-2 px-4 md:px-6">
+                    <button type="submit"
+                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[100px] self-end">
+                        Run
+                    </button>
+
+                </div>
+            </form>
+            <div class="container flex flex-col gap-2 px-4 md:px-6 ">
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-[100px] self-end">
+                    Clear
+                </button>
+            </div>
+
         </div>
+
         <div class="flex flex-col gap-2">
             <label
                     class="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-lg leading-none"
                     for="output"
             >
-                Code
+                Output
             </label>
-            <textarea
-                    class="flex rounded-md border border-input bg-background px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[200px] text-sm font-mono w-full resize-none"
+            <textarea readonly
+                    class="flex rounded-md border border-input bg-background px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[475px] text-sm font-mono w-full resize-none"
                     id="output"
                     placeholder="Your output will appear here."
-            ></textarea>
-            <div class="container flex flex-col gap-2 px-4 md:px-6">
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[100px] self-end">
-                    Run
-                </button>
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-[100px] self-end">
-                    Clear
-                </button>
-            </div>
-            <div class="flex gap-4 mt-4">
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[100px]">
-                    Download PDF
-                </button>
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[100px]">
-                    Download CSV
-                </button>
-            </div>
+            >{% if output %}{{output}}{% endif %}</textarea>
         </div>
-        <div class="container flex flex-col gap-2 px-4 md:px-6"></div>
+
+        <div class="flex gap-4 mt-4">
+            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[125px]">
+                {% if ast_file %}
+                <a href="{% url 'download_file' filename=ast_file %}" download>
+                    {% else %}
+
+                    <a href="#">
+                        {% endif %}
+                        Download AST
+                    </a>
+            </button>
+            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[125px]">
+                {% if ll_file %}
+                <a href="{% url 'download_file' filename=ll_file %}" download>
+                    {% else %}
+                    <a href="#">
+                        {% endif %}
+                        Download .ll file
+                    </a>
+            </button>
+            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[125px]">
+                {% if ll_optimize_file %}
+                <a href="{% url 'download_file' filename=ll_optimize_file %}" download>
+                    {% else %}
+                    <a href="#">
+                        {% endif %}
+                        Optimized .ll file
+                    </a>
+            </button>
+            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[175px]">
+                {% if executable_file %}
+                 <a href="{% url 'download_file' filename=executable_file %}" download>
+                    {% else %}
+                    <a href="#">
+                        {% endif %}
+                        Download Executable file
+                    </a>
+            </button>
+        </div>
     </div>
+    <div class="container flex flex-col gap-2 px-4 md:px-6"></div>
+</div>
 
 </body>
 {% include 'footer.html' %}

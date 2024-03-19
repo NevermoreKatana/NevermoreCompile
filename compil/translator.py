@@ -1,8 +1,8 @@
 import llvmlite.ir as ir
 import json
-from ini import *
+from compil.ini import *
 import sys
-from mixins import PrintFormatMixin, CheckersMixin
+from compil.mixins import PrintFormatMixin, CheckersMixin
 
 
 class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
@@ -141,7 +141,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
             try:
                 raise ValueError(f"Unsupported expression type: {expr['type']}")
             except ValueError as e:
-                # print(str(e))
+                print(str(e))
                 sys.exit(1)
 
     def execute_math_operation(self, expr, builder=None):
@@ -272,7 +272,7 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                         raise ValueError(
                             f"{expr['value']} не сущетсвует в области видимости {builder.function.name}, а существует только в {self.variables[expr['value']]['func']}")
                     except ValueError as e:
-                        # print(str(e))
+                        print(str(e))
                         sys.exit(1)
 
                 else:
@@ -719,14 +719,13 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         self.builder.ret_void()
 
 
-def translate_to_llvm():
+def translate_to_llvm(filename:str = None, outputfile:str = None):
     tolvm = TranslatorToLLVM()
-    tolvm.json_reader()
+    tolvm.json_reader(filename)
     tolvm.builder_init()
     tolvm.ast_bypass()
-    tolvm.ll_writer()
-    # print(tolvm.variables)
-    # print("Промежуточный код готов!")
+    tolvm.ll_writer(outputfile)
+    print("Промежуточный код готов!")
 
 
 if __name__ == "__main__":

@@ -16,12 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from WebCompiler import views
+from WebCompiler.docs import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.HomePageView.as_view(), name='home'),
-    path('docs/', include('WebCompiler.docs.urls'), name='docs'),
-    path('compiler/', views.OnlineCompilerView.as_view(), name='compiler'),
-    path('download/<str:filename>/', views.download_file, name='download_file'),
+    path('', views.DocsMainPageView.as_view(), name='docs'),
 ]

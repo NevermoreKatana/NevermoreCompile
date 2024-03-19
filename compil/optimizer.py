@@ -1,5 +1,5 @@
 from llvmlite import ir, binding
-from ini import *
+
 
 
 class Optimizer():
@@ -12,15 +12,15 @@ class Optimizer():
         binding.initialize_native_asmprinter()
         self.module = binding.parse_assembly(self.ll_file)
 
-    def reader(self):
+    def reader(self) -> None:
         with open(self.ll_file, 'r') as f:
             self.ll_file = f.read()
 
-    def writer(self):
+    def writer(self) -> None:
         with open(self.output_file, 'w') as f:
             f.write(str(self.module))
 
-    def optimize(self):
+    def optimize(self) -> None:
         pass_manager = binding.create_module_pass_manager()
         # Объединяет одинаковые глобальные константы в одну
         pass_manager.add_constant_merge_pass()
@@ -51,7 +51,7 @@ class Optimizer():
         pass_manager.run(self.module)
 
 
-def optimize_ll():
+def optimize_ll(ll_output_file:str = None, ll_optimize_file: str = None) -> None:
     optimzer = Optimizer(ll_output_file, ll_optimize_file)
     optimzer.optimize()
     optimzer.writer()
