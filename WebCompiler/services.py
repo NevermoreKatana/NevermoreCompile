@@ -28,8 +28,14 @@ def online_compile(input_code: str):
             tempfile.NamedTemporaryFile(suffix=".ll", delete=False, dir=tmp_dir) as ll_file, \
             tempfile.NamedTemporaryFile(suffix=".ll", delete=False, dir=tmp_dir) as ll_optimize_file, \
             tempfile.NamedTemporaryFile(suffix="", delete=False, dir=tmp_dir) as executable_file:
-        ast_creator(input_file, ast_file.name)
-        translate_to_llvm(ast_file.name, ll_file.name)
+        try:
+            ast_creator(input_file, ast_file.name)
+        except Exception as e:
+            return {'error': str(e)}
+        try:
+            translate_to_llvm(ast_file.name, ll_file.name)
+        except Exception as e:
+            return {'error': str(e)}
         optimize_ll(ll_file.name, ll_optimize_file.name)
 
         ast_file.close()
@@ -45,6 +51,7 @@ def online_compile(input_code: str):
         for file in [ast_file.name, ll_file.name, ll_optimize_file.name, executable_file.name, input_file.name]:
             timer = threading.Timer(300, delete_file, args=[file])
             timer.start()
+
         return {"output": result.stdout,
                 "ast_file": os.path.basename(ast_file.name),
                 "ll_file": os.path.basename(ll_file.name),

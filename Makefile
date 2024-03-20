@@ -12,7 +12,7 @@ to_llvm:
 	clang output_files/output.ll -o output_files/output
 
 compile:
-	python3 compil/compiler.py -f compil/input.txt
+	python3 compil/compiler.py -f compil/input.txt -o compil/outpit_files
 
 full:
 	make compile

@@ -25,7 +25,11 @@ class OnlineCompilerView(FormView):
     def form_valid(self, form):
         code = form.cleaned_data['input_code']
         result_compile = online_compile(code)
-
+        if 'error' in result_compile:
+            return render(self.request,
+                          'compiler.html',
+                          {'form': form,
+                           'output': result_compile['error']})
         return render(self.request,
                       'compiler.html',
                       {'form': form,

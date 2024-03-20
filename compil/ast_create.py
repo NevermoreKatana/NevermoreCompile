@@ -8,11 +8,15 @@ from antlr4 import *
 from compil.antlr4_gen.nevermorecompilerLexer import nevermorecompilerLexer
 from compil.antlr4_gen.nevermorecompilerParser import nevermorecompilerParser
 from compil.antlr4_gen.nevermorecompilerVisitor import nevermorecompilerVisitor
+from antlr4.error.ErrorListener import ErrorListener
 import json
 from compil.ini import *
 import tempfile
 from compil.mixins import ReadWriteMixin
 
+class MyErrorListener(ErrorListener):
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        raise Exception("Ошибка на строке " + str(line) + ":" + str(column) + " " + msg)
 
 class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
     def __init__(self):
@@ -395,7 +399,16 @@ def ast_creator(input_file, output_file):
     lexer = nevermorecompilerLexer(input_stream)
     stream = CommonTokenStream(lexer)
     parser = nevermorecompilerParser(stream)
-    tree = parser.prog()
+
+
+    parser.removeErrorListeners()
+    parser.addErrorListener(MyErrorListener())
+
+    try:
+
+        tree = parser.prog()
+    except Exception as e:
+       raise Exception(str(e))
 
     visitor = nevermorecompilerVisitor()
     visitor.visit(tree)
