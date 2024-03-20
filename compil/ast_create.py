@@ -1,5 +1,8 @@
+import os
 import sys
-sys.path.insert(0, '/home/katana/NevermoreCompile')
+
+current_directory = os.getcwd()
+sys.path.insert(0, current_directory)
 
 from antlr4 import *
 from compil.antlr4_gen.nevermorecompilerLexer import nevermorecompilerLexer
@@ -8,6 +11,7 @@ from compil.antlr4_gen.nevermorecompilerVisitor import nevermorecompilerVisitor
 import json
 from compil.ini import *
 import tempfile
+
 
 class EvalVisitor(nevermorecompilerVisitor):
     def __init__(self):
