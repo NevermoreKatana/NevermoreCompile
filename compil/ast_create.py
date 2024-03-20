@@ -1,7 +1,10 @@
+import sys
+sys.path.insert(0, '/home/katana/NevermoreCompile')
+
 from antlr4 import *
-from compil.antlr4_gen.compil.grammar.nevermorecompilerLexer import nevermorecompilerLexer
-from compil.antlr4_gen.compil.grammar.nevermorecompilerParser import nevermorecompilerParser
-from compil.antlr4_gen.compil.grammar.nevermorecompilerVisitor import nevermorecompilerVisitor
+from compil.antlr4_gen.nevermorecompilerLexer import nevermorecompilerLexer
+from compil.antlr4_gen.nevermorecompilerParser import nevermorecompilerParser
+from compil.antlr4_gen.nevermorecompilerVisitor import nevermorecompilerVisitor
 import json
 from compil.ini import *
 import tempfile
