@@ -1,24 +1,15 @@
 from llvmlite import ir, binding
+from compil.mixins import ReadWriteMixin
 
 
-
-class Optimizer():
-    def __init__(self, filename: str, outputfile: str) -> None:
+class Optimizer(ReadWriteMixin):
+    def __init__(self, filename: str) -> None:
         self.ll_file = filename
-        self.output_file = outputfile
-        self.reader()
+        self.ll_reader()
         binding.initialize()
         binding.initialize_native_target()
         binding.initialize_native_asmprinter()
         self.module = binding.parse_assembly(self.ll_file)
-
-    def reader(self) -> None:
-        with open(self.ll_file, 'r') as f:
-            self.ll_file = f.read()
-
-    def writer(self) -> None:
-        with open(self.output_file, 'w') as f:
-            f.write(str(self.module))
 
     def optimize(self) -> None:
         pass_manager = binding.create_module_pass_manager()
@@ -51,7 +42,7 @@ class Optimizer():
         pass_manager.run(self.module)
 
 
-def optimize_ll(ll_output_file:str = None, ll_optimize_file: str = None) -> None:
-    optimzer = Optimizer(ll_output_file, ll_optimize_file)
+def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> None:
+    optimzer = Optimizer(ll_output_file)
     optimzer.optimize()
-    optimzer.writer()
+    optimzer.ll_writer(ll_optimize_file)

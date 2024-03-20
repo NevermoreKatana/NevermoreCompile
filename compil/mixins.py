@@ -1,5 +1,7 @@
+import json
+
 import llvmlite.ir as ir
-import sys
+import tempfile
 
 
 class PrintFormatMixin:
@@ -36,21 +38,27 @@ class PrintFormatMixin:
         builder.call(self.printf_func, [builder.bitcast(format_str_ptr, self.int8_ptr_type), value_ptr])
 
 
-class CheckersMixin:
-    def assign_type_checker(self, var, type_):
-        if type_ == 'double':
-            type_ = ir.DoubleType
-        if type_ == 'int':
-            type_ = ir.IntType
-        return isinstance(var.type.pointee, type_)
+class ReadWriteMixin:
 
-    def check_data_type(self, s):
-        try:
-            int(s)
-            return "int"
-        except:
-            try:
-                float(s)
-                return "double"
-            except:
-                return "str"
+    def input_code_reader(self, input_file: str) -> str:
+        if isinstance(input_file, tempfile._TemporaryFileWrapper):
+            input_file = input_file.name
+
+        with open(input_file, 'r') as file:
+            return file.read()
+
+    def ast_writer(self, output_file) -> None:
+        with open(output_file, 'w') as file:
+            file.write(json.dumps(self.ast, indent=1))
+
+    def ast_reader(self, input_file: str) -> None:
+        with open(input_file, "r") as f:
+            self.ast = json.load(f)
+
+    def ll_writer(self, output_file) -> None:
+        with open(output_file, "w") as f:
+            f.write(str(self.module))
+
+    def ll_reader(self) -> None:
+        with open(self.ll_file, 'r') as f:
+            self.ll_file = f.read()

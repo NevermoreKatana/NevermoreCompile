@@ -2,10 +2,10 @@ import llvmlite.ir as ir
 import json
 from compil.ini import *
 import sys
-from compil.mixins import PrintFormatMixin, CheckersMixin
+from compil.mixins import PrintFormatMixin, ReadWriteMixin
 
 
-class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
+class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
     choose_type_entry = {
         "void": ir.VoidType(),
         "int": ir.IntType(32),
@@ -52,14 +52,6 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
                 self.function_call(item, builder)
             elif 'return' in item:
                 self.return_statement(item, builder)
-
-    def json_reader(self, input_file: str = ast_output_file) -> None:
-        with open(input_file, "r") as f:
-            self.ast = json.load(f)
-
-    def ll_writer(self, output_file: str = ll_output_file) -> None:
-        with open(output_file, "w") as f:
-            f.write(str(self.module))
 
     def builder_init(self) -> None:
         try:
@@ -719,9 +711,9 @@ class TranslatorToLLVM(PrintFormatMixin, CheckersMixin):
         self.builder.ret_void()
 
 
-def translate_to_llvm(filename:str = None, outputfile:str = None):
+def translate_to_llvm(filename: str = None, outputfile: str = None):
     tolvm = TranslatorToLLVM()
-    tolvm.json_reader(filename)
+    tolvm.ast_reader(filename)
     tolvm.builder_init()
     tolvm.ast_bypass()
     tolvm.ll_writer(outputfile)

@@ -11,9 +11,10 @@ from compil.antlr4_gen.nevermorecompilerVisitor import nevermorecompilerVisitor
 import json
 from compil.ini import *
 import tempfile
+from compil.mixins import ReadWriteMixin
 
 
-class EvalVisitor(nevermorecompilerVisitor):
+class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
     def __init__(self):
         self.variables = {}
         self.tmp_variable = {}
@@ -386,20 +387,9 @@ class EvalVisitor(nevermorecompilerVisitor):
         return flattened_expr
 
 
-def reader(filename):
-    if isinstance(filename, tempfile._TemporaryFileWrapper):
-        filename = filename.name
-
-    with open(filename, 'r') as file:
-        return file.read()
-
-
-def ast_creator(input_file=None, output_file=None):
-    if input_file is None:
-        input_file = ast_input_file
-    elif output_file is None:
-        output_file = ast_output_file
-    input_text = reader(input_file)
+def ast_creator(input_file, output_file):
+    ast_visitor = EvalVisitor()
+    input_text = ast_visitor.input_code_reader(input_file)
 
     input_stream = InputStream(input_text)
     lexer = nevermorecompilerLexer(input_stream)
@@ -410,8 +400,6 @@ def ast_creator(input_file=None, output_file=None):
     visitor = nevermorecompilerVisitor()
     visitor.visit(tree)
 
-    ast_visitor = EvalVisitor()
     ast = ast_visitor.visit(tree)
-    with open(output_file, 'w') as f:
-        f.write(json.dumps(json.loads(ast), indent=1))
+    ast_visitor.ast_writer(output_file)
     print('AST построено')
