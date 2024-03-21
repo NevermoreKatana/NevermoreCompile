@@ -34,159 +34,248 @@
     </nav>
     <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
         <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
-            Getting Started with ShadScript
+            Вступление Nevermore Programm Language - NEPL
         </h1>
         <div class="max-w-3xl space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                ShadScript is a lightweight scripting language designed for
-                embedding in applications to provide users with a way to customize
-                and extend functionality through scripting.
+                NEPL - бесполезный и не нужный язык компилятор процедурного языка.
+                Его синтаксис и грамматика основываются на нескольких существующих языках программирования - C, C++,
+                PascalABC.
             </p>
             <p>
-                This guide will walk you through the basics of the ShadScript
-                language, including syntax, variables, control flow, functions,
-                and data structures.
-            </p></div>
+                Грамматика и синтаксис описаны с помощью единой нотации, т.е. нет разделения между синтаксическими и
+                лексическими анализаторами.
+                Все правила и токены записываются в одном файле с расщирением .g4
+            </p>
+        </div>
         <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
-            Introduction
+            Парсер и грамматика
         </h2>
         <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                ShadScript is designed to be easy to read and write, with a syntax
-                that is familiar to users of other scripting languages. It is
-                interpreted at runtime, allowing for rapid iteration and
-                experimentation.
+                ANTLR4 генерирует LL(*), или нерекурсивно-восходящую грамматику. Это означает, что он может
+                обрабатывать любую LL-грамматику, включая те, которые содержат левую рекурсию. Это делает ANTLR4 мощным
+                инструментом для создания парсеров.
             </p>
             <p>
-                The language is designed to be safe to run in untrusted
-                environments, with built-in sandboxing and access controls to
-                prevent malicious code from causing harm.
+                Парсер был написан с помощью наследования от класса парсера, который был создан ANTLR4.
             </p></div>
         <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
-            Installation
+            AST дерево
         </h2>
         <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                ShadScript is embedded in the application and does not require a
-                separate installation. To use ShadScript, simply create a script
-                file with the .shad extension and start writing code.
-            </p></div>
-        <h2 id="syntax" class="anchor text-2xl font-bold tracking-tight">
-            Syntax
-        </h2>
-        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                Абстрактное синтаксическое дерево (AST, от англ. Abstract Syntax Tree) — это конечное помеченное
+                ориентированное дерево, в котором внутренние вершины сопоставлены (помечены) с операторами языка
+                программирования, а листья — с соответствующими операндами.
+            </p>
             <p>
-                ShadScript has a simple and expressive syntax that is easy to read
-                and write. Statements are terminated with a semicolon, and
-                indentation is used to indicate blocks of code.
+                AST представляет собой древовидное представление абстрактной синтаксической структуры исходного кода,
+                написанного на языке программирования. Каждый узел дерева обозначает конструкцию, встречающуюся в
+                исходном коде.
+            </p>
+            <p>
+                AST используется в синтаксических анализаторах для промежуточного представления программы между деревом
+                разбора и структурой данных, которая затем используется в качестве внутреннего представления в
+                компиляторе или интерпретаторе программы для оптимизации и генерации кода.
+            </p>
+            <p>
+                В NEPL AST дерево строится с помощью выше описанного парсера. Для этого используется алгоритм LL(*), он
+                проходит с самого верхнего уровня грамматики и спускается до самого нижнего. Во время это прохода
+                создаются словари, который в конечном итоге сохраняются последовательно в единый JSON файл.
             </p>
             <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-&lt;span class="token keyword"&gt;if&lt;/span&gt; (user.age &lt; 18) message = "You are not old enough to vote";
-&lt;span class="token keyword"&gt;else if&lt;/span&gt; (user.age &lt; 21) message = "You are not old enough to drink";
-&lt;span class="token keyword"&gt;else&lt;/span&gt; message = "You are old enough to vote and drink";
-        '}
+[
+ {
+  "functionStatement": {
+   "name": "main",
+   "type": "void",
+   "args": {},
+   "body": [
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 15
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "x"
+       },
+       "END_STATE": ";"
+      }
+     }
+    }
+   ],
+   "END_STATE": ";"
+  }
+ }
+]
+      </pre>
+        </div>
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Перевод в машинно-назавсимый код
+        </h1>
+        <h2 id="variables" class="anchor text-2xl font-bold tracking-tight">
+            LLVM
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                LLVM (ранее Low Level Virtual Machine) — это проект программной инфраструктуры для создания компиляторов
+                и сопутствующих им утилит. Он состоит из набора компиляторов из языков высокого уровня, системы
+                оптимизации, интерпретации и компиляции в машинный код.
+
+                В основе инфраструктуры используется RISC-подобная платформонезависимая система кодирования машинных
+                инструкций (байткод LLVM IR), которая представляет собой высокоуровневый ассемблер, с которым работают
+                различные преобразования.
+            </p>
+            <p>
+                В NEPL LLVM используется в роли машинно-независимого кода, в который переводится исходный код.
+                Перевод происходит с помощью самописного рекурсивного алгоритма, который проходится по AST и переводит
+                исходный код в LL код. Все ошибки обрабатываются и выводятся в терминал.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
+; ModuleID = "nevermoreCompile"
+target triple = "x86_64-pc-linux-gnu"
+target datalayout = ""
+
+define void @"main"()
+{
+entry.main:
+  %"x" = alloca i32
+  store i32 15, i32* %"x"
+  %".3" = load i32, i32* %"x"
+  %".4" = alloca [4 x i8]
+  store [4 x i8] c"%d\0a\00", [4 x i8]* %".4"
+  %".6" = bitcast [4 x i8]* %".4" to i8*
+  %".7" = call i32 (i8*, ...) @"printf"(i8* %".6", i32 %".3")
+  ret void
+}
+
+declare i32 @"printf"(i8* %".1", ...)
       </pre>
         </div>
         <h2 id="variables" class="anchor text-2xl font-bold tracking-tight">
-            Variables
+            Оптимизация LL кода
         </h2>
         <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                Variables in ShadScript are dynamically typed, meaning that the
-                type of a variable is determined at runtime based on the value
-                assigned to it. Variables are declared using the &lt;span
-                class="token keyword"&gt;let&lt;/span&gt; keyword.
+                Оптимизация LL кода (или любого другого кода) играет важную роль в разработке программного обеспечения1.
+                Она направлена на повышение производительности программы.
+
+                В контексте LLVM, оптимизация кода может включать в себя упрощение выражений, устранение мертвого кода,
+                улучшение использования памяти и кэша, а также множество других техник. Это может значительно улучшить
+                эффективность и скорость выполнения программ, скомпилированных с использованием LLVM.
+            </p>
+            <p>
+                В NEPL оптимизация происходит с помощью той же библиотеки, с помощью которой происходит перевод в LL код
+                - LLVMlite. Этапы, которые проходит LL код во время оптимизации.
+            <p>
+                1. Объединяет одинаковые глобальные константы в одну
+            </p>
+            <p>
+                2. Удаляет аргументы функций, которые не используются
+            </p>
+            <p>
+                3. Встраивает функции, размер которых меньше или равен порогу (в данном случае 225)
+            </p>
+            <p>
+                4. Удаляет неиспользуемые глобальные значения
+            </p>
+            <p>
+                5. Удаляет мертвый код
+            </p>
+            <p>
+                6. Упрощает управляющие графы потока для улучшения производительности
+            </p>
+            <p>
+                7. Комбинирует инструкции для улучшения производительности
+            </p>
+            <p>
+                8. Раскручивает циклы для улучшения производительности
+            </p>
+            <p>
+                9. Производит межпроцедурное распространение констант и условий
+            </p>
+            <p>
+                10. Применяет оптимизацию Global Value Numbering для устранения избыточных вычислений
+            </p>
+            <p>
+                11. Выносит инварианты цикла из цикла для улучшения производительности
+            </p>
+            <p>
+                12. Применяет оптимизацию Sparse Conditional Constant Propagation для устранения избыточных вычислений
+            </p>
+            <p>
+                13. Удаляет хвостовые вызовы для улучшения производительности
+            </p>
             </p>
             <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-&lt;span class="token keyword"&gt;let&lt;/span&gt; message = "Hello, world!";
-&lt;span class="token keyword"&gt;let&lt;/span&gt; count = 10;
-&lt;span class="token keyword"&gt;let&lt;/span&gt; pi = 3.14159;
-&lt;span class="token keyword"&gt;let&lt;/span&gt; isTrue = true;
+; ModuleID = '<string>'
+source_filename = "<string>"
+target triple = "x86_64-pc-linux-gnu"
+
+define void @main() local_unnamed_addr {
+entry.main:
+  %.4 = alloca [4 x i8], align 1
+  %.4.repack = getelementptr inbounds [4 x i8], [4 x i8]* %.4, i64 0, i64 0
+  store i8 37, i8* %.4.repack, align 1
+  %.4.repack1 = getelementptr inbounds [4 x i8], [4 x i8]* %.4, i64 0, i64 1
+  store i8 100, i8* %.4.repack1, align 1
+  %.4.repack2 = getelementptr inbounds [4 x i8], [4 x i8]* %.4, i64 0, i64 2
+  store i8 10, i8* %.4.repack2, align 1
+  %.4.repack3 = getelementptr inbounds [4 x i8], [4 x i8]* %.4, i64 0, i64 3
+  store i8 0, i8* %.4.repack3, align 1
+  %.7 = call i32 (i8*, ...) @printf(i8* noundef nonnull %.4.repack, i32 15)
+  ret void
+}
+
+declare i32 @printf(i8*, ...) local_unnamed_addr
+
       </pre>
         </div>
         <h2 id="control-flow" class="anchor text-2xl font-bold tracking-tight">
-            Control Flow
+            Компиляция LL кода
         </h2>
         <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                ShadScript provides several control flow statements for
-                controlling the execution of code, including &lt;span
-                class="token keyword"&gt;if&lt;/span&gt;...&lt;span
-                class="token keyword"&gt;else&lt;/span&gt;,
-                &lt;span class="token keyword"&gt;for&lt;/span&gt;, and &lt;span
-                class="token keyword"&gt;while&lt;/span&gt;.
+                В NEPL компиляция LL кода происходит с помощью утилиты clang. Исполняемый файл генерируется
+                исключительно для linux систем.
             </p>
-            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-&lt;span class="token keyword"&gt;if&lt;/span&gt; (user.age &lt; 18) message = "You are not old enough to vote";
-&lt;span class="token keyword"&gt;else if&lt;/span&gt; (user.age &lt; 21) message = "You are not old enough to drink";
-&lt;span class="token keyword"&gt;else&lt;/span&gt; message = "You are old enough to vote and drink";
-        '}
-      </pre>
+            <p>
+                Clang — это фронтенд для языков программирования C, C++, Objective-C, Objective-C++ и OpenCL C,
+                использующийся совместно с фреймворком LLVM. Clang транслирует исходные коды в байт-код LLVM, затем
+                фреймворк производит оптимизации и кодогенерацию.
+            </p>
         </div>
-        <h2 id="functions" class="anchor text-2xl font-bold tracking-tight">
-            Functions
-        </h2>
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Выходные файлы
+        </h1>
         <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                Functions in ShadScript are defined using the &lt;span
-                class="token keyword"&gt;fn&lt;/span&gt; keyword, followed by the
-                name of the function and a list of parameters in parentheses. The
-                body of the function is enclosed in curly braces.
+                NEPL сохраняет все выходные файлы, которые происходят на протяжении всего процесса компиляции. На выходе
+                пользователь может получить ast дерево,файл с ll кодом, файл с оптимищированным ll кодом, исполняемы
+                файл, текстовый файл с выводом программы.
             </p>
-            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-&lt;span class="token keyword"&gt;fn&lt;/span&gt; greet(name) ;span class="token keyword"&gt;return&lt;/span&gt; "Hello, " + name;
-        '}
-      </pre>
-        </div>
-        <h2 id="data-structures" class="anchor text-2xl font-bold tracking-tight">
-            Data Structures
-        </h2>
-        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             <p>
-                ShadScript provides several built-in data structures for storing
-                and manipulating data, including arrays, objects, and maps.
+                Так же выводится все ошибки, которые происходят в процессе компиляции и вывод программы.
             </p>
-            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-&lt;span class="token keyword"&gt;let&lt;/span&gt; names = ['Alice', 'Bob', 'Carol'];
-&lt;span class="token keyword"&gt;let&lt;/span&gt; person = name: 'Alice',
-          age: 30,
-          isAdmin: true,
-        '};
-      </pre>
         </div>
-        <h2 id="modules" class="anchor text-2xl font-bold tracking-tight">
-            Modules
-        </h2>
-        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            <p>
-                ShadScript supports modular programming through the use of
-                modules. A module is a separate file that contains code and
-                exports one or more values that can be imported into other
-                modules.
-            </p>
-            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-&lt;span class="token keyword"&gt;import&lt;/span&gt; math;
-&lt;span class="token keyword"&gt;let&lt;/span&gt; result = math.add(10, 20);
-      </pre>
-        </div>
-        <h2 id="examples" class="anchor text-2xl font-bold tracking-tight">
-            Examples
-        </h2>
-        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            <p>
-                The best way to learn ShadScript is to experiment with the
-                language. Here are a few examples to get you started:
-            </p>
-            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
-span class="token keyword"&gt;let&lt;/span&gt; message = "Hello, world!";
-&lt;span class="token keyword"&gt;let&lt;/span&gt; count = 10;
-&lt;span class="token keyword"&gt;let&lt;/span&gt; pi = 3.14159;
-&lt;span class="token keyword"&gt;let&lt;/span&gt; isTrue = true;
-      </pre>
-        </div>
+
     </div>
 </div>
-
 </body>
 {% include 'footer.html' %}
 </html>

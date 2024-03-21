@@ -17,7 +17,7 @@ void main(){
     print(y);
   };
 
-  call void test()
-  call void test1(x, y)
+  test()
+  test1(x, y)
 
 };

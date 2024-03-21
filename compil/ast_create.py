@@ -111,7 +111,6 @@ class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
 
     def visitFunctionCall(self, ctx: nevermorecompilerParser.FunctionCallContext):
         function_name = ctx.functionName().getText()
-        function_type = ctx.funcType().getText()
         args_dict = []
         args_ctx = ctx.functionParams()
         if args_ctx:
@@ -123,7 +122,6 @@ class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
         function_call = {
             "functionCall": {
                 "name": function_name,
-                "type": function_type,
                 "params": args_dict
             }
         }

@@ -26,9 +26,9 @@ void main(){
     return result;
   };
 
-  call void loop()
+  loop()
   print(j);
-  int result = call int loop1(0, 10);
+  int result = loop1(0, 10);
   print(result);
 
 };

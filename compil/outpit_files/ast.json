@@ -1,0 +1,52 @@
+[
+ {
+  "functionStatement": {
+   "name": "main",
+   "type": "void",
+   "args": {},
+   "body": [
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "x",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "INT",
+           "value": 15
+          },
+          "right": {
+           "type": "INT",
+           "value": 15
+          }
+         },
+         "right": {
+          "type": "INT",
+          "value": 15
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "x"
+       },
+       "END_STATE": ";"
+      }
+     }
+    }
+   ],
+   "END_STATE": ";"
+  }
+ }
+]

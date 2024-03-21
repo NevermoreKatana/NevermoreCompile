@@ -21,8 +21,8 @@ void main(){
     return y;
   };
 
-  call void loop()
+  loop()
   print(x);
-  int result = call int loop1(3);
+  int result = loop1(3);
   print(result);
 };

@@ -111,7 +111,7 @@ functionExpr: ID
 functionParams: (functionExpr (',' functionExpr)*)?;
 
 //Оператор вызова функции
-functionCall: 'call' funcType functionName LPAREN functionParams? RPAREN;
+functionCall: functionName LPAREN functionParams? RPAREN END_STATE?;
 
 // Идентификатор (начинается с буквы, может содержать буквы и цифры)(Lexer Token)
 ID: LETTER DIGIT*;

@@ -1,3 +1,9 @@
+import os
+import sys
+
+current_directory = os.getcwd()
+sys.path.insert(0, current_directory)
+
 import llvmlite.ir as ir
 import json
 from compil.ini import *
@@ -617,7 +623,6 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
     def function_call(self, stat: dict, builder=None):
         builder = builder if builder is not None else self.builder
         function_name = stat['functionCall']['name']
-        function_type = stat['functionCall']['type']
         function_args = stat['functionCall']['params']
 
         func = self.functions[function_name]
@@ -657,10 +662,10 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
 
                 finally:
                     params.append(ir.Constant(ir.DoubleType(), arg))
-
-        if function_type == 'void':
+        
+        if isinstance(func['func'].ftype.return_type, ir.VoidType):
             self.builder.call(func['func'], params)
-        elif function_type == 'int':
+        elif isinstance(func['func'].ftype.return_type, ir.IntType):
             self.builder.call(func['func'], params)
 
     def return_statement(self, stat, builder=None):
