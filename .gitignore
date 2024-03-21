@@ -6,7 +6,7 @@ __pycache__/
 # C extensions
 *.so
 grammar/.antlr
-
+.vscode/
 # Distribution / packaging
 .Python
 build/

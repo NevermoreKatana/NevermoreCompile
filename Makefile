@@ -9,7 +9,7 @@ gramar:
 
 
 to_llvm:
-	clang compil/outpit_files/output.ll -o compil/outpit_files/output
+	clang compil/outpit_files/output.ll -o compil/output_files/output
 
 compile:
 	python3 compil/compiler.py -f compil/input.txt -o compil/outpit_files
