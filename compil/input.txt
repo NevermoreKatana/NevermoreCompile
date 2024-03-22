@@ -1,5 +1,17 @@
 void main(){
-    int x = 15 + 15 + 15;
+  int x = 1;
+  double y = 2.3;
 
-    print(x);
+  int result = 2 + 4 + 24/6*3 -24/24 + 31;
+  print(result);
+  int result = x + x * 2 * x/x*x*x;
+  print(result);
+  int result = x + 2 * 2 + x/1 + 24 * 6 /3;
+  print(result);
+
+  double result1 = y + y *2 / y*3 + y*y /y*8;
+  print(result1);
+  double result1 = 2 * y + 3.3 * y/y*3*y + 4*y/5;
+  print(result1);
+
 };

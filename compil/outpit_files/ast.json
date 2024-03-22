@@ -12,21 +12,86 @@
        "ID": "x",
        "expr": [
         {
+         "type": "INT",
+         "value": 1
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "y",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 2.3
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "result",
+       "expr": [
+        {
          "type": "ADD",
          "left": {
-          "type": "ADD",
+          "type": "SUB",
           "left": {
-           "type": "INT",
-           "value": 15
+           "type": "ADD",
+           "left": {
+            "type": "ADD",
+            "left": {
+             "type": "INT",
+             "value": 2
+            },
+            "right": {
+             "type": "INT",
+             "value": 4
+            }
+           },
+           "right": {
+            "type": "MUL",
+            "left": {
+             "type": "DIV",
+             "left": {
+              "type": "INT",
+              "value": 24
+             },
+             "right": {
+              "type": "INT",
+              "value": 6
+             }
+            },
+            "right": {
+             "type": "INT",
+             "value": 3
+            }
+           }
           },
           "right": {
-           "type": "INT",
-           "value": 15
+           "type": "DIV",
+           "left": {
+            "type": "INT",
+            "value": 24
+           },
+           "right": {
+            "type": "INT",
+            "value": 24
+           }
           }
          },
          "right": {
           "type": "INT",
-          "value": 15
+          "value": 31
          }
         }
        ],
@@ -39,7 +104,321 @@
       "printStatement": {
        "expr": {
         "type": "ID",
-        "value": "x"
+        "value": "result"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "result",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "VAR",
+          "value": "x"
+         },
+         "right": {
+          "type": "MUL",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "DIV",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "MUL",
+              "left": {
+               "type": "VAR",
+               "value": "x"
+              },
+              "right": {
+               "type": "INT",
+               "value": 2
+              }
+             },
+             "right": {
+              "type": "VAR",
+              "value": "x"
+             }
+            },
+            "right": {
+             "type": "VAR",
+             "value": "x"
+            }
+           },
+           "right": {
+            "type": "VAR",
+            "value": "x"
+           }
+          },
+          "right": {
+           "type": "VAR",
+           "value": "x"
+          }
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "result",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "ADD",
+           "left": {
+            "type": "VAR",
+            "value": "x"
+           },
+           "right": {
+            "type": "MUL",
+            "left": {
+             "type": "INT",
+             "value": 2
+            },
+            "right": {
+             "type": "INT",
+             "value": 2
+            }
+           }
+          },
+          "right": {
+           "type": "DIV",
+           "left": {
+            "type": "VAR",
+            "value": "x"
+           },
+           "right": {
+            "type": "INT",
+            "value": 1
+           }
+          }
+         },
+         "right": {
+          "type": "DIV",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 24
+           },
+           "right": {
+            "type": "INT",
+            "value": 6
+           }
+          },
+          "right": {
+           "type": "INT",
+           "value": 3
+          }
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "result1",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "VAR",
+           "value": "y"
+          },
+          "right": {
+           "type": "MUL",
+           "left": {
+            "type": "DIV",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "VAR",
+              "value": "y"
+             },
+             "right": {
+              "type": "INT",
+              "value": 2
+             }
+            },
+            "right": {
+             "type": "VAR",
+             "value": "y"
+            }
+           },
+           "right": {
+            "type": "INT",
+            "value": 3
+           }
+          }
+         },
+         "right": {
+          "type": "MUL",
+          "left": {
+           "type": "DIV",
+           "left": {
+            "type": "MUL",
+            "left": {
+             "type": "VAR",
+             "value": "y"
+            },
+            "right": {
+             "type": "VAR",
+             "value": "y"
+            }
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          },
+          "right": {
+           "type": "INT",
+           "value": 8
+          }
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result1"
+       },
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "result1",
+       "expr": [
+        {
+         "type": "ADD",
+         "left": {
+          "type": "ADD",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 2
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          },
+          "right": {
+           "type": "MUL",
+           "left": {
+            "type": "MUL",
+            "left": {
+             "type": "DIV",
+             "left": {
+              "type": "MUL",
+              "left": {
+               "type": "DOUBLE",
+               "value": 3.3
+              },
+              "right": {
+               "type": "VAR",
+               "value": "y"
+              }
+             },
+             "right": {
+              "type": "VAR",
+              "value": "y"
+             }
+            },
+            "right": {
+             "type": "INT",
+             "value": 3
+            }
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          }
+         },
+         "right": {
+          "type": "DIV",
+          "left": {
+           "type": "MUL",
+           "left": {
+            "type": "INT",
+            "value": 4
+           },
+           "right": {
+            "type": "VAR",
+            "value": "y"
+           }
+          },
+          "right": {
+           "type": "INT",
+           "value": 5
+          }
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result1"
        },
        "END_STATE": ";"
       }
