@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
+    <title>NEPL Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+{% include 'header.html' %}
+<body>
+<div class="grid min-h-[600px] items-start w-full gap-0 lg:grid-cols-[260px_1fr] xl:gap-0">
+    {% include 'sidebar.html' %}
+    <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Переменные в NEPL
+        </h1>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Обычное создание переменной
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Для создания переменной, первое что нужно указать - тип переменной int/double, после чего нужно написать
+                имя переменной, оно может состоять из английских, русских букв + цифра, цифра должна обязательно быть в
+                конце! После чего нужно поставить оператор присваивания = и указать чему равна ваша переменная
+            </p>
+            <p>
+                При присваивании переменная может принимать значение - любые математические действия, числа, другие
+                переменные.
+            </p>
+            <p>Пример </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+    int x = 15;
+    double y = 1.1;
+    int x = x + x * x;
+};</pre>
+        </div>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Создание глобальных переменных
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Глобальные переменные создаются с помощью оператора global. Важно указать global до начала входа в
+                программу - функции main. После указания оператора global поставить двоеточие и перечислить переменные
+                указывая их тип данных.
+            </p>
+            <p>Пример</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">global: int:x double:y int:z;
+void main(){
+    ...
+};</pre>
+            <p>Важно, перед использованием глобальной переменной задать ей значение!</p>
+
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Область видимости переменных
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Переменные которые были созданы локально функции без указания оператора global будут видны только внутри
+                этой функции.
+            </p>
+            <p>
+                Всё что глобально видно везде, всё что локально видно только внутри этой функции!
+            </p>
+
+
+        </div>
+    </div>
+</body>
+{% include 'footer.html' %}
+</html>

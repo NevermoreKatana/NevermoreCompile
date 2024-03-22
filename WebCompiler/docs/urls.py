@@ -20,4 +20,10 @@ from WebCompiler.docs import views
 
 urlpatterns = [
     path('', views.DocsMainPageView.as_view(), name='docs'),
+    path('install/', views.DocsInstallationView.as_view(), name='docs_installation'),
+    path('starting/', views.DocsStartingView.as_view(), name='docs_starting'),
+    path('variables/', views.DocsVarsView.as_view(), name = 'docs_variables'),
+    path('coditions/', views.DocsConditionView.as_view(), name = 'docs_coditions'),
+    path('lopps/', views.DocsLoopsView.as_view(), name = 'docs_lopps'),
+    path('functions/', views.DocsFunctionsView.as_view(), name = 'docs_functions')
 ]

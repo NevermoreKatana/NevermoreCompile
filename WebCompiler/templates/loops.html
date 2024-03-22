@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
+    <title>NEPL Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+{% include 'header.html' %}
+<body>
+<div class="grid min-h-[600px] items-start w-full gap-0 lg:grid-cols-[260px_1fr] xl:gap-0">
+    {% include 'sidebar.html' %}
+    <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Циклы
+        </h1>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Операторы сравнения
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                В NEPL есть только 4 оператора сравнения
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">== - равно
+!= - неравно
+> - больше
+< - меньше</pre>
+            <p>
+                В циклах можно сравнивать
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">Целое число(переменная) и целое число(переменная)
+Просто числа сравнивать нельзя в отличии от if/ifelse!</pre>
+        </div>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Создание цикла while
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Для создания цикла while используется следующая конструкция. Важно отметить, что левая часть в условии
+                автоматически инкриминируется!
+            </p>
+            <p>while (условие){Действия};</p>
+            <p>Пример</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+    int x = 15;
+    int y = 10;
+    while (y < x){
+        print(1);
+    };
+};</pre>
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Создание условного оператора dowhile
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Для создания цикла dowhile используется следующая конструкция. Важно отметить, что левая часть в условии
+                автоматически инкриминируется!
+            </p>
+            <p>do{Действия}while(условие);</p>
+            <p>Пример</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+    int x = 15;
+    int y = 10;
+    do{
+        print(1);
+    }while(x < y);
+};</pre>
+        </div>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Создание цикла for
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Для создания цикла for используется следующая конструкция. В цикле for возможно поставить либо
+                инкремент(++) либо декремент(--)
+            </p>
+            <p>for (модификаця){Действия};</p>
+            <p>Пример</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+    for (int i = 0; i<10; i++){
+        print(1);
+    };
+};</pre>
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Важно! Отступы при написании кода - не имеют значения!
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Код написанный таким способом
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+int x = 15;
+int y = 10;
+do{
+print(1);
+}while(x < y);
+};</pre>
+            <p>Будет исполняться точно так же как код написанный с отступами</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+    int x = 15;
+    int y = 10;
+    do{
+        print(1);
+    }while(x < y);
+};</pre>
+        </div>
+    </div>
+</div>
+</body>
+{% include 'footer.html' %}
+</html>

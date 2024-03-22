@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
+    <title>NEPL Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+{% include 'header.html' %}
+<body>
+<div class="grid min-h-[600px] items-start w-full gap-0 lg:grid-cols-[260px_1fr] xl:gap-0">
+    {% include 'sidebar.html' %}
+    <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Установка NEPL
+        </h1>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Клонирование репозитория
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Первым шагом необходимо склонировать репозиторий <a
+                    href="https://github.com/NevermoreKatana/NevermoreCompile">NEPL GitHub</a>. В нем содержится весь
+                исходный код компилятора и веб части - веб часть можно удалить
+            </p>
+            <p>
+                Linux command here
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">git clone https://github.com/NevermoreKatana/NevermoreCompile.git</pre>
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Создание виртуальной среды и установка зависимостей
+        </h2>
+
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            <p>
+                Если нет необходимости создавать виртуальную среду python venv, можете установить зависимости без её
+                создания.
+            </p>
+            <p>
+                Создание виртуальной среды, .venv - можете заменить на своё название. Команда может поменяться в
+                зависимости от того установлен просто python или python3.
+            </p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">python3 -m venv .venv</pre>
+            <p>Активация виртуальной среды для Linux</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">source имя venv которую создали/bin/activate</pre>
+            <p>Установка зависимостей</p>
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">pip install -r requirements.txt</pre>
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Так же для работы необходимо установить Clang утилиту!
+        </h2>
+    </div>
+</div>
+</body>
+{% include 'footer.html' %}
+</html>
