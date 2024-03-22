@@ -17,7 +17,9 @@ class HomePageView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'homepage.html')
 
-
+class ExamplePageView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'examples.html')
 class OnlineCompilerView(FormView):
     template_name = "compiler.html"
     form_class = CompilerForm

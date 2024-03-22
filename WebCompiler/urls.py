@@ -24,4 +24,5 @@ urlpatterns = [
     path('docs/', include('WebCompiler.docs.urls'), name='docs'),
     path('compiler/', views.OnlineCompilerView.as_view(), name='compiler'),
     path('download/<str:filename>/', views.download_file, name='download_file'),
+    path('examples/', views.ExamplePageView.as_view(), name='examples')
 ]

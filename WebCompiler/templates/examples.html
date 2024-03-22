@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
+    <title>NEPL Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+{% include 'header.html' %}
+<body>
+<div class="grid min-h-[600px] items-start w-full gap-0 lg:grid-cols-[260px_1fr] xl:gap-0">
+    {% include 'sidebar.html' %}
+    <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
+        <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
+            Примеры кода
+        </h1>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Пример 1
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+           
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+  int x = 1;
+  double y = 2.3;
+
+  int result = 2 + 4 + 24/6*3 -24/24 + 31;
+  print(result);
+  int result = x + x * 2 * x/x*x*x;
+  print(result);
+  int result = x + 2 * 2 + x/1 + 24 * 6 /3;
+  print(result);
+
+  double result1 = y + y *2 / y*3 + y*y /y*8;
+  print(result1);
+  double result1 = 2 * y + 3.3 * y/y*3*y + 4*y/5;
+  print(result1);
+
+};</pre>
+
+        </div>
+        <h2 id="introduction" class="anchor text-2xl font-bold tracking-tight">
+            Пример 2
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">void main(){
+  # Создание переменной с типами int и double и их вывод
+  int x = 111;
+  double y = 22.2221;
+  print(x);
+  print(y);
+  # Создание функции внутри которой создаются переменные с такими же именами 
+  void test(){
+    int x = 222;
+    double y = 33.333;
+    print(x);
+    print(y);
+  };
+  # Создание функции в аргументах которой переменные с такими же именами
+  void test1(int x, double y){
+    print(x);
+    print(y);
+  };
+
+  test()
+  test1(x, y)
+
+};</pre>
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Пример 3
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">global: int:j;
+void main(){
+  int j = 2;
+  int x = 0;
+  int y = 5;
+  int z = 1;
+  # Обычный вызов цикла 
+  while(x < y){
+    int z = z+z;
+  };
+  print(z);
+  # Вызов цикла в функции void
+  void loop(){
+    int t = 0;
+    int q = 5;
+    while(t < q){
+      int j = j+j;
+    };
+  };
+  # Вызов цикла в функции int с аргументами
+  int loop1(int x, int y){
+    int result = 1;
+    while (x < y){
+      int result = result +result;
+    };
+    return result;
+  };
+
+  loop()
+  print(j);
+  int result = loop1(0, 10);
+  print(result);
+
+};</pre>
+            
+        </div>
+        <h2 id="installation" class="anchor text-2xl font-bold tracking-tight">
+            Пример 4
+        </h2>
+        <div class="space-y-4 text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            
+            <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">global: int:j;
+void main(){
+  # Создание переменных для условий
+  int j = 1;
+  int x = 0;
+  int y = 2;
+  double d = 2.3;
+  double z = 3.3;
+  # Создание условий для тестов int&int, double&double, int&double, id&id etc
+  if x < y{
+    print(j);
+  };
+
+  if x>y{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d < z{
+    print(j);
+  };
+
+  if d>z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d!=z{
+    print(j);
+  };
+
+  if d == z{
+    print(j);
+  }
+  else{
+    print(22);
+  };
+
+  if x!=z{
+    print(j);
+  };
+  if x == z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d > x{
+    print(j);
+  };
+  if z > y{
+    print(j);
+  };
+
+  void test(int x, int y, double d, double z){
+        if x < y{
+    print(j);
+  };
+
+  if x > y{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d < z{
+    print(j);
+  };
+
+  if d > z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d != z{
+    print(j);
+  };
+
+  if d == z{
+    print(j);
+  }
+  else{
+    print(22);
+  };
+
+  if x != z{
+    print(j);
+  };
+  if x == z{
+    print(j);
+  }
+  else {
+    print(22);
+  };
+
+  if d > x{
+    print(j);
+  };
+  if z > y{
+    print(j);
+  };
+  };
+  test(1, 2, 2.2, 3.2)
+};</pre>
+            
+        </div>
+    </div>
+</body>
+{% include 'footer.html' %}
+</html>
