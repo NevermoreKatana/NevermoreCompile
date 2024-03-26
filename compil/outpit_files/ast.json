@@ -6,59 +6,14 @@
    "args": {},
    "body": [
     {
-     "functionStatement": {
-      "name": "calculate",
-      "type": "int",
-      "args": {
-       "x": "int"
-      },
-      "body": [
-       {
-        "ifStatement": {
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "x"
-          },
-          "op": "<",
-          "right": {
-           "type": "INT",
-           "value": 2
-          }
-         },
-         "body": [
-          {
-           "return": {
-            "type": "INT",
-            "value": 1
-           }
-          }
-         ]
-        }
-       },
-       {
-        "return": {
-         "type": "INT",
-         "value": 0
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "res",
+       "ID": "x",
        "expr": [
         {
-         "functionCall": {
-          "name": "calculate",
-          "params": [
-           "1"
-          ]
-         }
+         "type": "INT",
+         "value": 1
         }
        ],
        "END_STATE": ";"
@@ -67,13 +22,140 @@
     },
     {
      "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
-        "value": "res"
-       },
+      "assignmentStatement": {
+       "type": "double",
+       "ID": "y",
+       "expr": [
+        {
+         "type": "DOUBLE",
+         "value": 2.3
+        }
+       ],
        "END_STATE": ";"
       }
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "test1",
+      "type": "void",
+      "args": {
+       "x": "int",
+       "y": "double"
+      },
+      "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "x",
+          "expr": [
+           {
+            "type": "MUL",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "VAR",
+              "value": "x"
+             },
+             "right": {
+              "type": "VAR",
+              "value": "x"
+             }
+            },
+            "right": {
+             "type": "VAR",
+             "value": "x"
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "double",
+          "ID": "y",
+          "expr": [
+           {
+            "type": "DIV",
+            "left": {
+             "type": "MUL",
+             "left": {
+              "type": "VAR",
+              "value": "x"
+             },
+             "right": {
+              "type": "VAR",
+              "value": "x"
+             }
+            },
+            "right": {
+             "type": "VAR",
+             "value": "y"
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "ifElseStatement": {
+         "condition": {
+          "left": {
+           "type": "VAR",
+           "value": "x"
+          },
+          "left_ID": "x",
+          "right_ID": "y",
+          "op": ">",
+          "right": {
+           "type": "VAR",
+           "value": "y"
+          }
+         },
+         "ifBody": [
+          {
+           "stat": {
+            "printStatement": {
+             "expr": {
+              "type": "ID",
+              "value": "x"
+             },
+             "END_STATE": ";"
+            }
+           }
+          }
+         ],
+         "elseBody": [
+          {
+           "stat": {
+            "printStatement": {
+             "expr": {
+              "type": "ID",
+              "value": "y"
+             },
+             "END_STATE": ";"
+            }
+           }
+          }
+         ]
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionCall": {
+      "name": "test1",
+      "params": [
+       "2",
+       "3"
+      ]
      }
     }
    ],

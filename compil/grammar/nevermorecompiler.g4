@@ -58,7 +58,8 @@ printState
     :'print' LPAREN printBody RPAREN END_STATE
     ;
 //Оператор для отслеживания наполнения оператора "вывод"(Parser Rule)
-printBody: ID
+printBody
+    : ID
     | INT
     | DOUBLE
     ;
@@ -100,7 +101,7 @@ functionBody: (stat)*;
 //Имя функции
 functionName: ID;
 //Тип функции
-funcType: type
+funcType: 
    | 'void'
    | 'int'
    ;
