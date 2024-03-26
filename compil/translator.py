@@ -486,12 +486,18 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
 
         left_cond = self.evaluate_expression(cond_l, builder)
         right_cond = self.evaluate_expression(cond_r, builder)
-
-        if cond_l['type'] == 'VAR' and left_cond.function != func:
+        
+        if left_cond is None:
             left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
             left_cond = self.evaluate_expression(left_cond, builder)
-
-        if cond_r['type'] == 'VAR' and right_cond.function != func:
+            
+        elif cond_l['type'] == 'VAR' and left_cond.function != func:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+        if right_cond is None:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
+        elif cond_r['type'] == 'VAR' and right_cond.function != func:
             right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
             right_cond = self.evaluate_expression(right_cond, builder)
 
@@ -517,11 +523,13 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         builder.cbranch(if_cond, then_block, end_block)
 
         builder.position_at_start(then_block)
-
         self.item_bypass(if_body, builder)
 
-        builder.branch(end_block)
+        if not then_block.is_terminated:
+            builder.branch(end_block)
+
         builder.position_at_start(end_block)
+
 
     def if_else_statement(self, stat: dict, builder=None):
         builder = builder if builder else self.builder
@@ -725,4 +733,5 @@ def translate_to_llvm(filename: str = None, outputfile: str = None):
 
 
 if __name__ == "__main__":
-    translate_to_llvm()
+    translate_to_llvm('compil/outpit_files/ast.json', 'compil/outpit_files/output.ll')
+
