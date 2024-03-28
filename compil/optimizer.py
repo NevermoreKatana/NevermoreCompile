@@ -49,156 +49,82 @@ class Optimizer(ReadWriteMixin):
         pass_manager.run(self.module)
 
 
-class NeplOptimizer:
-    def __init__(self, input_file) -> None:
-        self.module = ir.Module("nevermoreCompile")
-        self.module.triple = 'x86_64-pc-linux-gnu'
-        self.ll_file = self.reader(input_file)
-        self.builder_init()
+class NeplOptimizer(ReadWriteMixin):
+    def __init__(self, ast_file) -> None:
+        self.ast_reader(ast_file)
         
-    def reader(self, filename):
-        with open(filename, 'r') as f:
-            return f.read()
+        
+
+        
+    def calculate(self, expr):
+        if expr['type'] == 'INT':
+            return expr['value']
+        elif expr['type'] == 'DOUBLE':
+            return expr['value']
+        elif expr['type'] == 'ADD':
+            return self.calculate(expr['left']) + self.calculate(expr['right'])
+        elif expr['type'] == 'SUB':
+            return self.calculate(expr['left']) - self.calculate(expr['right'])
+        elif expr['type'] == 'MUL':
+            return self.calculate(expr['left']) * self.calculate(expr['right'])
+        elif expr['type'] == 'DIV':
+            return self.calculate(expr['left']) / self.calculate(expr['right'])
     
-    def builder_init(self) -> None:
-        func_name = 'main'
-        func_type = ir.VoidType()
-
-        main_func_type = ir.FunctionType(func_type, [])
-        main_func = ir.Function(self.module, main_func_type, name=func_name)
-        self.main_func = main_func
-        block = main_func.append_basic_block(name=f"entry.{func_name}")
-        builder = ir.IRBuilder(block)
-        self.builder = builder
-    
-    def hex_from_str(self, num1, num2):
-        if num1.startswith('0x'):
-            num1 = num1[2:]
-        if num2.startswith('0x'):
-            num2 = num2[2:]
+    def check_for_var(self, expr):
         
-        num1 = bytes.fromhex(num1)
-        num1 = struct.unpack('!d', num1)[0]
+        if 'type' in expr and expr['type'] == 'VAR':
+            return False
+        elif 'type' in expr and expr['type'] in ['ADD', 'SUB', 'MUL', 'DIV']:
+            return self.check_for_var(expr['left']) and self.check_for_var(expr['right'])
+        return True
 
-        num2 = bytes.fromhex(num2)       
-        num2 = struct.unpack('!d', num2)[0]
-        
-        return num1, num2
-    
-    def add(self, line):
-        if self.data_type == 'i32':
-            result = int(int(self.num1) + int(self.num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca i32'
-            line2 = f'  store i32 {result}, i32* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
+    def calculate(self, expr):
+        if 'type' in expr and expr['type'] == 'INT':
+            return expr['value']
+        elif 'type' in expr and expr['type'] == 'ADD':
+            return self.calculate(expr['left']) + self.calculate(expr['right'])
+        elif 'type' in expr and expr['type'] == 'SUB':
+            return self.calculate(expr['left']) - self.calculate(expr['right'])
+        elif 'type' in expr and expr['type'] == 'MUL':
+            return self.calculate(expr['left']) * self.calculate(expr['right'])
+        elif 'type' in expr and expr['type'] == 'DIV':
+            return self.calculate(expr['left']) / self.calculate(expr['right'])
 
-        if self.data_type == 'double':
-            num1, num2 = self.hex_from_str(self.num1, self.num2)
-            result = float(float(num1) + float(num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca double'
-            line2 = f'  store double {result}, double* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
-        
-    def sub(self,line):
-        if self.data_type == 'i32':
-            result = int(int(self.num1) - int(self.num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca i32'
-            line2 = f'  store i32 {result}, i32* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
+    def traverse(self, ast):
+        for statement in ast:
+            if 'functionStatement' in statement:
+                self.traverse(statement['functionStatement']['body'])
+            elif 'ifStatement' in statement:
+                self.traverse(statement['ifStatement']['body'])
+            elif 'stat' in statement and 'assignmentStatement' in statement['stat']:
+                if self.check_for_var(statement['stat']['assignmentStatement']['expr'][0]):
+                    if statement['stat']['assignmentStatement']['type'] == 'int':
+                        value = self.calculate(statement['stat']['assignmentStatement']['expr'][0])
+                        if value is not None:
+                            statement['stat']['assignmentStatement']['expr'] = [{"type": "INT", "value": int(value)}]
 
-        if self.data_type == 'double':
-            num1, num2 = self.hex_from_str(self.num1, self.num2)
-            result = float(float(num1) - float(num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca double'
-            line2 = f'  store double {result}, double* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
-        
-    def div(self,line):
-        if self.data_type == 'i32':
-            result = int(int(self.num1) / int(self.num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca i32'
-            line2 = f'  store i32 {result}, i32* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
-
-        if self.data_type == 'double':
-            num1, num2 = self.hex_from_str(self.num1, self.num2)
-            result = float(float(num1) / float(num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca double'
-            line2 = f'  store double {result}, double* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
-    
-    def mul(self, line):
-        if self.data_type == 'i32':
-            result = int(int(self.num1) * int(self.num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca i32'
-            line2 = f'  store i32 {result}, i32* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
-
-        if self.data_type == 'double':
-            num1, num2 = self.hex_from_str(self.num1, self.num2)
-            result = float(float(num1) * float(num2))
-            
-            line1 = f'  %"{self.var_name}" = alloca double'
-            line2 = f'  store double {result}, double* %"{self.var_name}"'
-            line3 = '' if 'store' in line else line
-            return line1, line2, line3
-        
-        
-    def math_operands(self):
-        lines = self.ll_file.split('\n')
-        self.ll_file = ''
-        for i in range(len(lines)):
-            line = lines[i]
-            matches = re.finditer(pattern, line)
-
-            for match in matches:
-                operation, self.data_type, self.num1, self.num2 = match.groups()
-                self.var_name = lines[i+1]
-                self.var_name = re.search(r'"([a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9]*)"', self.var_name).group(1) if re.search(r'"([a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9]*)"', self.var_name) else None
+                    if statement['stat']['assignmentStatement']['type'] == 'double':
+                        value = self.calculate(statement['stat']['assignmentStatement']['expr'][0])
+                        if value is not None:
+                            statement['stat']['assignmentStatement']['expr'] = [{"type": "DOUBLE", "value": float(value)}]
 
                 
-                if operation in ['add', 'fadd'] and self.var_name is not None:
-                    lines[i],lines[i+1], lines[i+2]  = self.add(lines[i+2])
-                if operation in ['sub', 'fsub']and self.var_name is not None:
-                    lines[i],lines[i+1], lines[i+2] = self.sub(lines[i+2])
-                if operation in ['mul', 'fmul']and self.var_name :
-                    lines[i],lines[i+1], lines[i+2] = self.mul(lines[i+2])
-
-        self.ll_file = '\n'.join(lines)
-
-    
-    def write(self, filename):
-        with open(filename, 'w') as f:
-            f.write(self.ll_file)
-
+            
     def __str__(self) -> str:
-        return str(self.ll_file)
+        return str(self.ast)
+    
+    
+    
 def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> None:
-    try:
-        print("First optimization\nDeleting math operations")
-        optimzer1 = NeplOptimizer(ll_output_file)
-        optimzer1.math_operands()
-        optimzer1.write(ll_optimize_file)
-        print("Second optimization")
-        optimzer = Optimizer(ll_optimize_file)
-        optimzer.optimize()
-        optimzer.ll_writer(ll_optimize_file)
-    except:
         optimzer = Optimizer(ll_output_file)
         optimzer.optimize()
         optimzer.ll_writer(ll_optimize_file)
 
+
+def ast_optimizer(ast_file):
+    opt = NeplOptimizer(ast_file)
+    opt.traverse(opt.ast)
+    opt.ast_writer(ast_file)
+        
+
+ast_optimizer('compil/outpit_files/ast.json')

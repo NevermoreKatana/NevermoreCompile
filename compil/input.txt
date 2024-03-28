@@ -2,17 +2,7 @@ void main(){
   int x = 1;
   double y = 2.3;
 
-  void test1(int x, double y){
-    int x = x * x * x;
-    double y = x * x/y;
-
-    if x > y{
-      print(x);
-    }
-    else{
-      print(y);
-    };
-  };
-  test1(2, 3)
+  int result = 2 + 4 + 24/6*3 -24/24 + 31;
+  print(result);
 
 };

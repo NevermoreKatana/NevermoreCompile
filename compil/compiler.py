@@ -2,7 +2,7 @@ import argparse
 import subprocess
 from ast_create import ast_creator
 from translator import translate_to_llvm
-from optimizer import optimize_ll
+from optimizer import optimize_ll, ast_optimizer
 from ini import *
 import os
 import sys
@@ -42,6 +42,8 @@ def main():
     subprocess.run(["clear"])
     print("Старт")
     ast_creator(input_file, ast_file)
+    print('Оптимизация AST дерева')
+    ast_optimizer(ast_file)
     print('Перевод в машинно-независимый код')
     translate_to_llvm(ast_file, ll)
     print('Оптимизация машинно-независимого кода')

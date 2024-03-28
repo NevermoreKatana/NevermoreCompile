@@ -36,126 +36,29 @@
      }
     },
     {
-     "functionStatement": {
-      "name": "test1",
-      "type": "void",
-      "args": {
-       "x": "int",
-       "y": "double"
-      },
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "x",
-          "expr": [
-           {
-            "type": "MUL",
-            "left": {
-             "type": "MUL",
-             "left": {
-              "type": "VAR",
-              "value": "x"
-             },
-             "right": {
-              "type": "VAR",
-              "value": "x"
-             }
-            },
-            "right": {
-             "type": "VAR",
-             "value": "x"
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "result",
+       "expr": [
+        {
+         "type": "INT",
+         "value": 48
         }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "double",
-          "ID": "y",
-          "expr": [
-           {
-            "type": "DIV",
-            "left": {
-             "type": "MUL",
-             "left": {
-              "type": "VAR",
-              "value": "x"
-             },
-             "right": {
-              "type": "VAR",
-              "value": "x"
-             }
-            },
-            "right": {
-             "type": "VAR",
-             "value": "y"
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "ifElseStatement": {
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "x"
-          },
-          "left_ID": "x",
-          "right_ID": "y",
-          "op": ">",
-          "right": {
-           "type": "VAR",
-           "value": "y"
-          }
-         },
-         "ifBody": [
-          {
-           "stat": {
-            "printStatement": {
-             "expr": {
-              "type": "ID",
-              "value": "x"
-             },
-             "END_STATE": ";"
-            }
-           }
-          }
-         ],
-         "elseBody": [
-          {
-           "stat": {
-            "printStatement": {
-             "expr": {
-              "type": "ID",
-              "value": "y"
-             },
-             "END_STATE": ";"
-            }
-           }
-          }
-         ]
-        }
-       }
-      ],
-      "END_STATE": ";"
+       ],
+       "END_STATE": ";"
+      }
      }
     },
     {
-     "functionCall": {
-      "name": "test1",
-      "params": [
-       "2",
-       "3"
-      ]
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "result"
+       },
+       "END_STATE": ";"
+      }
      }
     }
    ],
