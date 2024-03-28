@@ -313,6 +313,8 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         while_statement = stat['whileStatement']
         condition = while_statement['condition']
         while_body = while_statement['body']
+        if while_body == []:
+            return
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if function_name != 'main' else self.main_func
         op = condition['op']
@@ -371,6 +373,8 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         do_while_statement = stat['doWhileStatement']
         condition = do_while_statement['condition']
         do_while_body = do_while_statement['body']
+        if do_while_body == []:
+            return
         function_name = builder.function.name
         func = self.functions[function_name]['func'] if function_name != 'main' else self.main_func
 

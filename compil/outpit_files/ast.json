@@ -13,22 +13,7 @@
        "expr": [
         {
          "type": "INT",
-         "value": 1
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "y",
-       "expr": [
-        {
-         "type": "DOUBLE",
-         "value": 2.3
+         "value": 15
         }
        ],
        "END_STATE": ";"
@@ -39,11 +24,11 @@
      "stat": {
       "assignmentStatement": {
        "type": "int",
-       "ID": "result",
+       "ID": "y",
        "expr": [
         {
          "type": "INT",
-         "value": 48
+         "value": 10
         }
        ],
        "END_STATE": ";"
@@ -51,11 +36,29 @@
      }
     },
     {
+     "whileStatement": {
+      "condition": {
+       "left": {
+        "type": "VAR",
+        "value": "x"
+       },
+       "left_ID": "x",
+       "right_ID": "y",
+       "op": "<",
+       "right": {
+        "type": "VAR",
+        "value": "y"
+       }
+      },
+      "body": []
+     }
+    },
+    {
      "stat": {
       "printStatement": {
        "expr": {
         "type": "ID",
-        "value": "result"
+        "value": "x"
        },
        "END_STATE": ";"
       }

@@ -6,16 +6,14 @@ define void @"main"()
 {
 entry.main:
   %"x" = alloca i32
-  store i32 1, i32* %"x"
-  %"y" = alloca double
-  store double 0x4002666666666666, double* %"y"
-  %"result" = alloca i32
-  store i32 48, i32* %"result"
-  %".5" = load i32, i32* %"result"
-  %".6" = alloca [4 x i8]
-  store [4 x i8] c"%d\0a\00", [4 x i8]* %".6"
-  %".8" = bitcast [4 x i8]* %".6" to i8*
-  %".9" = call i32 (i8*, ...) @"printf"(i8* %".8", i32 %".5")
+  store i32 15, i32* %"x"
+  %"y" = alloca i32
+  store i32 10, i32* %"y"
+  %".4" = load i32, i32* %"x"
+  %".5" = alloca [4 x i8]
+  store [4 x i8] c"%d\0a\00", [4 x i8]* %".5"
+  %".7" = bitcast [4 x i8]* %".5" to i8*
+  %".8" = call i32 (i8*, ...) @"printf"(i8* %".7", i32 %".4")
   ret void
 }
 

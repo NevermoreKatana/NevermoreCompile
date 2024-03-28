@@ -1,8 +1,11 @@
 void main(){
-  int x = 1;
-  double y = 2.3;
+  int x = 15;
+  int y = 10;
 
-  int result = 2 + 4 + 24/6*3 -24/24 + 31;
-  print(result);
+  while (x<y){
+
+  };
+
+  print(x);
 
 };
