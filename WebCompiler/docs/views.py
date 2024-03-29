@@ -3,26 +3,26 @@ from django.views import View
 # Create your views here.
 class DocsMainPageView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'docs.html')
+        return render(request, 'all_docs/docs.html')
 
 class DocsInstallationView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'installation.html')
+        return render(request, 'all_docs/installation.html')
 
 class DocsStartingView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'starting.html')
+        return render(request, 'all_docs/starting.html')
 
 class DocsVarsView(View):
     def get(self, request, **kwargs):
-        return render(request, 'vars.html')
+        return render(request, 'all_docs/vars.html')
 class DocsConditionView(View):
     def get(self, request):
-        return render(request, 'conditional.html')
+        return render(request, 'all_docs/conditional.html')
 
 class DocsLoopsView(View):
     def get(self, request):
-        return render(request, 'loops.html')
+        return render(request, 'all_docs/loops.html')
 class DocsFunctionsView(View):
     def get(self, request):
-        return render(request, 'functions.html')
+        return render(request, 'all_docs/functions.html')

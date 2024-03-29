@@ -1,0 +1,4 @@
+void main(){
+int x = 2 + 2 * 22/4;
+print(x);
+};

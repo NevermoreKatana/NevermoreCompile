@@ -9,7 +9,7 @@
 {% include 'header.html' %}
 <body>
 <div class="grid min-h-[600px] items-start w-full gap-0 lg:grid-cols-[260px_1fr] xl:gap-0">
-    {% include 'sidebar.html' %}
+    {% include 'all_docs/sidebar.html' %}
     <div class="min-h-[600px] grid w-full min-h-[600px] items-start gap-4 px-4 md:px-6 py-8 xl:gap-7 dark:py-12">
         <h1 class="text-3xl font-bold tracking-tighter lg:text-5xl xl:text-6xl">
             Вступление Nevermore Programm Language - NEPL
@@ -197,8 +197,15 @@ declare i32 @"printf"(i8* %".1", ...)</pre>
             <p>
                 13. Удаляет хвостовые вызовы для улучшения производительности
             </p>
+            <p>Так же в NEPL были реализованы собсвтенные функции для оптимизации кода. Они оптимизируют код различными способами, такими как оптимизация AST дерева, с помощью регулярных выражений и прочих.</p>
             <p>
-                14. Заменяет математические операции, на уже посчитанный результат
+                1. Оптимизация константных переменных, оптимизация происходит по дереву
+            </p>
+            <p>
+                2. Оптимизация удаления "мертвых" функций. происходит с помощью регулярных выражений в таргетном(.ll) коде.
+            </p>
+            <p>
+                3. Удаление "мертвых" циклов while/doWhile. Оптимизация происходит на этапе перевода исходного кода в таргетный(.ll). Удаляет все циклы while/doWhile с пустым телом.
             </p>
             <pre class="language-shad p-4 rounded-lg border text-sm bg-gray-50 dark:bg-gray-950">
 ; ModuleID = '<string>'
@@ -221,6 +228,7 @@ entry.main:
 }
 
 declare i32 @printf(i8*, ...) local_unnamed_addr</pre>
+<p>Оптимизации выполняются по порядку сначала оптимизация по AST, далее самописные функции, далее встроенные в библиотеку функции LLVM.</p>
         </div>
         <h2 id="control-flow" class="anchor text-2xl font-bold tracking-tight">
             Компиляция LL кода

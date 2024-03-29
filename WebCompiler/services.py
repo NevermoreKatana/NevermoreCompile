@@ -1,6 +1,6 @@
 from compil.ast_create import ast_creator
 from compil.translator import translate_to_llvm
-from compil.optimizer import optimize_ll
+from compil.optimizer import optimize_ll, ast_optimizer
 import threading
 import subprocess
 import tempfile
@@ -30,6 +30,7 @@ def online_compile(input_code: str):
             tempfile.NamedTemporaryFile(suffix="", delete=False, dir=tmp_dir) as executable_file:
         try:
             ast_creator(input_file, ast_file.name)
+            ast_optimizer(ast_file.name)
         except Exception as e:
             return {'error': str(e)}
         try:
