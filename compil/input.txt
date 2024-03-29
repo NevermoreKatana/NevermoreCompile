@@ -1,4 +1,5 @@
 void main(){
+
   int test(){
     print(1);
     return 0;
@@ -7,5 +8,28 @@ void main(){
   void test1(){
     print(2);
   };
+
+
+  int test3(){
+    print(3);
+    return 0;
+  };
+
+  void test4(){
+    print(4);
+  };
+
+  void test5(int y, int z){
+    int res = y + z;
+    print(res);
+  };
+
+  int test6(int y, int z){
+    int res = y + z;
+    print(res);
+    return 0;
+  };
+  
+  test6(1, 3);
 
 };

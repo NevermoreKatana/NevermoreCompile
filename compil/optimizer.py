@@ -117,7 +117,7 @@ class NeplLOptimizer(ReadWriteMixin):
         self.module = self.ll_file
     
     def function_optimizer(self):
-        regex = r"(define (i32|void) @\"(.*)\"\(\)\n\{([^}]*)\}\n)"
+        regex = r"(define (i32|void) @\"(.*)\"\(.*\)\n\{([^}]*)\}\n)"
         matches = re.finditer(regex, self.module, re.MULTILINE)
 
         for match in matches:
@@ -142,9 +142,9 @@ def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> Non
         f_opt = NeplLOptimizer(ll_output_file, ll_optimize_file)
         f_opt.function_optimizer()
         f_opt.ll_writer(ll_optimize_file)
-        # optimzer = Optimizer(ll_optimize_file)
-        # optimzer.optimize()
-        # optimzer.ll_writer(ll_optimize_file)
+        optimzer = Optimizer(ll_optimize_file)
+        optimzer.optimize()
+        optimzer.ll_writer(ll_optimize_file)
 
 
 def ast_optimizer(ast_file):

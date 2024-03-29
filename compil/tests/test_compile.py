@@ -65,3 +65,4 @@ def test_if_ifelse():
             assert f1.read() == f2.read()
 
     shutil.rmtree(PROGRAMM_OUTPUT)
+

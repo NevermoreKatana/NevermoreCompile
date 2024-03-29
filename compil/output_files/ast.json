@@ -1,0 +1,215 @@
+[
+ {
+  "functionStatement": {
+   "name": "main",
+   "type": "void",
+   "args": {},
+   "body": [
+    {
+     "functionStatement": {
+      "name": "test",
+      "type": "int",
+      "args": {},
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 1
+          },
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "return": {
+         "type": "INT",
+         "value": 0
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "test1",
+      "type": "void",
+      "args": {},
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 2
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "test3",
+      "type": "int",
+      "args": {},
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 3
+          },
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "return": {
+         "type": "INT",
+         "value": 0
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "test4",
+      "type": "void",
+      "args": {},
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 4
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "test5",
+      "type": "void",
+      "args": {
+       "y": "int",
+       "z": "int"
+      },
+      "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "res",
+          "expr": [
+           {
+            "type": "ADD",
+            "left": {
+             "type": "VAR",
+             "value": "y"
+            },
+            "right": {
+             "type": "VAR",
+             "value": "z"
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "res"
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionStatement": {
+      "name": "test6",
+      "type": "int",
+      "args": {
+       "y": "int",
+       "z": "int"
+      },
+      "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "res",
+          "expr": [
+           {
+            "type": "ADD",
+            "left": {
+             "type": "VAR",
+             "value": "y"
+            },
+            "right": {
+             "type": "VAR",
+             "value": "z"
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "ID",
+           "value": "res"
+          },
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "return": {
+         "type": "INT",
+         "value": 0
+        }
+       }
+      ],
+      "END_STATE": ";"
+     }
+    },
+    {
+     "functionCall": {
+      "name": "test6",
+      "params": [
+       "1",
+       "3"
+      ]
+     }
+    }
+   ],
+   "END_STATE": ";"
+  }
+ }
+]
