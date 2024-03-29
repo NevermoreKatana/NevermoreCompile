@@ -6,62 +6,51 @@
    "args": {},
    "body": [
     {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "x",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 15
+     "functionStatement": {
+      "name": "test",
+      "type": "int",
+      "args": {},
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 1
+          },
+          "END_STATE": ";"
+         }
         }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "int",
-       "ID": "y",
-       "expr": [
-        {
-         "type": "INT",
-         "value": 10
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "whileStatement": {
-      "condition": {
-       "left": {
-        "type": "VAR",
-        "value": "x"
        },
-       "left_ID": "x",
-       "right_ID": "y",
-       "op": "<",
-       "right": {
-        "type": "VAR",
-        "value": "y"
+       {
+        "return": {
+         "type": "INT",
+         "value": 0
+        }
        }
-      },
-      "body": []
+      ],
+      "END_STATE": ";"
      }
     },
     {
-     "stat": {
-      "printStatement": {
-       "expr": {
-        "type": "ID",
-        "value": "x"
-       },
-       "END_STATE": ";"
-      }
+     "functionStatement": {
+      "name": "test1",
+      "type": "void",
+      "args": {},
+      "body": [
+       {
+        "stat": {
+         "printStatement": {
+          "expr": {
+           "type": "INT",
+           "value": 2
+          },
+          "END_STATE": ";"
+         }
+        }
+       }
+      ],
+      "END_STATE": ";"
      }
     }
    ],

@@ -1,14 +1,14 @@
 import os
 import sys
-import struct
+import re
 
 current_directory = os.getcwd()
 sys.path.insert(0, current_directory)
 
 from llvmlite import ir, binding
 from compil.mixins import ReadWriteMixin
-import re
-pattern = r' (add|sub|mul|udiv|fdiv|fadd|fmul|fsub) (i32|double) (0x[0-9a-fA-F]+|\d+), (0x[0-9a-fA-F]+|\d+)'
+
+
 class Optimizer(ReadWriteMixin):
     def __init__(self, filename: str) -> None:
         self.ll_file = filename
@@ -49,7 +49,7 @@ class Optimizer(ReadWriteMixin):
         pass_manager.run(self.module)
 
 
-class NeplOptimizer(ReadWriteMixin):
+class NeplAstOptimizer(ReadWriteMixin):
     def __init__(self, ast_file) -> None:
         self.ast_reader(ast_file)
         
@@ -108,23 +108,46 @@ class NeplOptimizer(ReadWriteMixin):
                         if value is not None:
                             statement['stat']['assignmentStatement']['expr'] = [{"type": "DOUBLE", "value": float(value)}]
 
-                
+
+
+class NeplLOptimizer(ReadWriteMixin):
+    def __init__(self, ll_file, optimize_file) -> None:
+        self.ll_file = ll_file
+        self.ll_reader()
+        self.module = self.ll_file
+    
+    def function_optimizer(self):
+        regex = r"(define (i32|void) @\"(.*)\"\(\)\n\{([^}]*)\}\n)"
+        matches = re.finditer(regex, self.module, re.MULTILINE)
+
+        for match in matches:
+            function_text = match.group(1)
+            function_name = match.group(3)
             
-    def __str__(self) -> str:
-        return str(self.ast)
+            if function_name == 'main':
+                continue
+            
+            call_regex = fr"call (i32|void) @\"{function_name}\""
+            matches_call = list(re.finditer(call_regex, self.module, re.MULTILINE))
+            
+            if matches_call == []:
+                self.module = self.module.replace(function_text, '')
+            
+                
+        
     
-    
+        
     
 def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> None:
-        optimzer = Optimizer(ll_output_file)
-        optimzer.optimize()
-        optimzer.ll_writer(ll_optimize_file)
+        f_opt = NeplLOptimizer(ll_output_file, ll_optimize_file)
+        f_opt.function_optimizer()
+        f_opt.ll_writer(ll_optimize_file)
+        # optimzer = Optimizer(ll_optimize_file)
+        # optimzer.optimize()
+        # optimzer.ll_writer(ll_optimize_file)
 
 
 def ast_optimizer(ast_file):
-    opt = NeplOptimizer(ast_file)
+    opt = NeplAstOptimizer(ast_file)
     opt.traverse(opt.ast)
     opt.ast_writer(ast_file)
-        
-
-ast_optimizer('compil/outpit_files/ast.json')
