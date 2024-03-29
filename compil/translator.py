@@ -5,9 +5,6 @@ current_directory = os.getcwd()
 sys.path.insert(0, current_directory)
 
 import llvmlite.ir as ir
-import json
-from compil.ini import *
-import sys
 from compil.mixins import PrintFormatMixin, ReadWriteMixin
 
 
@@ -145,7 +142,6 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
             except ValueError as e:
                 print(str(e))
 
-
     def execute_math_operation(self, expr, builder=None):
         builder = builder if builder else self.builder
         func = builder.function
@@ -250,12 +246,14 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
             try:
                 builder.store(builder.load(value), var)
             except TypeError:
-                raise TypeError(f"Нельзя присвоить тип данных {value.type} переменной {var_name} с типом данных {var.type.pointee}")
+                raise TypeError(
+                    f"Нельзя присвоить тип данных {value.type} переменной {var_name} с типом данных {var.type.pointee}")
         else:
             try:
                 builder.store(value, var)
             except TypeError:
-                raise TypeError(f"Нельзя присвоить тип данных {value.type} переменной {var_name} с типом данных {var.type.pointee}")
+                raise TypeError(
+                    f"Нельзя присвоить тип данных {value.type} переменной {var_name} с типом данных {var.type.pointee}")
 
     def print_expr(self, expr: dict, builder=None):
         builder = builder if builder else self.builder
@@ -490,11 +488,11 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
 
         left_cond = self.evaluate_expression(cond_l, builder)
         right_cond = self.evaluate_expression(cond_r, builder)
-        
+
         if left_cond is None:
             left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
             left_cond = self.evaluate_expression(left_cond, builder)
-            
+
         elif cond_l['type'] == 'VAR' and left_cond.function != func:
             left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
             left_cond = self.evaluate_expression(left_cond, builder)
@@ -533,7 +531,6 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
             builder.branch(end_block)
 
         builder.position_at_start(end_block)
-
 
     def if_else_statement(self, stat: dict, builder=None):
         builder = builder if builder else self.builder
@@ -669,12 +666,12 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
                     if arg.is_integer():
                         try:
                             raise ValueError(f"Аргумент {i} должен быть типа 'double', а не 'int'")
-                        except ValueError :
+                        except ValueError:
                             raise ValueError(f"Аргумент {i} должен быть типа 'double', а не 'int'")
 
                 finally:
                     params.append(ir.Constant(ir.DoubleType(), arg))
-        
+
         if isinstance(func['func'].ftype.return_type, ir.VoidType):
             self.builder.call(func['func'], params)
         elif isinstance(func['func'].ftype.return_type, ir.IntType):
@@ -738,4 +735,3 @@ def translate_to_llvm(filename: str = None, outputfile: str = None):
 
 if __name__ == "__main__":
     translate_to_llvm('compil/outpit_files/ast.json', 'compil/outpit_files/output.ll')
-

@@ -1,25 +1,29 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic.edit import FormView
-from django.contrib.auth import logout
-from django.http import HttpResponse
 from WebCompiler.forms import CompilerForm
 from WebCompiler.services import online_compile
 from django.http import FileResponse
 from WebCompiler.services import tmp_dir
 import os
+
+
 def download_file(request, filename):
     response = FileResponse(open(os.path.join(tmp_dir, filename), 'rb'))
     return response
+
 
 class HomePageView(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, 'homepage.html')
 
+
 class ExamplePageView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'examples.html')
+
+
 class OnlineCompilerView(FormView):
     template_name = "compiler.html"
     form_class = CompilerForm

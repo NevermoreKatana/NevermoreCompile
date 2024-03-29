@@ -34,7 +34,8 @@
                 </div>
             </form>
             <div class="container flex flex-col gap-2 px-4 md:px-6 ">
-                <button id="clearButton" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-[100px] self-end">
+                <button id="clearButton"
+                        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-[100px] self-end">
                     Clear
                 </button>
             </div>
@@ -49,49 +50,49 @@
                 Output
             </label>
             <textarea readonly
-                    class="flex rounded-md border border-input bg-background px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[470px] text-sm font-mono w-full resize-none"
-                    id="output"
-                    placeholder="Your output will appear here."
-            >{% if output %}{{output}}{% endif %}</textarea>
+                      class="flex rounded-md border border-input bg-background px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[470px] text-sm font-mono w-full resize-none"
+                      id="output"
+                      placeholder="Your output will appear here."
+            >{% if output %}{{ output }}{% endif %}</textarea>
         </div>
 
         <div class="flex gap-4 mt-4">
             <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[125px]">
                 {% if ast_file %}
-                <a href="{% url 'download_file' filename=ast_file %}" download>
-                    {% else %}
+                    <a href="{% url 'download_file' filename=ast_file %}" download>
+                {% else %}
 
                     <a href="#">
-                        {% endif %}
-                        Download AST
-                    </a>
+                {% endif %}
+                Download AST
+                </a>
             </button>
             <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[125px]">
                 {% if ll_file %}
-                <a href="{% url 'download_file' filename=ll_file %}" download>
-                    {% else %}
+                    <a href="{% url 'download_file' filename=ll_file %}" download>
+                {% else %}
                     <a href="#">
-                        {% endif %}
-                        Download .ll file
-                    </a>
+                {% endif %}
+                Download .ll file
+                </a>
             </button>
             <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[125px]">
                 {% if ll_optimize_file %}
-                <a href="{% url 'download_file' filename=ll_optimize_file %}" download>
-                    {% else %}
+                    <a href="{% url 'download_file' filename=ll_optimize_file %}" download>
+                {% else %}
                     <a href="#">
-                        {% endif %}
-                        Optimized .ll file
-                    </a>
+                {% endif %}
+                Optimized .ll file
+                </a>
             </button>
             <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-950 text-white hover:bg-slate-900 h-10 px-4 py-2 w-[175px]">
                 {% if executable_file %}
-                 <a href="{% url 'download_file' filename=executable_file %}" download>
-                    {% else %}
+                    <a href="{% url 'download_file' filename=executable_file %}" download>
+                {% else %}
                     <a href="#">
-                        {% endif %}
-                        Download Executable file
-                    </a>
+                {% endif %}
+                Download Executable file
+                </a>
             </button>
         </div>
     </div>

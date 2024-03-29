@@ -6,9 +6,9 @@ import subprocess
 import tempfile
 import os
 
-
 tmp_dir = os.path.join(os.getcwd(), 'tmp_files')
 os.makedirs(tmp_dir, exist_ok=True)
+
 
 def code_to_txt(input_code: str):
     with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, dir=tmp_dir) as input_txt:
@@ -18,9 +18,11 @@ def code_to_txt(input_code: str):
     input_txt.close()
     return input_txt
 
+
 def delete_file(file_path):
     if os.path.exists(file_path):
         os.remove(file_path)
+
 
 def online_compile(input_code: str):
     input_file = code_to_txt(input_code)
@@ -44,7 +46,6 @@ def online_compile(input_code: str):
         ll_optimize_file.close()
         executable_file.close()
 
-
         subprocess.run(["clang", ll_optimize_file.name, "-o", executable_file.name])
 
         result = subprocess.run([executable_file.name], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -58,4 +59,3 @@ def online_compile(input_code: str):
                 "ll_file": os.path.basename(ll_file.name),
                 "ll_opt_file": os.path.basename(ll_optimize_file.name),
                 "executable_file": os.path.basename(executable_file.name)}
-

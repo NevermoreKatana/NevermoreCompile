@@ -1,12 +1,12 @@
 import os
 import sys
-import re
 
 current_directory = os.getcwd()
 sys.path.insert(0, current_directory)
 
 from llvmlite import ir, binding
 from compil.mixins import ReadWriteMixin
+import re
 
 
 class Optimizer(ReadWriteMixin):
@@ -52,10 +52,7 @@ class Optimizer(ReadWriteMixin):
 class NeplAstOptimizer(ReadWriteMixin):
     def __init__(self, ast_file) -> None:
         self.ast_reader(ast_file)
-        
-        
 
-        
     def calculate(self, expr):
         if expr['type'] == 'INT':
             return expr['value']
@@ -69,9 +66,9 @@ class NeplAstOptimizer(ReadWriteMixin):
             return self.calculate(expr['left']) * self.calculate(expr['right'])
         elif expr['type'] == 'DIV':
             return self.calculate(expr['left']) / self.calculate(expr['right'])
-    
+
     def check_for_var(self, expr):
-        
+
         if 'type' in expr and expr['type'] == 'VAR':
             return False
         elif 'type' in expr and expr['type'] in ['ADD', 'SUB', 'MUL', 'DIV']:
@@ -106,8 +103,8 @@ class NeplAstOptimizer(ReadWriteMixin):
                     if statement['stat']['assignmentStatement']['type'] == 'double':
                         value = self.calculate(statement['stat']['assignmentStatement']['expr'][0])
                         if value is not None:
-                            statement['stat']['assignmentStatement']['expr'] = [{"type": "DOUBLE", "value": float(value)}]
-
+                            statement['stat']['assignmentStatement']['expr'] = [
+                                {"type": "DOUBLE", "value": float(value)}]
 
 
 class NeplLOptimizer(ReadWriteMixin):
@@ -115,7 +112,7 @@ class NeplLOptimizer(ReadWriteMixin):
         self.ll_file = ll_file
         self.ll_reader()
         self.module = self.ll_file
-    
+
     def function_optimizer(self):
         regex = r"(define (i32|void) @\"(.*)\"\(.*\)\n\{([^}]*)\}\n)"
         matches = re.finditer(regex, self.module, re.MULTILINE)
@@ -123,28 +120,24 @@ class NeplLOptimizer(ReadWriteMixin):
         for match in matches:
             function_text = match.group(1)
             function_name = match.group(3)
-            
+
             if function_name == 'main':
                 continue
-            
+
             call_regex = fr"call (i32|void) @\"{function_name}\""
             matches_call = list(re.finditer(call_regex, self.module, re.MULTILINE))
-            
+
             if matches_call == []:
                 self.module = self.module.replace(function_text, '')
-            
-                
-        
-    
-        
-    
+
+
 def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> None:
-        f_opt = NeplLOptimizer(ll_output_file, ll_optimize_file)
-        f_opt.function_optimizer()
-        f_opt.ll_writer(ll_optimize_file)
-        optimzer = Optimizer(ll_optimize_file)
-        optimzer.optimize()
-        optimzer.ll_writer(ll_optimize_file)
+    f_opt = NeplLOptimizer(ll_output_file, ll_optimize_file)
+    f_opt.function_optimizer()
+    f_opt.ll_writer(ll_optimize_file)
+    optimzer = Optimizer(ll_optimize_file)
+    optimzer.optimize()
+    optimzer.ll_writer(ll_optimize_file)
 
 
 def ast_optimizer(ast_file):

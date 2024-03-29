@@ -1,5 +1,4 @@
 import json
-
 import llvmlite.ir as ir
 import tempfile
 
