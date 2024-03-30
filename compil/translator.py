@@ -338,10 +338,10 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         try:
             if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
-                raise TypeError(f"Нельзя использовать значения типа double в условии цикла while")
+                raise TypeError("Нельзя использовать значения типа double в условии цикла while")
         except TypeError:
             raise TypeError(
-                f"Нельзя использовать значения типа double в условии цикла while")
+                "Нельзя использовать значения типа double в условии цикла while")
 
         original_value = builder.load(left_cond_ptr)
 
@@ -397,10 +397,10 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
         try:
             if isinstance(left_cond.type, ir.DoubleType) or isinstance(right_cond.type, ir.DoubleType):
-                raise TypeError(f"Нельзя использовать значения типа double в условии цикла doWhile")
+                raise TypeError("Нельзя использовать значения типа double в условии цикла doWhile")
         except TypeError:
             raise TypeError(
-                f"Нельзя использовать значения типа double в условии цикла doWhile")
+                "Нельзя использовать значения типа double в условии цикла doWhile")
 
         op = condition['op']
 

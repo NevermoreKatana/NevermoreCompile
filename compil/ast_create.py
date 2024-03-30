@@ -11,7 +11,6 @@ from compil.antlr4_gen.nevermorecompilerVisitor import nevermorecompilerVisitor
 from antlr4.error.ErrorListener import ErrorListener
 import json
 from compil.ini import *
-import tempfile
 from compil.mixins import ReadWriteMixin
 
 class MyErrorListener(ErrorListener):
@@ -163,7 +162,7 @@ class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
                 "END_STATE": ";"
             }
         }
-        for k, v in args_dict.items():
+        for k in args_dict:
             del self.variables[k]
         return function_body
 
@@ -411,6 +410,6 @@ def ast_creator(input_file, output_file):
     visitor = nevermorecompilerVisitor()
     visitor.visit(tree)
 
-    ast = ast_visitor.visit(tree)
+    ast_visitor.visit(tree)
     ast_visitor.ast_writer(output_file)
     print('AST построено')

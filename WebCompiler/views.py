@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views import View
 from django.views.generic.edit import FormView
 from WebCompiler.forms import CompilerForm

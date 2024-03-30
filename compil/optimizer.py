@@ -4,7 +4,7 @@ import sys
 current_directory = os.getcwd()
 sys.path.insert(0, current_directory)
 
-from llvmlite import ir, binding
+from llvmlite import binding
 from compil.mixins import ReadWriteMixin
 import re
 
@@ -52,20 +52,6 @@ class Optimizer(ReadWriteMixin):
 class NeplAstOptimizer(ReadWriteMixin):
     def __init__(self, ast_file) -> None:
         self.ast_reader(ast_file)
-
-    def calculate(self, expr):
-        if expr['type'] == 'INT':
-            return expr['value']
-        elif expr['type'] == 'DOUBLE':
-            return expr['value']
-        elif expr['type'] == 'ADD':
-            return self.calculate(expr['left']) + self.calculate(expr['right'])
-        elif expr['type'] == 'SUB':
-            return self.calculate(expr['left']) - self.calculate(expr['right'])
-        elif expr['type'] == 'MUL':
-            return self.calculate(expr['left']) * self.calculate(expr['right'])
-        elif expr['type'] == 'DIV':
-            return self.calculate(expr['left']) / self.calculate(expr['right'])
 
     def check_for_var(self, expr):
 

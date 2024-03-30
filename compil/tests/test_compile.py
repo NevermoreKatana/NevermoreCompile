@@ -1,7 +1,6 @@
 import pytest
 import subprocess
 from pathlib import Path
-import os
 import shutil
 
 TRUE_FILES = Path('compil/tests/fixtures/true_files')
