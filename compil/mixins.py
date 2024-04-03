@@ -61,3 +61,43 @@ class ReadWriteMixin:
     def ll_reader(self) -> None:
         with open(self.ll_file, 'r') as f:
             self.ll_file = f.read()
+
+
+class LibFuncMixin:
+    def pow_func(self):
+        int_pow_func_type = ir.FunctionType(ir.IntType(32), [ir.IntType(32), ir.IntType(32)]) 
+        int_pow_func = ir.Function(self.module, int_pow_func_type, name="int_pow")
+        entry_builder = ir.IRBuilder(int_pow_func.append_basic_block(name="entry"))
+        result = entry_builder.alloca(ir.IntType(32), name="result")
+        entry_builder.store(ir.Constant(ir.IntType(32), 1), result)
+
+        loop_block = int_pow_func.append_basic_block(name="loop")
+        exit_block = int_pow_func.append_basic_block(name="exit")
+        
+        base = int_pow_func.args[0]
+        exponent_ptr = entry_builder.alloca(ir.IntType(32), name="exponent_ptr")
+        entry_builder.store(int_pow_func.args[1], exponent_ptr)
+
+        entry_builder.branch(loop_block)
+        loop_builder = ir.IRBuilder(loop_block)
+
+        current_result = loop_builder.load(result, name="current_result")
+        current_base = base
+
+        mul = loop_builder.mul(current_result, current_base, name="mul")
+        loop_builder.store(mul, result)
+
+        current_exponent = loop_builder.load(exponent_ptr, name="current_exponent")
+        decremented_exponent = loop_builder.sub(current_exponent, ir.Constant(ir.IntType(32), 1), name="decremented_exponent")
+        loop_builder.store(decremented_exponent, exponent_ptr)
+
+        cmp = loop_builder.icmp_signed(">", decremented_exponent, ir.Constant(ir.IntType(32), 0))
+        loop_builder.cbranch(cmp, loop_block, exit_block)
+        
+        exit_builder = ir.IRBuilder(exit_block)
+        final_result = exit_builder.load(result)
+        
+        exit_builder.ret(final_result)
+
+        self.functions["int_pow"] = int_pow_func
+

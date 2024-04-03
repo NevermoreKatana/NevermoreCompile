@@ -46,9 +46,11 @@ whileBody: (stat)*;
 
 // Выражение может быть арифметическим выражением, целым числом, или идентификатором.(Parser Rule)
 expr
-    : expr (MUL | DIV) expr
+    : expr POW expr
+    | expr (MUL | DIV) expr
     | expr (ADD | SUB) expr
     |INT
+    |SUB INT
     |ID
     |DOUBLE
     | functionCall
@@ -93,7 +95,8 @@ type
 functionStatement
    : funcType functionName LPAREN functionArgs? RPAREN RCORNER functionBody ret? LCORNER END_STATE;
 
-ret: 'return' functionExpr END_STATE;
+ret
+: 'return' functionExpr END_STATE;
 
 functionArgs: (type ID (',' type ID)*)?;
 //Тело функции
@@ -108,6 +111,7 @@ funcType:
 functionExpr: ID
             | INT
             | DOUBLE
+            | functionCall
             ;
 functionParams: (functionExpr (',' functionExpr)*)?;
 
@@ -133,7 +137,7 @@ ADD: '+';
 SUB: '-';
 MUL: '*';
 DIV: '/';
-
+POW: MUL MUL;
 // Скобки(Lexer Token)
 LPAREN: '(';
 RPAREN: ')';

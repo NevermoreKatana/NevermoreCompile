@@ -1,6 +1,6 @@
 import os
 import sys
-
+import math
 current_directory = os.getcwd()
 sys.path.insert(0, current_directory)
 
@@ -15,9 +15,9 @@ class NeplAstOptimizer(ReadWriteMixin):
 
     def check_for_var(self, expr):
 
-        if 'type' in expr and expr['type'] == 'VAR':
+        if 'type' in expr and expr['type'] == 'VAR' or 'functionCall' in expr:
             return False
-        elif 'type' in expr and expr['type'] in ['ADD', 'SUB', 'MUL', 'DIV']:
+        elif 'type' in expr and expr['type'] in ['ADD', 'SUB', 'MUL', 'DIV', 'POW']:
             return self.check_for_var(expr['left']) and self.check_for_var(expr['right'])
         return True
 
@@ -32,6 +32,8 @@ class NeplAstOptimizer(ReadWriteMixin):
             return self.calculate(expr['left']) * self.calculate(expr['right'])
         elif 'type' in expr and expr['type'] == 'DIV':
             return self.calculate(expr['left']) / self.calculate(expr['right'])
+        elif 'type' in expr and expr['type'] == 'POW':
+            return math.pow(self.calculate(expr['left']), self.calculate(expr['right']))
 
     def traverse(self, ast):
         for statement in ast:
@@ -80,7 +82,7 @@ class NeplLOptimizer(ReadWriteMixin):
 def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> None:
     f_opt = NeplLOptimizer(ll_output_file, ll_optimize_file)
     f_opt.function_optimizer()
-    f_opt.ll_writer(ll_optimize_file)
+    f_opt.ll_writer(ll_optimize_file)   
 
 
 def ast_optimizer(ast_file):

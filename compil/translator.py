@@ -5,10 +5,10 @@ current_directory = os.getcwd()
 sys.path.insert(0, current_directory)
 
 import llvmlite.ir as ir
-from compil.mixins import PrintFormatMixin, ReadWriteMixin
+from compil.mixins import PrintFormatMixin, ReadWriteMixin, LibFuncMixin
 
 
-class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
+class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
     choose_type_entry = {
         "void": ir.VoidType(),
         "int": ir.IntType(32),
@@ -57,6 +57,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
                 self.return_statement(item, builder)
 
     def builder_init(self) -> None:
+        self.pow_func()
         try:
             global_stat = self.ast[1]
         except:
@@ -79,6 +80,10 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         super().__init__(self.module)
         if global_stat:
             self.global_variable_statement(global_stat)
+        
+
+
+
 
     def evaluate_expression(self, expr, builder=None):
         builder = builder if builder else self.builder
@@ -94,6 +99,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
                 if arg in self.variables:
                     var_info = self.variables[arg]
                     arg_type = var_info['var'].type.pointee
+                    
                     try:
                         if arg_type == expected_types[i]:
                             params.append(builder.load(var_info['var']))
@@ -134,7 +140,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
                     return self.variables[expr['value']]
                 except:
                     return None
-        elif expr['type'] in ['DIV', 'MUL', 'ADD', 'SUB']:
+        elif expr['type'] in ['DIV', 'MUL', 'ADD', 'SUB', 'POW']:
             return self.execute_math_operation(expr, builder)
         else:
             try:
@@ -147,10 +153,11 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         func = builder.function
         cond_l = expr['left']
         cond_r = expr['right']
-
         left_value = self.evaluate_expression(cond_l, builder)
-        right_value = self.evaluate_expression(cond_r, builder)
 
+        right_value = self.evaluate_expression(cond_r, builder)
+        
+        
         if left_value is None:
             left_value = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
             left_value = self.evaluate_expression(left_value, builder)
@@ -171,7 +178,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
             right_value = builder.load(right_value)
 
         if isinstance(left_value.type, ir.IntType) and isinstance(right_value.type, ir.IntType):
-
+            
             if expr['type'] == 'DIV':
                 return builder.udiv(left_value, right_value)
             elif expr['type'] == 'MUL':
@@ -180,6 +187,9 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
                 return builder.add(left_value, right_value)
             elif expr['type'] == 'SUB':
                 return builder.sub(left_value, right_value)
+            elif expr['type'] == 'POW':
+                int_pow_func = self.functions["int_pow"]
+                return builder.call(int_pow_func, [left_value, right_value])
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
 
@@ -207,7 +217,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         var_name = assigment['ID']
         expr = assigment['expr'][0]
         var_type = assigment['type']
-
+        
         value = self.evaluate_expression(expr, builder)
 
         if var_name not in self.variables and var_type == 'int' or var_type == 'INT':
@@ -241,7 +251,6 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
                 self.variables[var_name] = {"var": var, "func": builder.function.name}
         else:
             var = self.variables[var_name]
-
         if isinstance(value, ir.AllocaInstr) or isinstance(value, ir.GlobalVariable):
             try:
                 builder.store(builder.load(value), var)
@@ -443,9 +452,28 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
             if 'assignmentStatement' in stat:
                 self.assign_statement(stat, builder)
 
-        left_cond = self.evaluate_expression(condition['left'], builder)
-        right_cond = self.evaluate_expression(condition['right'], builder)
+        cond_l = condition['left']
+        cond_r = condition['right']
+        
+        left_cond = self.evaluate_expression(cond_l, builder)
+        right_cond = self.evaluate_expression(cond_r, builder)
+        
         op = condition['op']
+        
+        
+        if left_cond is None:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+
+        elif cond_l['type'] == 'VAR' and left_cond.function != func:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+        if right_cond is None:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
+        elif cond_r['type'] == 'VAR' and right_cond.function != func:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
 
         for_body_block = func.append_basic_block(name="for_body")
         exit_block = func.append_basic_block(name="exit_for")
@@ -547,11 +575,17 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         left_cond = self.evaluate_expression(cond_l, builder)
         right_cond = self.evaluate_expression(cond_r, builder)
 
-        if cond_l['type'] == 'VAR' and left_cond.function != func:
+        if left_cond is None:
             left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
             left_cond = self.evaluate_expression(left_cond, builder)
 
-        if cond_r['type'] == 'VAR' and right_cond.function != func:
+        elif cond_l['type'] == 'VAR' and left_cond.function != func:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+        if right_cond is None:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
+        elif cond_r['type'] == 'VAR' and right_cond.function != func:
             right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
             right_cond = self.evaluate_expression(right_cond, builder)
 
@@ -581,13 +615,18 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
         builder.position_at_start(then_block)
         self.item_bypass(if_body, builder)
 
-        builder.branch(end_block)
+        if not then_block.is_terminated:
+            builder.branch(end_block)
 
         builder.position_at_start(else_block)
 
         self.item_bypass(if_else_body, builder)
 
-        builder.branch(end_block)
+        if not else_block.is_terminated:
+            builder.branch(end_block)
+
+        builder.position_at_start(end_block)
+
 
         builder.position_at_start(end_block)
 
@@ -679,19 +718,52 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin):
 
     def return_statement(self, stat, builder=None):
         builder = builder if builder is not None else self.builder
-        return_ = stat['return']['value']
+        
+        
         func_name = builder.function.name
+        if 'value' in stat['return']:
+            return_ = stat['return']['value']
+            if builder.block.is_terminated:
+                return
+            elif isinstance(builder.function.ftype.return_type, ir.VoidType):
+                self.functions[func_name]['builder'].ret_void()
+            elif isinstance(builder.function.ftype.return_type, ir.IntType):
+                try:
+                    self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
+                except:
+                    self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+        
+        elif 'functionCall' in stat['return']:
+            func_call = stat['return']['functionCall']
+            func_name = func_call['name']
+            params = func_call['params'] if 'params' in func_call else []
+            
+            func = self.functions.get(func_name)
 
-        if builder.block.is_terminated:
+            if func is None:
+                raise Exception(f"Function '{func_name}' is not defined.")
 
-            return
-        elif isinstance(builder.function.ftype.return_type, ir.VoidType):
-            self.functions[func_name]['builder'].ret_void()
-        elif isinstance(builder.function.ftype.return_type, ir.IntType):
-            try:
-                self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
-            except:
-                self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+            
+
+            param_values = []
+            for param_name in params:
+                try:
+                    param_name = int(param_name)
+                except:
+                    pass
+                
+                if param_name in self.variables:
+                    param_values.append(builder.load(self.variables[param_name]['var']))
+                
+                elif isinstance(param_name, int):
+                    param_values.append(ir.Constant(ir.IntType(32), param_name))
+                else:
+                    raise Exception(f"Variable '{param_name}' is not defined.")
+
+            if isinstance(builder.function.ftype.return_type, ir.VoidType):
+                self.functions[func_name]['builder'].ret_void()
+            else:
+                self.functions[func_name]['builder'].ret(builder.call(func['func'], param_values))
 
     def ast_bypass(self) -> None:
         for item in self.ast:

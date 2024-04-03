@@ -6,6 +6,7 @@ from optimizer import optimize_ll, ast_optimizer
 from ini import *
 import os
 import sys
+import time
 
 
 def main():
@@ -38,8 +39,9 @@ def main():
     ll = os.path.join(output_dir, ll_output_file)
     ll_opt = os.path.join(output_dir, ll_optimize_file)
     exec_file = os.path.join(output_dir, executable_file)
-
+    
     subprocess.run(["clear"])
+    start_time = time.time()
     print("Старт")
     ast_creator(input_file, ast_file)
     print('Оптимизация AST дерева')
@@ -59,7 +61,7 @@ def main():
         f.write(result.stdout)
 
         print(f"Вывод сохранён в файл {output_file}".upper())
-
+    print(f"Время выполнения {time.time()-start_time}")
 
 if __name__ == "__main__":
     main()

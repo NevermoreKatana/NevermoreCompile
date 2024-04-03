@@ -73,6 +73,10 @@ class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
         elif ctx.functionCall():
             function_call = self.visit(ctx.functionCall())
             return function_call
+        elif ctx.POW():
+            left_expr = self.visit(ctx.expr(0))
+            right_expr = self.visit(ctx.expr(1))
+            return {"type": "POW", "left": left_expr, "right": right_expr}
         elif ctx.DIV():
             left_expr = self.visit(ctx.expr(0))
             right_expr = self.visit(ctx.expr(1))
@@ -357,11 +361,12 @@ class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
         return assignment_node
 
     def visitAssignmentStatement(self, ctx: nevermorecompilerParser.AssignmentStatementContext):
-
         type_ = ctx.type_().getText()
         variable_name = ctx.ID().getText()
         value = self.visit(ctx.expr())
         child_count = ctx.expr().getChildCount()
+        if 'value' in value and f'-{value["value"]}' in ctx.getText():
+            value['value'] = -value['value']
         self.variables[variable_name] = {"type": type_, "value": value, "child": child_count}
 
         assignment_node = {

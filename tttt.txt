@@ -1,0 +1,48 @@
+void main(){
+  int factorial(int x){
+    if x == 0{
+      return 1;
+    }else{
+      int newX = x-1;
+      int newX = factorial(newX);
+      int res = x * newX;
+      return res;
+    };
+    return 0;
+  };
+
+  int power(int base, int exponent){
+    int result = 1;
+    for(int i = 0; i < exponent; i++){
+      int result = result * base;
+    };
+    return result;
+
+  };
+
+
+  int sin(int x){
+    int sine = 0;
+    print(1);
+
+      for(int i = 0; i<25; i++){
+      print(i);
+      int coefficient = -1 * i * i;
+      int exponent = 2 * i + 1;
+      int factr = factorial(exponent);
+      int pow = power(x, exponent);
+
+
+
+    };
+
+    return sine;
+  };
+
+
+
+int y = sin(3);
+print(y);
+
+};
+

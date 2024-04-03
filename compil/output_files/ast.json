@@ -9,107 +9,138 @@
      "functionStatement": {
       "name": "test",
       "type": "int",
-      "args": {},
+      "args": {
+       "x": "int"
+      },
       "body": [
        {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 1
+        "ifStatement": {
+         "condition": {
+          "left": {
+           "type": "VAR",
+           "value": "x"
           },
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "return": {
-         "type": "INT",
-         "value": 0
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionStatement": {
-      "name": "test1",
-      "type": "void",
-      "args": {},
-      "body": [
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
+          "op": "==",
+          "right": {
            "type": "INT",
            "value": 2
-          },
-          "END_STATE": ";"
-         }
+          }
+         },
+         "body": [
+          {
+           "return": {
+            "type": "INT",
+            "value": 1
+           }
+          }
+         ]
         }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionStatement": {
-      "name": "test3",
-      "type": "int",
-      "args": {},
-      "body": [
+       },
+       {
+        "ifStatement": {
+         "condition": {
+          "left": {
+           "type": "VAR",
+           "value": "x"
+          },
+          "op": "==",
+          "right": {
+           "type": "INT",
+           "value": 1
+          }
+         },
+         "body": [
+          {
+           "return": {
+            "type": "INT",
+            "value": 1
+           }
+          }
+         ]
+        }
+       },
        {
         "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 3
-          },
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "newX",
+          "expr": [
+           {
+            "type": "SUB",
+            "left": {
+             "type": "VAR",
+             "value": "x"
+            },
+            "right": {
+             "type": "INT",
+             "value": 1
+            }
+           }
+          ],
           "END_STATE": ";"
          }
         }
        },
        {
-        "return": {
-         "type": "INT",
-         "value": 0
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionStatement": {
-      "name": "test4",
-      "type": "void",
-      "args": {},
-      "body": [
-       {
         "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "INT",
-           "value": 4
-          },
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "newX1",
+          "expr": [
+           {
+            "type": "SUB",
+            "left": {
+             "type": "VAR",
+             "value": "x"
+            },
+            "right": {
+             "type": "INT",
+             "value": 2
+            }
+           }
+          ],
           "END_STATE": ";"
          }
         }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionStatement": {
-      "name": "test5",
-      "type": "void",
-      "args": {
-       "y": "int",
-       "z": "int"
-      },
-      "body": [
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "result",
+          "expr": [
+           {
+            "functionCall": {
+             "name": "test",
+             "params": [
+              "newX"
+             ]
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "result1",
+          "expr": [
+           {
+            "functionCall": {
+             "name": "test",
+             "params": [
+              "newX1"
+             ]
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
        {
         "stat": {
          "assignmentStatement": {
@@ -120,79 +151,22 @@
             "type": "ADD",
             "left": {
              "type": "VAR",
-             "value": "y"
+             "value": "result"
             },
             "right": {
              "type": "VAR",
-             "value": "z"
+             "value": "result1"
             }
            }
           ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "res"
-          },
-          "END_STATE": ";"
-         }
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
-     "functionStatement": {
-      "name": "test6",
-      "type": "int",
-      "args": {
-       "y": "int",
-       "z": "int"
-      },
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "res",
-          "expr": [
-           {
-            "type": "ADD",
-            "left": {
-             "type": "VAR",
-             "value": "y"
-            },
-            "right": {
-             "type": "VAR",
-             "value": "z"
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "printStatement": {
-          "expr": {
-           "type": "ID",
-           "value": "res"
-          },
           "END_STATE": ";"
          }
         }
        },
        {
         "return": {
-         "type": "INT",
-         "value": 0
+         "type": "VAR",
+         "value": "res"
         }
        }
       ],
@@ -200,12 +174,33 @@
      }
     },
     {
-     "functionCall": {
-      "name": "test6",
-      "params": [
-       "1",
-       "3"
-      ]
+     "stat": {
+      "assignmentStatement": {
+       "type": "int",
+       "ID": "y",
+       "expr": [
+        {
+         "functionCall": {
+          "name": "test",
+          "params": [
+           "40"
+          ]
+         }
+        }
+       ],
+       "END_STATE": ";"
+      }
+     }
+    },
+    {
+     "stat": {
+      "printStatement": {
+       "expr": {
+        "type": "ID",
+        "value": "y"
+       },
+       "END_STATE": ";"
+      }
      }
     }
    ],
