@@ -100,4 +100,45 @@ class LibFuncMixin:
         exit_builder.ret(final_result)
 
         self.functions["int_pow"] = int_pow_func
+    
+    def abs_func(self):
+        abs_func_type = ir.FunctionType(ir.IntType(32), [ir.IntType(32)]) 
+        abs_func = ir.Function(self.module, abs_func_type, name="abs")
+        entry_block = abs_func.append_basic_block(name="entry")
+        entry_builder = ir.IRBuilder(entry_block)
+        
+        arg_val = abs_func.args[0]
+        
+        result = entry_builder.sub(
+            ir.Constant(ir.IntType(32), 0),
+            arg_val,
+            name="result"
+        )
 
+        cmp = entry_builder.icmp_signed("<", arg_val, ir.Constant(ir.IntType(32), 0))
+        result = entry_builder.select(cmp, result, arg_val)
+        
+        entry_builder.ret(result)
+        
+        self.functions["abs"] = {"builder": self.builder, "func": abs_func}
+
+    def abs_func_float(self):
+        abs_func_type = ir.FunctionType(ir.DoubleType(), [ir.DoubleType()])
+        abs_func = ir.Function(self.module, abs_func_type, name="absf")
+        entry_block = abs_func.append_basic_block(name="entry")
+        entry_builder = ir.IRBuilder(entry_block)
+        
+        arg_val = abs_func.args[0]
+        
+        result = entry_builder.fsub(
+            ir.Constant(ir.DoubleType(), 0.0),
+            arg_val,
+            name="result"
+        )
+
+        cmp = entry_builder.fcmp_unordered("<", arg_val, ir.Constant(ir.DoubleType(), 0.0))
+        result = entry_builder.select(cmp, result, arg_val)
+        
+        entry_builder.ret(result)
+        
+        self.functions["absf"] = {"builder": entry_builder, "func": abs_func}

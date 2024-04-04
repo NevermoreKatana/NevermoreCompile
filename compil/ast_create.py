@@ -291,7 +291,6 @@ class EvalVisitor(nevermorecompilerVisitor, ReadWriteMixin):
 
         while_node = {
             "whileStatement": {
-                # "ID":
                 "condition": condition,
                 "body": body
             }

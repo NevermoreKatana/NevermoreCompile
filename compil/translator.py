@@ -58,6 +58,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
 
     def builder_init(self) -> None:
         self.pow_func()
+        
         try:
             global_stat = self.ast[1]
         except:
@@ -80,10 +81,8 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         super().__init__(self.module)
         if global_stat:
             self.global_variable_statement(global_stat)
-        
-
-
-
+        self.abs_func()
+        self.abs_func_float()
 
     def evaluate_expression(self, expr, builder=None):
         builder = builder if builder else self.builder
@@ -99,6 +98,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
                 if arg in self.variables:
                     var_info = self.variables[arg]
                     arg_type = var_info['var'].type.pointee
+                    print(arg)
                     
                     try:
                         if arg_type == expected_types[i]:
@@ -116,12 +116,10 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
                         raise ValueError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
 
                     params.append(ir.Constant(ir.IntType(32), arg))
-
+                
                 elif isinstance(expected_types[i], ir.DoubleType):
                     try:
                         arg = float(arg)
-                        if arg.is_integer():
-                            raise TypeError(f"Аргумент {i} должен быть типа 'double', а не 'int'")
                     except ValueError:
                         raise ValueError(f"Аргумент {i} должен быть типа 'int', а не 'double'")
                     params.append(ir.Constant(ir.DoubleType(), arg))
@@ -218,7 +216,13 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         expr = assigment['expr'][0]
         var_type = assigment['type']
         
-        value = self.evaluate_expression(expr, builder)
+        value = self.evaluate_expression(expr, builder)    
+          
+        if value is None:
+            value = {'type': "VAR", 'value': expr['value'] + '_tmp'}
+            value = self.evaluate_expression(value, builder)
+
+        
 
         if var_name not in self.variables and var_type == 'int' or var_type == 'INT':
             var = builder.alloca(ir.IntType(32), name=var_name)
@@ -731,8 +735,21 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
                 try:
                     self.functions[func_name]['builder'].ret(ir.Constant(ir.IntType(32), int(return_)))
                 except:
-                    self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
-        
+                    try:
+                        self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+                    except:
+                        return_ += '_tmp'
+                        self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+            elif isinstance(builder.function.ftype.return_type, ir.DoubleType):
+                try:
+                    self.functions[func_name]['builder'].ret(ir.Constant(ir.DoubleType(), float(return_)))
+                except:
+                    try:
+                        self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+                    except:
+                        return_ += '_tmp'
+                        self.functions[func_name]['builder'].ret(builder.load(self.variables[return_]['var']))
+                
         elif 'functionCall' in stat['return']:
             func_call = stat['return']['functionCall']
             func_name = func_call['name']

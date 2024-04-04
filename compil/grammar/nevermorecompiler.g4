@@ -107,6 +107,7 @@ functionName: ID;
 funcType: 
    | 'void'
    | 'int'
+   | 'double'
    ;
 functionExpr: ID
             | INT

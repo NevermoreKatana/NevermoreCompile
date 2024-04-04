@@ -1,0 +1,23 @@
+void main(){
+  
+  int sqrt(int number, int guess){
+    double tolerance = 0.0001;
+    int nguess = guess ** 2;
+    int nguess = nguess - number;
+    int nguess = abs(nguess);
+    if nguess < tolerance {
+      return guess;
+    }else{
+      int newGuess = number/guess;
+      int newGuess = newGuess + guess;
+      int newGuess = newGuess / 2;
+      int n = number;
+      return sqrt(n, newGuess);
+    };
+    return 0;
+  };
+  int result = sqrt(53361, 1);
+  print(result);
+
+};
+

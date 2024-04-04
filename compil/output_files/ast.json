@@ -7,73 +7,36 @@
    "body": [
     {
      "functionStatement": {
-      "name": "test",
-      "type": "int",
+      "name": "sqrt",
+      "type": "double",
       "args": {
-       "x": "int"
+       "number": "int",
+       "guess": "double",
+       "tolerance": "double"
       },
       "body": [
        {
-        "ifStatement": {
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "x"
-          },
-          "op": "==",
-          "right": {
-           "type": "INT",
-           "value": 2
-          }
-         },
-         "body": [
-          {
-           "return": {
-            "type": "INT",
-            "value": 1
-           }
-          }
-         ]
-        }
-       },
-       {
-        "ifStatement": {
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "x"
-          },
-          "op": "==",
-          "right": {
-           "type": "INT",
-           "value": 1
-          }
-         },
-         "body": [
-          {
-           "return": {
-            "type": "INT",
-            "value": 1
-           }
-          }
-         ]
-        }
-       },
-       {
         "stat": {
          "assignmentStatement": {
-          "type": "int",
-          "ID": "newX",
+          "type": "double",
+          "ID": "neguess",
           "expr": [
            {
             "type": "SUB",
             "left": {
-             "type": "VAR",
-             "value": "x"
+             "type": "MUL",
+             "left": {
+              "type": "VAR",
+              "value": "guess"
+             },
+             "right": {
+              "type": "VAR",
+              "value": "guess"
+             }
             },
             "right": {
-             "type": "INT",
-             "value": 1
+             "type": "VAR",
+             "value": "number"
             }
            }
           ],
@@ -84,36 +47,14 @@
        {
         "stat": {
          "assignmentStatement": {
-          "type": "int",
-          "ID": "newX1",
-          "expr": [
-           {
-            "type": "SUB",
-            "left": {
-             "type": "VAR",
-             "value": "x"
-            },
-            "right": {
-             "type": "INT",
-             "value": 2
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "result",
+          "type": "double",
+          "ID": "neguess",
           "expr": [
            {
             "functionCall": {
-             "name": "test",
+             "name": "absf",
              "params": [
-              "newX"
+              "neguess"
              ]
             }
            }
@@ -123,50 +64,129 @@
         }
        },
        {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "result1",
-          "expr": [
-           {
+        "ifElseStatement": {
+         "condition": {
+          "left": {
+           "type": "VAR",
+           "value": "neguess"
+          },
+          "left_ID": "neguess",
+          "right_ID": "tolerance",
+          "op": "<",
+          "right": {
+           "type": "VAR",
+           "value": "tolerance"
+          }
+         },
+         "ifBody": [
+          {
+           "return": {
+            "type": "VAR",
+            "value": "guess"
+           }
+          }
+         ],
+         "elseBody": [
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "double",
+             "ID": "newGuess",
+             "expr": [
+              {
+               "type": "ADD",
+               "left": {
+                "type": "DIV",
+                "left": {
+                 "type": "VAR",
+                 "value": "number"
+                },
+                "right": {
+                 "type": "VAR",
+                 "value": "guess"
+                }
+               },
+               "right": {
+                "type": "VAR",
+                "value": "guess"
+               }
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          },
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "double",
+             "ID": "newGuess",
+             "expr": [
+              {
+               "type": "DIV",
+               "left": {
+                "type": "VAR",
+                "value": "newGuess"
+               },
+               "right": {
+                "type": "INT",
+                "value": 2
+               }
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          },
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "int",
+             "ID": "n",
+             "expr": [
+              {
+               "type": "VAR",
+               "value": "number"
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          },
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "double",
+             "ID": "t",
+             "expr": [
+              {
+               "type": "VAR",
+               "value": "tolerance"
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          },
+          {
+           "return": {
             "functionCall": {
-             "name": "test",
+             "name": "sqrt",
              "params": [
-              "newX1"
+              "n",
+              "newGuess",
+              "t"
              ]
             }
            }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "res",
-          "expr": [
-           {
-            "type": "ADD",
-            "left": {
-             "type": "VAR",
-             "value": "result"
-            },
-            "right": {
-             "type": "VAR",
-             "value": "result1"
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
+          }
+         ]
         }
        },
        {
         "return": {
-         "type": "VAR",
-         "value": "res"
+         "type": "INT",
+         "value": 0
         }
        }
       ],
@@ -176,14 +196,16 @@
     {
      "stat": {
       "assignmentStatement": {
-       "type": "int",
-       "ID": "y",
+       "type": "double",
+       "ID": "z",
        "expr": [
         {
          "functionCall": {
-          "name": "test",
+          "name": "sqrt",
           "params": [
-           "40"
+           "120",
+           "1.0",
+           "0.0001"
           ]
          }
         }
@@ -197,7 +219,7 @@
       "printStatement": {
        "expr": {
         "type": "ID",
-        "value": "y"
+        "value": "z"
        },
        "END_STATE": ";"
       }

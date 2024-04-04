@@ -7,6 +7,7 @@ from ini import *
 import os
 import sys
 import time
+import datetime
 
 
 def main():
@@ -61,7 +62,7 @@ def main():
         f.write(result.stdout)
 
         print(f"Вывод сохранён в файл {output_file}".upper())
-    print(f"Время выполнения {time.time()-start_time}")
+    print(f"Время выполнения {datetime.timedelta(seconds=(time.time() - start_time))}")
 
 if __name__ == "__main__":
     main()
