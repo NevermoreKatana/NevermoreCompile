@@ -58,6 +58,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
 
     def builder_init(self) -> None:
         self.pow_func()
+        self.double_pow_func()
         
         try:
             global_stat = self.ast[1]
@@ -98,8 +99,6 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
                 if arg in self.variables:
                     var_info = self.variables[arg]
                     arg_type = var_info['var'].type.pointee
-                    print(arg)
-                    
                     try:
                         if arg_type == expected_types[i]:
                             params.append(builder.load(var_info['var']))
@@ -186,7 +185,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
             elif expr['type'] == 'SUB':
                 return builder.sub(left_value, right_value)
             elif expr['type'] == 'POW':
-                int_pow_func = self.functions["int_pow"]
+                int_pow_func = self.functions["intPow"]
                 return builder.call(int_pow_func, [left_value, right_value])
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
@@ -206,6 +205,9 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
                 return builder.fadd(left_value, right_value)
             elif expr['type'] == 'SUB':
                 return builder.fsub(left_value, right_value)
+            elif expr['type'] == 'POW':
+                double_pow_func = self.functions["doublePow"]
+                return builder.call(double_pow_func, [left_value, right_value])
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
 

@@ -71,6 +71,10 @@ class LibFuncMixin:
         result = entry_builder.alloca(ir.IntType(32), name="result")
         entry_builder.store(ir.Constant(ir.IntType(32), 1), result)
 
+        exponent_is_zero = entry_builder.icmp_signed("==", int_pow_func.args[1], ir.Constant(ir.IntType(32), 0))
+        with entry_builder.if_then(exponent_is_zero):
+            entry_builder.ret(ir.Constant(ir.IntType(32), 1))
+
         loop_block = int_pow_func.append_basic_block(name="loop")
         exit_block = int_pow_func.append_basic_block(name="exit")
         
@@ -99,7 +103,53 @@ class LibFuncMixin:
         
         exit_builder.ret(final_result)
 
-        self.functions["int_pow"] = int_pow_func
+        self.functions["intPow"] = {"builder": self.builder, "func": int_pow_func}
+    def double_pow_func(self):
+        double_pow_func_type = ir.FunctionType(ir.DoubleType(), [ir.DoubleType(), ir.IntType(32)])
+        double_pow_func = ir.Function(self.module, double_pow_func_type, name="double_pow")
+        entry_builder = ir.IRBuilder(double_pow_func.append_basic_block(name="entry"))
+
+        exponent_is_zero = entry_builder.icmp_signed("==", double_pow_func.args[1], ir.Constant(ir.IntType(32), 0))
+        with entry_builder.if_then(exponent_is_zero):
+            entry_builder.ret(ir.Constant(ir.DoubleType(), 1.0))
+
+        result = entry_builder.alloca(ir.DoubleType(), name="result")
+        entry_builder.store(ir.Constant(ir.DoubleType(), 1.0), result)
+
+        loop_block = double_pow_func.append_basic_block(name="loop")
+        exit_block = double_pow_func.append_basic_block(name="exit")
+
+        base = entry_builder.alloca(ir.DoubleType(), name="base")
+        entry_builder.store(double_pow_func.args[0], base)
+        exponent_ptr = entry_builder.alloca(ir.IntType(32), name="exponent_ptr")
+        entry_builder.store(double_pow_func.args[1], exponent_ptr)
+
+        entry_builder.branch(loop_block)
+        loop_builder = ir.IRBuilder(loop_block)
+
+        current_result = loop_builder.load(result, name="current_result")
+        current_base = loop_builder.load(base, name="current_base")
+
+        mul = loop_builder.fmul(current_result, current_base, name="mul")
+        loop_builder.store(mul, result)
+
+        current_exponent = loop_builder.load(exponent_ptr, name="current_exponent")
+        decremented_exponent = loop_builder.sub(current_exponent, ir.Constant(ir.IntType(32), 1), name="decremented_exponent")
+        loop_builder.store(decremented_exponent, exponent_ptr)
+
+        cmp = loop_builder.icmp_signed(">", decremented_exponent, ir.Constant(ir.IntType(32), 0))
+        loop_builder.cbranch(cmp, loop_block, exit_block)
+
+        exit_builder = ir.IRBuilder(exit_block)
+        final_result = exit_builder.load(result)
+        
+        exit_builder.ret(final_result)
+
+        self.functions["doublePow"] = {"builder": self.builder, "func": double_pow_func}
+
+
+
+    
     
     def abs_func(self):
         abs_func_type = ir.FunctionType(ir.IntType(32), [ir.IntType(32)]) 
@@ -141,4 +191,4 @@ class LibFuncMixin:
         
         entry_builder.ret(result)
         
-        self.functions["absf"] = {"builder": entry_builder, "func": abs_func}
+        self.functions["absf"] = {"builder": self.builder, "func": abs_func}

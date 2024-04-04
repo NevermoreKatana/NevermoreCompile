@@ -23,7 +23,6 @@ class NeplAstOptimizer(ReadWriteMixin):
 
     def calculate(self, expr):
         if 'type' in expr and expr['type'] == 'INT':
-            print(expr['value'])
             return expr['value']
         elif 'type' in expr and expr['type'] == 'ADD':
             return self.calculate(expr['left']) + self.calculate(expr['right'])
