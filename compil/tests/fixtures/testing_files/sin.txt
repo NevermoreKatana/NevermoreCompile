@@ -32,7 +32,7 @@ double sin(int degrees){
   return sinValue;
 };
 
-  double test = sin(250000);
+  double test = sin(90);
   print(test);
 
 

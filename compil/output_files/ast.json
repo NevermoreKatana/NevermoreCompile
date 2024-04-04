@@ -269,17 +269,6 @@
           },
           {
            "stat": {
-            "printStatement": {
-             "expr": {
-              "type": "ID",
-              "value": "sign"
-             },
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
             "assignmentStatement": {
              "type": "int",
              "ID": "factrParm",

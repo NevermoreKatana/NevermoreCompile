@@ -147,45 +147,40 @@ for_body:
   %".17" = call i32 @"int_pow"(i32 %".15", i32 %".16")
   %"sign" = alloca i32
   store i32 %".17", i32* %"sign"
-  %".19" = load i32, i32* %"sign"
-  %".20" = alloca [4 x i8]
-  store [4 x i8] c"%d\0a\00", [4 x i8]* %".20"
-  %".22" = bitcast [4 x i8]* %".20" to i8*
-  %".23" = call i32 (i8*, ...) @"printf"(i8* %".22", i32 %".19")
-  %".24" = load i32, i32* %"i"
-  %".25" = mul i32 2, %".24"
-  %".26" = add i32 %".25", 1
+  %".19" = load i32, i32* %"i"
+  %".20" = mul i32 2, %".19"
+  %".21" = add i32 %".20", 1
   %"factrParm" = alloca i32
-  store i32 %".26", i32* %"factrParm"
-  %".28" = load i32, i32* %"factrParm"
-  %".29" = call i32 @"factorial"(i32 %".28")
+  store i32 %".21", i32* %"factrParm"
+  %".23" = load i32, i32* %"factrParm"
+  %".24" = call i32 @"factorial"(i32 %".23")
   %"factr" = alloca i32
-  store i32 %".29", i32* %"factr"
-  %".31" = load double, double* %"angleRad"
-  %".32" = load i32, i32* %"factrParm"
-  %".33" = call double @"double_pow"(double %".31", i32 %".32")
+  store i32 %".24", i32* %"factr"
+  %".26" = load double, double* %"angleRad"
+  %".27" = load i32, i32* %"factrParm"
+  %".28" = call double @"double_pow"(double %".26", i32 %".27")
   %"pow" = alloca double
-  store double %".33", double* %"pow"
-  %".35" = load double, double* %"pow"
-  %".36" = load i32, i32* %"factr"
-  %".37" = sitofp i32 %".36" to double
-  %".38" = fdiv double %".35", %".37"
+  store double %".28", double* %"pow"
+  %".30" = load double, double* %"pow"
+  %".31" = load i32, i32* %"factr"
+  %".32" = sitofp i32 %".31" to double
+  %".33" = fdiv double %".30", %".32"
   %"term" = alloca double
-  store double %".38", double* %"term"
-  %".40" = load i32, i32* %"sign"
-  %".41" = load double, double* %"term"
-  %".42" = sitofp i32 %".40" to double
-  %".43" = fmul double %".42", %".41"
-  %".44" = load double, double* %"sinValue"
-  %".45" = fadd double %".44", %".43"
-  store double %".45", double* %"sinValue"
-  %".47" = load i32, i32* %"i"
-  %".48" = add i32 %".47", 1
-  store i32 %".48", i32* %"i"
-  %".50" = load i32, i32* %"i"
-  %".51" = icmp ult i32 %".50", 10
-  br i1 %".51", label %"for_body", label %"exit_for"
+  store double %".33", double* %"term"
+  %".35" = load i32, i32* %"sign"
+  %".36" = load double, double* %"term"
+  %".37" = sitofp i32 %".35" to double
+  %".38" = fmul double %".37", %".36"
+  %".39" = load double, double* %"sinValue"
+  %".40" = fadd double %".39", %".38"
+  store double %".40", double* %"sinValue"
+  %".42" = load i32, i32* %"i"
+  %".43" = add i32 %".42", 1
+  store i32 %".43", i32* %"i"
+  %".45" = load i32, i32* %"i"
+  %".46" = icmp ult i32 %".45", 10
+  br i1 %".46", label %"for_body", label %"exit_for"
 exit_for:
-  %".53" = load double, double* %"sinValue"
-  ret double %".53"
+  %".48" = load double, double* %"sinValue"
+  ret double %".48"
 }
