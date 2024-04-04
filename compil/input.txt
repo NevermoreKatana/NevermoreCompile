@@ -22,7 +22,6 @@ double sin(int degrees){
   int minusOdin = -1;
   for(int i = 0; i<10; i++){
     int sign = intPow(minusOdin, i);
-    print(sign);
     int factrParm =  2 * i + 1;
     int factr = factorial(factrParm);
     double pow = doublePow(angleRad, factrParm);
@@ -32,7 +31,7 @@ double sin(int degrees){
   return sinValue;
 };
 
-  double test = sin(250000);
+  double test = sin(90);
   print(test);
 
 

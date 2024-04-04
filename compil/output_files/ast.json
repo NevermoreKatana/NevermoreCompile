@@ -420,7 +420,7 @@
          "functionCall": {
           "name": "sin",
           "params": [
-           "250000"
+           "90"
           ]
          }
         }

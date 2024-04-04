@@ -67,7 +67,7 @@ entry.main:
   %".3" = load double, double* %"pi"
   %".4" = fdiv double %".3", 0x4066800000000000
   store double %".4", double* @"coef"
-  %".6" = call double @"sin"(i32 250000)
+  %".6" = call double @"sin"(i32 90)
   %"test" = alloca double
   store double %".6", double* %"test"
   %".8" = load double, double* %"test"
