@@ -184,7 +184,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
             elif expr['type'] == 'SUB':
                 return builder.sub(left_value, right_value)
             elif expr['type'] == 'POW':
-                int_pow_func = self.functions["intPow"]
+                int_pow_func = self.functions["intPow"]['func']
                 return builder.call(int_pow_func, [left_value, right_value])
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")
@@ -205,7 +205,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
             elif expr['type'] == 'SUB':
                 return builder.fsub(left_value, right_value)
             elif expr['type'] == 'POW':
-                double_pow_func = self.functions["doublePow"]
+                double_pow_func = self.functions["doublePow"]['func']
                 return builder.call(double_pow_func, [left_value, right_value])
             else:
                 raise ValueError(f"Unsupported math operation: {expr['type']}")

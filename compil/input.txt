@@ -1,39 +1,23 @@
-global: double:coef;
 void main(){
-  double pi = 3.14159265358979323846;
-  double coef = pi/180.0;
-int factorial(int x){
-  if x == 0{
-  return 1;
-  }else{
-    int newX = x - 1;
-    int newF = factorial(newX);
-    int res = x * newF;
-    return res;
-  };
-  return 0;
   
-};
-
-double sin(int degrees){
-
-  double angleRad = degrees * coef;
-  double sinValue = 0;
-  int minusOdin = -1;
-  for(int i = 0; i<10; i++){
-    int sign = intPow(minusOdin, i);
-    int factrParm =  2 * i + 1;
-    int factr = factorial(factrParm);
-    double pow = doublePow(angleRad, factrParm);
-    double term = pow / factr;
-    double sinValue = sinValue + sign * term;
+  int sqrt(int number, int guess){
+    double tolerance = 0.0001;
+    int nguess = guess ** 2;
+    int nguess = nguess - number;
+    int nguess = abs(nguess);
+    if nguess < tolerance {
+      return guess;
+    }else{
+      int newGuess = number/guess;
+      int newGuess = newGuess + guess;
+      int newGuess = newGuess / 2;
+      int n = number;
+      return sqrt(n, newGuess);
+    };
+    return 0;
   };
-  return sinValue;
-};
-
-  double test = sin(90);
-  print(test);
-
+  int result = sqrt(25, 1);
+  print(result);
 
 };
 

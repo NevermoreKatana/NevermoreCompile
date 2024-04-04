@@ -6,68 +6,112 @@
    "args": {},
    "body": [
     {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "pi",
-       "expr": [
-        {
-         "type": "DOUBLE",
-         "value": 3.141592653589793
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
-     "stat": {
-      "assignmentStatement": {
-       "type": "double",
-       "ID": "coef",
-       "expr": [
-        {
-         "type": "DIV",
-         "left": {
-          "type": "VAR",
-          "value": "pi"
-         },
-         "right": {
-          "type": "DOUBLE",
-          "value": 180.0
-         }
-        }
-       ],
-       "END_STATE": ";"
-      }
-     }
-    },
-    {
      "functionStatement": {
-      "name": "factorial",
+      "name": "sqrt",
       "type": "int",
       "args": {
-       "x": "int"
+       "number": "int",
+       "guess": "int"
       },
       "body": [
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "double",
+          "ID": "tolerance",
+          "expr": [
+           {
+            "type": "DOUBLE",
+            "value": 0.0001
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "nguess",
+          "expr": [
+           {
+            "type": "POW",
+            "left": {
+             "type": "VAR",
+             "value": "guess"
+            },
+            "right": {
+             "type": "INT",
+             "value": 2
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "nguess",
+          "expr": [
+           {
+            "type": "SUB",
+            "left": {
+             "type": "VAR",
+             "value": "nguess"
+            },
+            "right": {
+             "type": "VAR",
+             "value": "number"
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
+       {
+        "stat": {
+         "assignmentStatement": {
+          "type": "int",
+          "ID": "nguess",
+          "expr": [
+           {
+            "functionCall": {
+             "name": "abs",
+             "params": [
+              "nguess"
+             ]
+            }
+           }
+          ],
+          "END_STATE": ";"
+         }
+        }
+       },
        {
         "ifElseStatement": {
          "condition": {
           "left": {
            "type": "VAR",
-           "value": "x"
+           "value": "nguess"
           },
-          "op": "==",
+          "left_ID": "nguess",
+          "right_ID": "tolerance",
+          "op": "<",
           "right": {
-           "type": "INT",
-           "value": 0
+           "type": "VAR",
+           "value": "tolerance"
           }
          },
          "ifBody": [
           {
            "return": {
-            "type": "INT",
-            "value": 1
+            "type": "VAR",
+            "value": "guess"
            }
           }
          ],
@@ -76,17 +120,61 @@
            "stat": {
             "assignmentStatement": {
              "type": "int",
-             "ID": "newX",
+             "ID": "newGuess",
              "expr": [
               {
-               "type": "SUB",
+               "type": "DIV",
                "left": {
                 "type": "VAR",
-                "value": "x"
+                "value": "number"
+               },
+               "right": {
+                "type": "VAR",
+                "value": "guess"
+               }
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          },
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "int",
+             "ID": "newGuess",
+             "expr": [
+              {
+               "type": "ADD",
+               "left": {
+                "type": "VAR",
+                "value": "newGuess"
+               },
+               "right": {
+                "type": "VAR",
+                "value": "guess"
+               }
+              }
+             ],
+             "END_STATE": ";"
+            }
+           }
+          },
+          {
+           "stat": {
+            "assignmentStatement": {
+             "type": "int",
+             "ID": "newGuess",
+             "expr": [
+              {
+               "type": "DIV",
+               "left": {
+                "type": "VAR",
+                "value": "newGuess"
                },
                "right": {
                 "type": "INT",
-                "value": 1
+                "value": 2
                }
               }
              ],
@@ -98,37 +186,11 @@
            "stat": {
             "assignmentStatement": {
              "type": "int",
-             "ID": "newF",
+             "ID": "n",
              "expr": [
               {
-               "functionCall": {
-                "name": "factorial",
-                "params": [
-                 "newX"
-                ]
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "int",
-             "ID": "res",
-             "expr": [
-              {
-               "type": "MUL",
-               "left": {
-                "type": "VAR",
-                "value": "x"
-               },
-               "right": {
-                "type": "VAR",
-                "value": "newF"
-               }
+               "type": "VAR",
+               "value": "number"
               }
              ],
              "END_STATE": ";"
@@ -137,8 +199,13 @@
           },
           {
            "return": {
-            "type": "VAR",
-            "value": "res"
+            "functionCall": {
+             "name": "sqrt",
+             "params": [
+              "n",
+              "newGuess"
+             ]
+            }
            }
           }
          ]
@@ -155,261 +222,17 @@
      }
     },
     {
-     "functionStatement": {
-      "name": "sin",
-      "type": "double",
-      "args": {
-       "degrees": "int"
-      },
-      "body": [
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "double",
-          "ID": "angleRad",
-          "expr": [
-           {
-            "type": "MUL",
-            "left": {
-             "type": "VAR",
-             "value": "degrees"
-            },
-            "right": {
-             "type": "VAR",
-             "value": "coef"
-            }
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "double",
-          "ID": "sinValue",
-          "expr": [
-           {
-            "type": "DOUBLE",
-            "value": 0.0
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "stat": {
-         "assignmentStatement": {
-          "type": "int",
-          "ID": "minusOdin",
-          "expr": [
-           {
-            "type": "INT",
-            "value": -1
-           }
-          ],
-          "END_STATE": ";"
-         }
-        }
-       },
-       {
-        "forStatement": {
-         "init": {
-          "stat": {
-           "assignmentStatement": {
-            "type": "int",
-            "ID": "i",
-            "expr": [
-             {
-              "type": "INT",
-              "value": 0
-             }
-            ],
-            "END_STATE": ";"
-           }
-          }
-         },
-         "condition": {
-          "left": {
-           "type": "VAR",
-           "value": "i"
-          },
-          "op": "<",
-          "right": {
-           "type": "INT",
-           "value": 10
-          }
-         },
-         "modify": {
-          "ID": "i",
-          "op": "++"
-         },
-         "body": [
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "int",
-             "ID": "sign",
-             "expr": [
-              {
-               "functionCall": {
-                "name": "intPow",
-                "params": [
-                 "minusOdin",
-                 "i"
-                ]
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "int",
-             "ID": "factrParm",
-             "expr": [
-              {
-               "type": "ADD",
-               "left": {
-                "type": "MUL",
-                "left": {
-                 "type": "INT",
-                 "value": 2
-                },
-                "right": {
-                 "type": "VAR",
-                 "value": "i"
-                }
-               },
-               "right": {
-                "type": "INT",
-                "value": 1
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "int",
-             "ID": "factr",
-             "expr": [
-              {
-               "functionCall": {
-                "name": "factorial",
-                "params": [
-                 "factrParm"
-                ]
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "double",
-             "ID": "pow",
-             "expr": [
-              {
-               "functionCall": {
-                "name": "doublePow",
-                "params": [
-                 "angleRad",
-                 "factrParm"
-                ]
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "double",
-             "ID": "term",
-             "expr": [
-              {
-               "type": "DIV",
-               "left": {
-                "type": "VAR",
-                "value": "pow"
-               },
-               "right": {
-                "type": "VAR",
-                "value": "factr"
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          },
-          {
-           "stat": {
-            "assignmentStatement": {
-             "type": "double",
-             "ID": "sinValue",
-             "expr": [
-              {
-               "type": "ADD",
-               "left": {
-                "type": "VAR",
-                "value": "sinValue"
-               },
-               "right": {
-                "type": "MUL",
-                "left": {
-                 "type": "VAR",
-                 "value": "sign"
-                },
-                "right": {
-                 "type": "VAR",
-                 "value": "term"
-                }
-               }
-              }
-             ],
-             "END_STATE": ";"
-            }
-           }
-          }
-         ]
-        }
-       },
-       {
-        "return": {
-         "type": "VAR",
-         "value": "sinValue"
-        }
-       }
-      ],
-      "END_STATE": ";"
-     }
-    },
-    {
      "stat": {
       "assignmentStatement": {
-       "type": "double",
-       "ID": "test",
+       "type": "int",
+       "ID": "result",
        "expr": [
         {
          "functionCall": {
-          "name": "sin",
+          "name": "sqrt",
           "params": [
-           "90"
+           "25",
+           "1"
           ]
          }
         }
@@ -423,7 +246,7 @@
       "printStatement": {
        "expr": {
         "type": "ID",
-        "value": "test"
+        "value": "result"
        },
        "END_STATE": ";"
       }
@@ -431,11 +254,6 @@
     }
    ],
    "END_STATE": ";"
-  }
- },
- {
-  "globalStatement": {
-   "coef": "double"
   }
  }
 ]
