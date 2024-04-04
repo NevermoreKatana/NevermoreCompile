@@ -56,9 +56,8 @@ class NeplAstOptimizer(ReadWriteMixin):
 
 
 class NeplLOptimizer(ReadWriteMixin):
-    def __init__(self, ll_file, optimize_file) -> None:
-        self.ll_file = ll_file
-        self.ll_reader()
+    def __init__(self, ll_file) -> None:
+        self.ll_file = self.ll_reader(ll_file)
         self.module = self.ll_file
 
     def function_optimizer(self):
@@ -80,12 +79,12 @@ class NeplLOptimizer(ReadWriteMixin):
 
 
 def optimize_ll(ll_output_file: str = None, ll_optimize_file: str = None) -> None:
-    f_opt = NeplLOptimizer(ll_output_file, ll_optimize_file)
+    f_opt = NeplLOptimizer(ll_output_file)
     f_opt.function_optimizer()
-    f_opt.ll_writer(ll_optimize_file)   
+    f_opt.ll_writer(f_opt.module,ll_optimize_file)   
 
 
 def ast_optimizer(ast_file):
     opt = NeplAstOptimizer(ast_file)
     opt.traverse(opt.ast)
-    opt.ast_writer(ast_file)
+    opt.ast_writer(opt.ast, ast_file)

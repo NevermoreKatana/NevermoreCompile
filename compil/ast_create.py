@@ -415,5 +415,5 @@ def ast_creator(input_file, output_file):
     visitor.visit(tree)
 
     ast_visitor.visit(tree)
-    ast_visitor.ast_writer(output_file)
+    ast_visitor.ast_writer(ast_visitor.ast,output_file)
     print('AST построено')

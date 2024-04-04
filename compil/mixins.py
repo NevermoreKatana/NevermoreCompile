@@ -46,21 +46,21 @@ class ReadWriteMixin:
         with open(input_file, 'r') as file:
             return file.read()
 
-    def ast_writer(self, output_file) -> None:
+    def ast_writer(self, ast, output_file) -> None:
         with open(output_file, 'w') as file:
-            file.write(json.dumps(self.ast, indent=1))
+            file.write(json.dumps(ast, indent=1))
 
     def ast_reader(self, input_file: str) -> None:
         with open(input_file, "r") as f:
             self.ast = json.load(f)
 
-    def ll_writer(self, output_file) -> None:
+    def ll_writer(self,module, output_file) -> None:
         with open(output_file, "w") as f:
-            f.write(str(self.module))
+            f.write(str(module))
 
-    def ll_reader(self) -> None:
-        with open(self.ll_file, 'r') as f:
-            self.ll_file = f.read()
+    def ll_reader(self, file) -> None:
+        with open(file, 'r') as f:
+            return f.read()
 
 
 class LibFuncMixin:
@@ -147,9 +147,6 @@ class LibFuncMixin:
 
         self.functions["doublePow"] = {"builder": self.builder, "func": double_pow_func}
 
-
-
-    
     
     def abs_func(self):
         abs_func_type = ir.FunctionType(ir.IntType(32), [ir.IntType(32)]) 

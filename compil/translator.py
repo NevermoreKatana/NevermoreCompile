@@ -27,6 +27,8 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         self.variables = {}
         self.functions = {}
         self.main_func = None
+        self.pow_func()
+        self.double_pow_func()
 
     def item_bypass(self, items: dict, builder=None):
 
@@ -57,9 +59,6 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
                 self.return_statement(item, builder)
 
     def builder_init(self) -> None:
-        self.pow_func()
-        self.double_pow_func()
-        
         try:
             global_stat = self.ast[1]
         except:
@@ -150,8 +149,8 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         func = builder.function
         cond_l = expr['left']
         cond_r = expr['right']
+        
         left_value = self.evaluate_expression(cond_l, builder)
-
         right_value = self.evaluate_expression(cond_r, builder)
         
         
@@ -509,6 +508,30 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         builder.cbranch(for_cond, for_body_block, exit_block)
         builder.position_at_end(exit_block)
 
+    def var_loader(self, left_cond, right_cond, cond_r, cond_l, builder, func):
+        builder = builder if builder else self.builder
+        if left_cond is None:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+        elif cond_l['type'] == 'VAR' and left_cond.function != func:
+            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
+            left_cond = self.evaluate_expression(left_cond, builder)
+            
+        if right_cond is None:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
+        elif cond_r['type'] == 'VAR' and right_cond.function != func:
+            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
+            right_cond = self.evaluate_expression(right_cond, builder)
+
+        left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
+
+        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
+        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
+        
+        return left_cond, right_cond 
+    
     def if_statement(self, stat: dict, builder=None):
         builder = builder if builder else self.builder
         if_statement = stat['ifStatement']
@@ -523,25 +546,8 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         left_cond = self.evaluate_expression(cond_l, builder)
         right_cond = self.evaluate_expression(cond_r, builder)
 
-        if left_cond is None:
-            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
-            left_cond = self.evaluate_expression(left_cond, builder)
-
-        elif cond_l['type'] == 'VAR' and left_cond.function != func:
-            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
-            left_cond = self.evaluate_expression(left_cond, builder)
-        if right_cond is None:
-            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
-            right_cond = self.evaluate_expression(right_cond, builder)
-        elif cond_r['type'] == 'VAR' and right_cond.function != func:
-            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
-            right_cond = self.evaluate_expression(right_cond, builder)
-
-        left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
-        right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
-
-        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
-        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
+        left_cond, right_cond = self.var_loader(left_cond, right_cond, cond_r, cond_l, builder, func)
+        
         op = condition['op']
 
         if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.IntType):
@@ -581,26 +587,7 @@ class TranslatorToLLVM(PrintFormatMixin, ReadWriteMixin, LibFuncMixin):
         left_cond = self.evaluate_expression(cond_l, builder)
         right_cond = self.evaluate_expression(cond_r, builder)
 
-        if left_cond is None:
-            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
-            left_cond = self.evaluate_expression(left_cond, builder)
-
-        elif cond_l['type'] == 'VAR' and left_cond.function != func:
-            left_cond = {'type': "VAR", 'value': cond_l['value'] + '_tmp'}
-            left_cond = self.evaluate_expression(left_cond, builder)
-        if right_cond is None:
-            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
-            right_cond = self.evaluate_expression(right_cond, builder)
-        elif cond_r['type'] == 'VAR' and right_cond.function != func:
-            right_cond = {'type': "VAR", 'value': cond_r['value'] + '_tmp'}
-            right_cond = self.evaluate_expression(right_cond, builder)
-
-        left_cond = builder.load(left_cond) if isinstance(left_cond, ir.AllocaInstr) else left_cond
-        right_cond = builder.load(right_cond) if isinstance(right_cond, ir.AllocaInstr) else right_cond
-
-        left_cond = builder.load(left_cond) if isinstance(left_cond.type, ir.PointerType) else left_cond
-        right_cond = builder.load(right_cond) if isinstance(right_cond.type, ir.PointerType) else right_cond
-
+        left_cond, right_cond = self.var_loader(left_cond, right_cond, cond_r, cond_l, builder, func)
         op = condition['op']
 
         if isinstance(left_cond.type, ir.DoubleType) and isinstance(right_cond.type, ir.IntType):
@@ -820,7 +807,7 @@ def translate_to_llvm(filename: str = None, outputfile: str = None):
     tolvm.ast_reader(filename)
     tolvm.builder_init()
     tolvm.ast_bypass()
-    tolvm.ll_writer(outputfile)
+    tolvm.ll_writer(tolvm.module, outputfile)
     print("Промежуточный код готов!")
 
 
